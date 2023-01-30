@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+  </head>
+  <body>
+    <%- include('./partials/nav') %>
+    <!--Showcase-->
+    <section
+      class="bg-dark p-5 p-lg-0 pt-lg-5 text-center text-md-start text-light"
+    >
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-12 col-md-6 col-lg-8">
+            <h3>動作預覽</h3>
+            <video
+              id="preview"
+              class="w-100 ratio ratio-16x9 mb-3"
+              autoplay
+              controls
+              muted
+            ></video>
+            <div class="container mb-3">
+              <div
+                class="btn-group w-100"
+                role="group"
+                aria-label="recording control"
+              >
+                <button
+                  type="button"
+                  class="btn btn-outline-warning"
+                  id="startBtn"
+                >
+                  啟動相機
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-success"
+                  id="recordBtn"
+                >
+                  開始紀錄
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  id="stopBtn"
+                >
+                  停止紀錄
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4">
+            <h3>動作回顧</h3>
+            <video
+              id="recording"
+              class="w-100 ratio ratio-16x9 mb-3"
+              controls
+            ></video>
+            <div class="d-flex justify-content-end mb-3">
+              <button type="button" class="btn btn-primary" id="playBtn">
+                播放紀錄
+              </button>
+            </div>
+            <div class="input-group mb-3 text-dark">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exercise"
+                  placeholder="鐘擺運動"
+                />
+                <label for="exercise" class="form-label">動作名稱</label>
+              </div>
+              <span class="input-group-text">完成</span>
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="count"
+                  placeholder="10次"
+                />
+                <label for="count" class="form-label">動作次數</label>
+              </div>
+              <span class="input-group-text">次</span>
+            </div>
+            <div class="container">
+              <p class="lead text-center">開始時間：2023/02/01 12:30:15</p>
+              <p class="lead text-center">結束時間：2023/02/01 12:31:30</p>
+            </div>
+            <button class="btn btn-primary w-100" type="button">
+              送出紀錄
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <%- include('./partials/footer') %>
+    <!-- <script src="/js/index.js"></script> -->
+  </body>
+</html>
