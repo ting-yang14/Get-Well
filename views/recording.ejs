@@ -37,6 +37,7 @@
                   type="button"
                   class="btn btn-outline-success"
                   id="recordBtn"
+                  disabled
                 >
                   開始紀錄
                 </button>
@@ -44,21 +45,36 @@
                   type="button"
                   class="btn btn-outline-danger"
                   id="stopBtn"
+                  disabled
                 >
                   停止紀錄
                 </button>
               </div>
             </div>
+            <div class="container mb-3"><p class="lead" id="errMsg"></p></div>
           </div>
           <div class="col-12 col-md-6 col-lg-4">
             <h3>動作回顧</h3>
             <video
-              id="recording"
+              id="recorded"
               class="w-100 ratio ratio-16x9 mb-3"
               controls
             ></video>
             <div class="d-flex justify-content-end mb-3">
-              <button type="button" class="btn btn-primary" id="playBtn">
+              <button
+                type="button"
+                class="btn btn-light me-3"
+                id="downloadBtn"
+                disabled
+              >
+                下載紀錄
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="playBtn"
+                disabled
+              >
                 播放紀錄
               </button>
             </div>
@@ -85,8 +101,8 @@
               <span class="input-group-text">次</span>
             </div>
             <div class="container">
-              <p class="lead text-center">開始時間：2023/02/01 12:30:15</p>
-              <p class="lead text-center">結束時間：2023/02/01 12:31:30</p>
+              <p class="lead text-center" id="startTime"></p>
+              <p class="lead text-center" id="stopTime"></p>
             </div>
             <button class="btn btn-primary w-100" type="button">
               送出紀錄
@@ -96,6 +112,6 @@
       </div>
     </section>
     <%- include('./partials/footer') %>
-    <!-- <script src="/js/index.js"></script> -->
+    <script src="/js/recording.js"></script>
   </body>
 </html>
