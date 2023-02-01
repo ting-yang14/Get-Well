@@ -2,12 +2,14 @@
 <html lang="en">
   <head>
     <%- include('./partials/head') %>
+    <link rel="stylesheet" href="/css/recording.css" />
   </head>
   <body>
     <%- include('./partials/nav') %>
     <!--Showcase-->
     <section
-      class="bg-dark p-5 p-lg-0 pt-lg-5 text-center text-md-start text-light"
+      class="bg-dark p-5 text-center text-md-start text-light desktop"
+      id="desktopSec"
     >
       <div class="container">
         <div class="row justify-content-between">
@@ -29,14 +31,14 @@
                 <button
                   type="button"
                   class="btn btn-outline-warning"
-                  id="startBtn"
+                  id="accessCameraBtn"
                 >
                   啟動相機
                 </button>
                 <button
                   type="button"
                   class="btn btn-outline-success"
-                  id="recordBtn"
+                  id="recordVideoBtn"
                   disabled
                 >
                   開始紀錄
@@ -44,17 +46,19 @@
                 <button
                   type="button"
                   class="btn btn-outline-danger"
-                  id="stopBtn"
+                  id="stopVideoBtn"
                   disabled
                 >
                   停止紀錄
                 </button>
               </div>
             </div>
-            <div class="container mb-3"><p class="lead" id="errMsg"></p></div>
+            <div class="container mb-3">
+              <p class="lead" id="errMsgDesktop"></p>
+            </div>
           </div>
           <div class="col-12 col-md-6 col-lg-4">
-            <h3>動作回顧</h3>
+            <h3>影片回顧</h3>
             <video
               id="recorded"
               class="w-100 ratio ratio-16x9 mb-3"
@@ -64,18 +68,18 @@
               <button
                 type="button"
                 class="btn btn-light me-3"
-                id="downloadBtn"
+                id="downloadVideoBtn"
                 disabled
               >
-                下載紀錄
+                下載影片
               </button>
               <button
                 type="button"
                 class="btn btn-primary"
-                id="playBtn"
+                id="playVideoBtn"
                 disabled
               >
-                播放紀錄
+                播放影片
               </button>
             </div>
             <div class="input-group mb-3 text-dark">
@@ -101,8 +105,8 @@
               <span class="input-group-text">次</span>
             </div>
             <div class="container">
-              <p class="lead text-center" id="startTime"></p>
-              <p class="lead text-center" id="stopTime"></p>
+              <p class="lead text-center" id="startVideoTime"></p>
+              <p class="lead text-center" id="stopvideoTime"></p>
             </div>
             <button class="btn btn-primary w-100" type="button">
               送出紀錄
@@ -111,7 +115,114 @@
         </div>
       </div>
     </section>
+    <section class="bg-dark p-5 text-center text-light mobile" id="mobileSec">
+      <div class="container">
+        <div class="container mb-3">
+          <div
+            class="btn-group w-100"
+            role="group"
+            aria-label="recording control"
+          >
+            <button
+              type="button"
+              class="btn btn-outline-warning"
+              id="accessSensorBtn"
+            >
+              取得許可
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-success"
+              id="recordSensorBtn"
+              disabled
+            >
+              開始紀錄
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              id="stopSensorBtn"
+              disabled
+            >
+              停止紀錄
+            </button>
+          </div>
+        </div>
+        <div class="container mb-3"><p class="lead" id="errMsgMobile"></p></div>
+        <h3>動作資訊</h3>
+        <div class="table-responsive mb-3">
+          <table class="table table-dark table-hover" id="realtimeDataTable">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">加速度(m/s<sup>2</sup>)</th>
+                <th scope="col"></th>
+                <th scope="col">角度(deg)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">x</th>
+                <td id="accX"></td>
+                <th scope="row">&alpha;</th>
+                <td id="oriAlpha"></td>
+              </tr>
+              <tr>
+                <th scope="row">y</th>
+                <td id="accY"></td>
+                <th scope="row">&beta;</th>
+                <td id="oriBeta"></td>
+              </tr>
+              <tr>
+                <th scope="row">z</th>
+                <td id="accZ"></td>
+                <th scope="row">&gamma;</th>
+                <td id="oriGamma"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-center mb-3">
+          <button
+            type="button"
+            class="btn btn-primary w-50"
+            id="showDataBtn"
+            disabled
+          >
+            顯示動作資訊紀錄
+          </button>
+        </div>
+        <div class="container mb-3">
+          <p class="lead text-center" id="startSensorTime"></p>
+          <p class="lead text-center" id="stopSensorTime"></p>
+        </div>
+        <div class="table-responsive mb-3">
+          <table class="table table-dark table-hover" id="recordTable">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" colspan="3">加速度(m/s<sup>2</sup>)</th>
+                <th scope="col" colspan="3">角度(deg)</th>
+                <th scope="col"></th>
+              </tr>
+              <tr>
+                <th>idx</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Z</th>
+                <th>&alpha;</th>
+                <th>&beta;</th>
+                <th>&gamma;</th>
+                <th>timestamp</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </section>
     <%- include('./partials/footer') %>
     <script src="/js/recording.js"></script>
+    <script src="/js/recordingDesktop.js"></script>
+    <script src="/js/recordingMobile.js"></script>
   </body>
 </html>
