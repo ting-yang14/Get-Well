@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import https from "https";
 import fs from "fs";
+import { Server } from "socket.io";
 import { getDirname } from "./utils.js";
 const options = {
   key: fs.readFileSync(`./localhost-key.pem`),
@@ -10,6 +11,7 @@ const options = {
 const app = express();
 const port = 8080;
 const __dirname = getDirname(import.meta.url);
+const namespace = "/recording";
 
 app.set("view engine", "ejs");
 app.use("/js", express.static(path.join(__dirname, "public", "js")));
@@ -30,6 +32,30 @@ app.get("/user/:id", (req, res) => {
   res.send(`User ID: ${req.params.id}`);
 });
 const httpsServer = https.createServer(options, app);
+
+const io = new Server(httpsServer);
+io.of(namespace).on("connection", (socket) => {
+  console.log(socket.id, "connected");
+
+  socket.on("video-start", (Msg) => {
+    console.log(socket.id, Msg);
+    socket.broadcast.emit("desktop-start", Msg);
+  });
+  socket.on("video-stop", (Msg) => {
+    console.log(socket.id, Msg);
+    socket.broadcast.emit("desktop-stop", Msg);
+  });
+  socket.on("sensor-start", (Msg) => {
+    console.log(socket.id, Msg);
+    socket.broadcast.emit("mobile-start", Msg);
+  });
+  socket.on("sensor-stop", (Msg) => {
+    console.log(socket.id, Msg);
+    socket.broadcast.emit("mobile-stop", Msg);
+  });
+  socket.on("disconnect", () => console.log(socket.id, "disconnected"));
+});
+
 httpsServer.listen(port, function () {
   console.log(`Server is running at localhost: ${port}`);
 });

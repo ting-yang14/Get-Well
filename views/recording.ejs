@@ -3,6 +3,7 @@
   <head>
     <%- include('./partials/head') %>
     <link rel="stylesheet" href="/css/recording.css" />
+    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <%- include('./partials/nav') %>
@@ -54,7 +55,7 @@
               </div>
             </div>
             <div class="container mb-3">
-              <p class="lead" id="errMsgDesktop"></p>
+              <p class="lead" id="msgDesktop"></p>
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-4">
@@ -106,7 +107,7 @@
             </div>
             <div class="container">
               <p class="lead text-center" id="startVideoTime"></p>
-              <p class="lead text-center" id="stopvideoTime"></p>
+              <p class="lead text-center" id="stopVideoTime"></p>
             </div>
             <button class="btn btn-primary w-100" type="button">
               送出紀錄
@@ -148,7 +149,7 @@
             </button>
           </div>
         </div>
-        <div class="container mb-3"><p class="lead" id="errMsgMobile"></p></div>
+        <div class="container mb-3"><p class="lead" id="msgMobile"></p></div>
         <h3>動作資訊</h3>
         <div class="table-responsive mb-3">
           <table class="table table-dark table-hover" id="realtimeDataTable">
@@ -221,6 +222,7 @@
       </div>
     </section>
     <%- include('./partials/footer') %>
+
     <script src="/js/recording.js"></script>
     <script src="/js/recordingDesktop.js"></script>
     <script src="/js/recordingMobile.js"></script>

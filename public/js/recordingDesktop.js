@@ -5,17 +5,41 @@ const downloadVideoBtn = document.getElementById("downloadVideoBtn");
 const playVideoBtn = document.getElementById("playVideoBtn");
 const preview = document.getElementById("preview");
 const recorded = document.getElementById("recorded");
-const errMsgDesktop = document.getElementById("errMsgDesktop");
+const msgDesktop = document.getElementById("msgDesktop");
 const startVideoTime = document.getElementById("startVideoTime");
 const stopVideoTime = document.getElementById("stopVideoTime");
 let mediaRecorder;
 let recordedBlobs;
-
+let isCameraAccess = false;
+let isRecordVideo = false;
 accessCameraBtn.addEventListener("click", accessCamera);
 recordVideoBtn.addEventListener("click", recordVideo);
 stopVideoBtn.addEventListener("click", stopVideo);
 downloadVideoBtn.addEventListener("click", downloadVideo);
 playVideoBtn.addEventListener("click", playVideo);
+
+socket.on("mobile-start", (Msg) => {
+  console.log("desktop-receive", Msg);
+  msgDesktop.textContent = Msg;
+  if (isCameraAccess === false) {
+    socket.emit("video-stop", "Error: Desktop camera cannot access");
+    return;
+  }
+  if (isRecordVideo === true) {
+    return;
+  }
+  recordVideoBtn.click();
+});
+
+socket.on("mobile-stop", (Msg) => {
+  console.log("desktop-receive", Msg);
+  msgDesktop.textContent = Msg;
+  if (isRecordVideo === true) {
+    stopVideoBtn.click();
+  } else {
+    return;
+  }
+});
 
 async function accessCamera() {
   try {
@@ -29,6 +53,7 @@ async function accessCamera() {
     };
 
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    isCameraAccess = true;
     recordVideoBtn.disabled = false;
     accessCameraBtn.remove();
     console.log("getUserMedia() got stream:", stream);
@@ -42,6 +67,7 @@ async function accessCamera() {
 }
 
 function recordVideo() {
+  console.log(isRecordVideo);
   recordVideoBtn.textContent = "紀錄中";
   recordVideoBtn.disabled = true;
   recordedBlobs = [];
@@ -55,6 +81,8 @@ function recordVideo() {
     };
     mediaRecorder.ondataavailable = handleDataAvailable;
     mediaRecorder.start();
+    isRecordVideo = true;
+    socket.emit("video-start", "Desktop camera start recording");
     startVideoTime.textContent = `開始時間：${getCurrentTime()}`;
     stopVideoBtn.textContent = "停止紀錄";
     console.log("MediaRecorder started", mediaRecorder);
@@ -76,6 +104,8 @@ function handleDataAvailable(event) {
 
 function stopVideo() {
   mediaRecorder.stop();
+  isRecordVideo = false;
+  socket.emit("video-stop", "Desktop camera stop recording");
   recordVideoBtn.textContent = "開始紀錄";
   stopVideoBtn.textContent = "已停止紀錄";
   stopVideoTime.textContent = `結束時間：${getCurrentTime()}`;

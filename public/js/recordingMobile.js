@@ -8,11 +8,13 @@ const accZ = document.getElementById("accZ");
 const oriAlpha = document.getElementById("oriAlpha");
 const oriBeta = document.getElementById("oriBeta");
 const oriGamma = document.getElementById("oriGamma");
-const errMsgMobile = document.getElementById("errMsgMobile");
+const msgMobile = document.getElementById("msgMobile");
 const realtimeDataTable = document.getElementById("realtimeDataTable");
 const recordTable = document.getElementById("recordTable");
 const startSensorTime = document.getElementById("startSensorTime");
 const stopSensorTime = document.getElementById("stopSensorTime");
+let isMobileAccess = false;
+let isRecordSensor = false;
 let recordingInterval;
 let recordData = [];
 let record = {
@@ -26,21 +28,45 @@ recordSensorBtn.addEventListener("click", recordSensor);
 stopSensorBtn.addEventListener("click", stopRecording);
 showDataBtn.addEventListener("click", showSensorData.bind(null, record));
 
+socket.on("desktop-start", (Msg) => {
+  console.log("mobile-receive", Msg);
+  msgMobile.textContent = Msg;
+  if (isMobileAccess === false) {
+    socket.emit("sensor-stop", "Error: Mobile sensor cannot access");
+    return;
+  }
+  if (isRecordSensor === true) {
+    return;
+  }
+  recordSensorBtn.click();
+});
+
+socket.on("desktop-stop", (Msg) => {
+  console.log("mobile-receive", Msg);
+  msgMobile.textContent = Msg;
+  if (isRecordSensor === true) {
+    stopSensorBtn.click();
+  } else {
+    return;
+  }
+});
+
 async function accessSensor() {
   if (device === "iPhone") {
     try {
       const response = await DeviceMotionEvent.requestPermission();
       if (response !== "granted") {
-        errMsgMobile.textContent = `DeviceMotionEvent request permission error`;
+        msgMobile.textContent = `DeviceMotionEvent request permission error`;
         return;
       }
     } catch (err) {
       console.log(err);
-      errMsgMobile.textContent = `DeviceMotionEvent request permission error:${err.toString()}`;
+      msgMobile.textContent = `DeviceMotionEvent request permission error:${err.toString()}`;
     }
   }
   window.addEventListener("deviceorientation", deviceOrientationHandler);
   window.addEventListener("devicemotion", deviceMotionHandler);
+  isMobileAccess = true;
   accessSensorBtn.remove();
   recordSensorBtn.disabled = false;
 }
@@ -71,6 +97,8 @@ function recordSensor() {
   if (!recordingInterval) {
     recordingInterval = setInterval(saveCurrentData, 33.3);
   }
+  isRecordSensor = true;
+  socket.emit("sensor-start", "Mobile sensor start recording");
   recordSensorBtn.disabled = true;
   recordSensorBtn.textContent = "紀錄中";
   stopSensorBtn.disabled = false;
@@ -92,9 +120,11 @@ function saveCurrentData() {
 
 function stopRecording() {
   clearInterval(recordingInterval);
+  isRecordSensor = false;
+  socket.emit("sensor-stop", "Mobile sensor stop recording");
+  record.endTime = getCurrentTime();
   recordingInterval = null;
   record.data = recordData;
-  record.endTime = getCurrentTime();
   stopSensorTime.textContent = `結束時間：${getCurrentTime()}`;
   recordSensorBtn.disabled = false;
   recordSensorBtn.textContent = "開始紀錄";
