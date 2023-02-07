@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <%- include('./partials/head') %>
   </head>
   <body>
@@ -17,7 +18,7 @@
             <button
               class="btn btn-primary btn-lg"
               data-bs-toggle="modal"
-              data-bs-target="#signup"
+              data-bs-target="#register"
             >
               註冊健康人生
             </button>
@@ -34,15 +35,15 @@
     <!-- Modal -->
     <div
       class="modal fade"
-      id="signup"
+      id="register"
       tabindex="-1"
-      aria-labelledby="signupLabel"
+      aria-labelledby="registerLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="signupLabel">註冊會員</h5>
+            <h5 class="modal-title" id="registerLabel">註冊會員</h5>
             <button
               type="button"
               class="btn-close"
@@ -52,12 +53,12 @@
           </div>
           <div class="modal-body">
             <p class="lead">請填入會員註冊資料</p>
-            <form id="signupForm">
+            <form id="registerForm">
               <div class="mb-3 form-floating">
                 <input
                   type="text"
                   class="form-control"
-                  id="signupUsername"
+                  id="registerUsername"
                   placeholder="王小明"
                   required
                 />
@@ -67,7 +68,7 @@
                 <input
                   type="email"
                   class="form-control"
-                  id="signupEmail"
+                  id="registerEmail"
                   placeholder="name@example.com"
                 />
                 <label for="email" class="form-label">電子信箱</label>
@@ -77,23 +78,25 @@
                 <input
                   type="password"
                   class="form-control"
-                  id="signupPassword"
+                  id="registerPassword"
                   placeholder="password"
                 />
                 <label for="password" class="form-label">密碼</label>
               </div>
+              <div class="container lead text-center" id="registerMsg"></div>
             </form>
           </div>
           <div class="modal-footer">
             <button
               class="btn btn-secondary"
-              data-bs-target="#signin"
+              data-bs-target="#login"
               data-bs-toggle="modal"
               data-bs-dismiss="modal"
+              id="toggleLogin"
             >
               會員登入
             </button>
-            <button type="button" class="btn btn-primary" id="signupBtn">
+            <button type="button" class="btn btn-primary" id="registerBtn">
               註冊會員
             </button>
           </div>
@@ -102,15 +105,15 @@
     </div>
     <div
       class="modal fade"
-      id="signin"
+      id="login"
       tabindex="-1"
-      aria-labelledby="signinLabel"
+      aria-labelledby="loginLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="signinLabel">會員登入</h5>
+            <h5 class="modal-title" id="loginLabel">會員登入</h5>
             <button
               type="button"
               class="btn-close"
@@ -120,12 +123,12 @@
           </div>
           <div class="modal-body">
             <p class="lead">請輸入帳號密碼</p>
-            <form id="signinForm">
+            <form id="loginForm">
               <div class="mb-3 form-floating">
                 <input
                   type="email"
                   class="form-control"
-                  id="signinEmail"
+                  id="loginEmail"
                   placeholder="name@example.com"
                 />
                 <label for="email" class="form-label">電子信箱</label>
@@ -134,27 +137,31 @@
                 <input
                   type="password"
                   class="form-control"
-                  id="signinPassword"
+                  id="loginPassword"
                   placeholder="password"
                 />
                 <label for="password" class="form-label">密碼</label>
               </div>
+              <div class="container lead text-center" id="loginMsg"></div>
             </form>
           </div>
           <div class="modal-footer">
             <button
               class="btn btn-secondary"
-              data-bs-target="#signup"
+              data-bs-target="#register"
               data-bs-toggle="modal"
               data-bs-dismiss="modal"
+              id="toggleRegister"
             >
               註冊會員
             </button>
-            <button type="button" class="btn btn-primary">登入</button>
+            <button type="button" class="btn btn-primary" id="loginBtn">
+              登入
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- <script src="/js/index.js"></script> -->
+    <script src="/js/index.js"></script>
   </body>
 </html>
