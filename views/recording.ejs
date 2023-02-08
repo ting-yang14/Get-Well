@@ -152,7 +152,7 @@
         <div class="container mb-3"><p class="lead" id="msgMobile"></p></div>
         <h3>動作資訊</h3>
         <div class="table-responsive mb-3">
-          <table class="table table-dark table-hover" id="realtimeDataTable">
+          <table class="table table-dark table-hover">
             <thead>
               <tr>
                 <th scope="col"></th>
@@ -208,21 +208,22 @@
               </tr>
               <tr>
                 <th>idx</th>
-                <th>X</th>
-                <th>Y</th>
-                <th>Z</th>
+                <th>x</th>
+                <th>y</th>
+                <th>z</th>
                 <th>&alpha;</th>
                 <th>&beta;</th>
                 <th>&gamma;</th>
                 <th>timestamp</th>
               </tr>
             </thead>
+            <tbody id="recordTbody"></tbody>
           </table>
         </div>
       </div>
     </section>
     <%- include('./partials/footer') %>
-
+    <script src="/js/init.js"></script>
     <script src="/js/recording.js"></script>
     <script src="/js/recordingDesktop.js"></script>
     <script src="/js/recordingMobile.js"></script>

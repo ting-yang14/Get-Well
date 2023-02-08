@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <%- include('./partials/head') %>
   </head>
   <body>
@@ -92,7 +91,7 @@
               data-bs-target="#login"
               data-bs-toggle="modal"
               data-bs-dismiss="modal"
-              id="toggleLogin"
+              id="toggleLoginBtn"
             >
               會員登入
             </button>
@@ -151,7 +150,7 @@
               data-bs-target="#register"
               data-bs-toggle="modal"
               data-bs-dismiss="modal"
-              id="toggleRegister"
+              id="toggleRegisterBtn"
             >
               註冊會員
             </button>
@@ -162,6 +161,7 @@
         </div>
       </div>
     </div>
+    <script src="/js/init.js"></script>
     <script src="/js/index.js"></script>
   </body>
 </html>
