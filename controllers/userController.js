@@ -2,10 +2,9 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { User } from "../model/userModel.js";
-import passport from "passport";
-import { passportStrategy } from "../config/passport.js";
 import dotenv from "dotenv";
 dotenv.config();
+
 export const userController = {
   // @desc   User register
   // @route  POST /api/user
@@ -46,6 +45,7 @@ export const userController = {
       throw new Error("註冊資料格式錯誤");
     }
   }),
+
   // @desc   User log in
   // @route  POST /api/user/login
   // @access Public
@@ -79,6 +79,7 @@ export const userController = {
       throw new Error("密碼錯誤");
     }
   }),
+
   // @desc   Get user info
   // @route  GET /api/user/me
   // @access Private
@@ -90,6 +91,7 @@ export const userController = {
     res.status(200).json({ success: true, data: user });
   }),
 };
+
 function generateToken(id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 }

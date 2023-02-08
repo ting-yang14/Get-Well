@@ -1,6 +1,5 @@
 import express from "express";
 import { userController } from "../controllers/userController.js";
-import { protect } from "../middleware/authMiddleware.js";
 import passport from "passport";
 
 export const userRouter = express.Router();
