@@ -39,7 +39,7 @@
                 <button
                   type="button"
                   class="btn btn-outline-success"
-                  id="recordVideoBtn"
+                  id="startVideoBtn"
                   disabled
                 >
                   開始紀錄
@@ -134,7 +134,7 @@
             <button
               type="button"
               class="btn btn-outline-success"
-              id="recordSensorBtn"
+              id="startSensorBtn"
               disabled
             >
               開始紀錄
@@ -186,19 +186,27 @@
         <div class="d-flex justify-content-center mb-3">
           <button
             type="button"
-            class="btn btn-primary w-50"
+            class="btn btn-primary me-3"
             id="showDataBtn"
             disabled
           >
-            顯示動作資訊紀錄
+            顯示紀錄
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="sendDataBtn"
+            disabled
+          >
+            傳送紀錄
           </button>
         </div>
         <div class="container mb-3">
           <p class="lead text-center" id="startSensorTime"></p>
           <p class="lead text-center" id="stopSensorTime"></p>
         </div>
-        <div class="table-responsive mb-3">
-          <table class="table table-dark table-hover" id="recordTable">
+        <div class="table-responsive mb-3" id="recordContainer">
+          <table class="table table-dark table-hover">
             <thead>
               <tr>
                 <th scope="col"></th>
@@ -223,9 +231,9 @@
       </div>
     </section>
     <%- include('./partials/footer') %>
-    <script src="/js/init.js"></script>
-    <script src="/js/recording.js"></script>
-    <script src="/js/recordingDesktop.js"></script>
-    <script src="/js/recordingMobile.js"></script>
+    <!-- <script src="/js/init.js"></script> -->
+    <script type="module" src="/js/recording.js"></script>
+    <!-- <script type="module" src="/js/recordingDesktop.js"></script> -->
+    <!-- <script type="module" src="/js/recordingMobile.js"></script> -->
   </body>
 </html>

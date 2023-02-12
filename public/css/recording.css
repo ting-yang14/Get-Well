@@ -1,11 +1,11 @@
 .desktop,
 .mobile,
-#recordTable {
+#recordContainer {
   display: none;
 }
 .active-section {
   display: block;
 }
-#recordTable {
-  height: 300px;
+#recordContainer {
+  max-height: 300px;
 }

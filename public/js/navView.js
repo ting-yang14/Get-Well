@@ -1,7 +1,7 @@
-init();
 const functionLink = document.getElementById("functionLink");
 const userLink = document.getElementById("userLink");
-const navView = {
+
+export const navView = {
   index: function () {
     this.setRecording();
     this.setLogout();
@@ -39,39 +39,33 @@ const navView = {
     functionLink.href = "/user";
   },
 };
-let user;
-async function init() {
-  const currentPath = window.location.pathname.split("/")[1];
-  if (localStorage.token) {
-    const headers = { Authorization: localStorage.token };
-    await fetchUser(headers);
-    if (currentPath === "") {
-      navView.index();
-    }
-    if (currentPath === "recording") {
-      navView.recording();
-    }
-    if (currentPath === "record") {
-      navView.record();
-    }
-    if (currentPath === "user") {
-      navView.user();
-    }
-  } else {
-    if (currentPath === "") {
-      return;
-    } else {
-      window.location.href = "/";
-    }
-  }
-}
-async function fetchUser(headers) {
-  try {
-    const response = await axios.get("/api/user/me", { headers: headers });
-    console.log(response);
-    user = response.data.data;
-  } catch (error) {
-    console.log(error);
-    window.location.href = "/";
-  }
-}
+
+// let user;
+
+// init();
+
+// async function init() {
+//   const currentPath = window.location.pathname.split("/")[1];
+//   if (localStorage.token) {
+//     const headers = { Authorization: localStorage.token };
+//     await fetchUser(headers);
+//     if (currentPath === "") {
+//       navView.index();
+//     }
+//     if (currentPath === "recording") {
+//       navView.recording();
+//     }
+//     if (currentPath === "record") {
+//       navView.record();
+//     }
+//     if (currentPath === "user") {
+//       navView.user();
+//     }
+//   } else {
+//     if (currentPath === "") {
+//       return;
+//     } else {
+//       window.location.href = "/";
+//     }
+//   }
+// }

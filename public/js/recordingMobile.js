@@ -1,20 +1,12 @@
-const accessSensorBtn = document.getElementById("accessSensorBtn");
-const recordSensorBtn = document.getElementById("recordSensorBtn");
-const stopSensorBtn = document.getElementById("stopSensorBtn");
-const showDataBtn = document.getElementById("showDataBtn");
+import { getCurrentTime } from "./base.js";
+
 const accX = document.getElementById("accX");
 const accY = document.getElementById("accY");
 const accZ = document.getElementById("accZ");
 const oriAlpha = document.getElementById("oriAlpha");
 const oriBeta = document.getElementById("oriBeta");
 const oriGamma = document.getElementById("oriGamma");
-const msgMobile = document.getElementById("msgMobile");
-const realtimeDataTable = document.getElementById("realtimeDataTable");
-const recordTable = document.getElementById("recordTable");
-const startSensorTime = document.getElementById("startSensorTime");
-const stopSensorTime = document.getElementById("stopSensorTime");
-let isMobileAccess = false;
-let isRecordSensor = false;
+
 let recordingInterval;
 let recordData = [];
 let record = {
@@ -23,53 +15,91 @@ let record = {
   endTime: null,
 };
 
-accessSensorBtn.addEventListener("click", accessSensor);
-recordSensorBtn.addEventListener("click", recordSensor);
-stopSensorBtn.addEventListener("click", stopRecording);
-showDataBtn.addEventListener("click", showSensorData.bind(null, record));
+// --- send record button ---
+// sendDataBtn.addEventListener("click", sendSensorData.bind(null, record));
 
-socket.on("desktop-start", (Msg) => {
-  console.log("mobile-receive", Msg);
-  msgMobile.textContent = Msg;
-  if (isMobileAccess === false) {
-    socket.emit("sensor-stop", "Error: Mobile sensor cannot access");
-    return;
-  }
-  if (isRecordSensor === true) {
-    return;
-  }
-  recordSensorBtn.click();
-});
+// function sendSensorData(record) {
+//   socket.emit("send-data", "動作資料傳送", user._id);
+// }
+// --- not yet ---
 
-socket.on("desktop-stop", (Msg) => {
-  console.log("mobile-receive", Msg);
-  msgMobile.textContent = Msg;
-  if (isRecordSensor === true) {
-    stopSensorBtn.click();
-  } else {
-    return;
-  }
-});
-
-async function accessSensor() {
-  if (device === "iPhone") {
-    try {
-      const response = await DeviceMotionEvent.requestPermission();
-      if (response !== "granted") {
-        msgMobile.textContent = `DeviceMotionEvent request permission error`;
+export const mobileController = {
+  accessSensor: async function (device, socket, user) {
+    let access;
+    let msg;
+    if (device === "iPhone") {
+      try {
+        const response = await DeviceMotionEvent.requestPermission();
+        if (response !== "granted") {
+          access = false;
+          msg = "請關閉瀏覽器後，許可存取";
+          // socket
+          socket.emit("device-access", user._id, { access, msg });
+          return;
+        }
+      } catch (err) {
+        console.log(err);
+        access = false;
+        msg = "手機感測器連結失敗";
+        // socket
+        socket.emit("device-access", user._id, { access, msg });
         return;
       }
-    } catch (err) {
-      console.log(err);
-      msgMobile.textContent = `DeviceMotionEvent request permission error:${err.toString()}`;
     }
-  }
-  window.addEventListener("deviceorientation", deviceOrientationHandler);
-  window.addEventListener("devicemotion", deviceMotionHandler);
-  isMobileAccess = true;
-  accessSensorBtn.remove();
-  recordSensorBtn.disabled = false;
-}
+    window.addEventListener("deviceorientation", deviceOrientationHandler);
+    window.addEventListener("devicemotion", deviceMotionHandler);
+    access = true;
+    msg = "手機感測器已連結";
+    // socket
+    socket.emit("device-access", user._id, { access, msg });
+    accessSensorBtn.remove();
+    startSensorBtn.disabled = false;
+  },
+  startSensor: function (device, socket, user) {
+    const startSensorTime = document.getElementById("startSensorTime");
+    recordData = [];
+    record.startTime = getCurrentTime();
+    startSensorTime.textContent = `開始時間：${getCurrentTime()}`;
+    if (!recordingInterval) {
+      recordingInterval = setInterval(saveCurrentData, 33.3);
+    }
+    // socket
+    // socket.emit("record-start", device, user._id);
+    socket.emit("record", "start", device, user._id);
+    startSensorBtn.disabled = true;
+    startSensorBtn.textContent = "紀錄中";
+    stopSensorBtn.disabled = false;
+    stopSensorBtn.textContent = "停止紀錄";
+    showDataBtn.disabled = true;
+    sendDataBtn.disabled = true;
+  },
+  stopSensor: function (device, socket, user) {
+    const stopSensorTime = document.getElementById("stopSensorTime");
+    clearInterval(recordingInterval);
+    // socket
+    // socket.emit("record-stop", device, user._id);
+    socket.emit("record", "stop", device, user._id);
+    record.endTime = getCurrentTime();
+    recordingInterval = null;
+    record.data = recordData;
+    stopSensorTime.textContent = `結束時間：${getCurrentTime()}`;
+    startSensorBtn.disabled = false;
+    startSensorBtn.textContent = "開始紀錄";
+    stopSensorBtn.disabled = true;
+    stopSensorBtn.textContent = "已停止紀錄";
+    showDataBtn.disabled = false;
+    sendDataBtn.disabled = false;
+  },
+  showSensorData: function () {
+    // const recordTable = document.getElementById("recordTable");
+    const recordContainer = document.getElementById("recordContainer");
+    const recordTbody = document.getElementById("recordTbody");
+    // recordTable.style.display = "table";
+    recordContainer.style.display = "block";
+    recordTbody.innerHTML = null;
+    appendRecord(recordTbody, record);
+  },
+};
 
 function deviceMotionHandler(e) {
   const { x, y, z } = e.acceleration;
@@ -90,22 +120,6 @@ function deviceOrientationHandler(e) {
   oriGamma.textContent = roundGamma;
 }
 
-function recordSensor() {
-  recordData = [];
-  record.startTime = getCurrentTime();
-  startSensorTime.textContent = `開始時間：${getCurrentTime()}`;
-  if (!recordingInterval) {
-    recordingInterval = setInterval(saveCurrentData, 33.3);
-  }
-  isRecordSensor = true;
-  socket.emit("sensor-start", "Mobile sensor start recording");
-  recordSensorBtn.disabled = true;
-  recordSensorBtn.textContent = "紀錄中";
-  stopSensorBtn.disabled = false;
-  stopSensorBtn.textContent = "停止紀錄";
-  showDataBtn.disabled = true;
-}
-
 function saveCurrentData() {
   const currentData = {};
   currentData.acc_X = accX.textContent;
@@ -116,34 +130,6 @@ function saveCurrentData() {
   currentData.ori_gamma = oriGamma.textContent;
   currentData.time = Date.now();
   recordData.push(currentData);
-}
-
-function stopRecording() {
-  clearInterval(recordingInterval);
-  isRecordSensor = false;
-  socket.emit("sensor-stop", "Mobile sensor stop recording");
-  record.endTime = getCurrentTime();
-  recordingInterval = null;
-  record.data = recordData;
-  stopSensorTime.textContent = `結束時間：${getCurrentTime()}`;
-  recordSensorBtn.disabled = false;
-  recordSensorBtn.textContent = "開始紀錄";
-  stopSensorBtn.disabled = true;
-  stopSensorBtn.textContent = "已停止紀錄";
-  showDataBtn.disabled = false;
-}
-
-function showSensorData(record) {
-  recordTable.style.display = "block";
-  clearRecord(recordTable);
-  appendRecord(recordTable, record);
-}
-
-function clearRecord(table) {
-  const rowCounts = table.rows.length;
-  for (let i = 0; i < rowCounts - 2; i++) {
-    table.deleteRow(-1);
-  }
 }
 
 function appendRecord(table, record) {

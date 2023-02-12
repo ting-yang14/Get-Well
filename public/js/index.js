@@ -1,3 +1,5 @@
+import { navView } from "./navView.js";
+import { fetchUser } from "./base.js";
 const registerForm = document.getElementById("registerForm");
 const loginForm = document.getElementById("loginForm");
 
@@ -15,6 +17,10 @@ const registerUsername = document.getElementById("registerUsername");
 const registerEmail = document.getElementById("registerEmail");
 const registerPassword = document.getElementById("registerPassword");
 
+let user;
+
+init();
+
 loginBtn.addEventListener("click", login);
 registerBtn.addEventListener("click", register);
 toggleLoginBtn.addEventListener("click", resetResponseMsg.bind(null, loginMsg));
@@ -22,6 +28,21 @@ toggleRegisterBtn.addEventListener(
   "click",
   resetResponseMsg.bind(null, registerMsg)
 );
+
+async function init() {
+  if (localStorage.token) {
+    const headers = { Authorization: localStorage.token };
+    try {
+      user = await fetchUser(headers);
+      navView.index();
+      console.log(user._id);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return;
+  }
+}
 
 async function login() {
   const requestBody = {
