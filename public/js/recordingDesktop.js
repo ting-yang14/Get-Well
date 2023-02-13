@@ -19,7 +19,6 @@ export const desktopController = {
           height: { min: 480, ideal: 720, max: 1080 },
         },
       };
-
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       access = true;
       // socket
@@ -54,7 +53,6 @@ export const desktopController = {
       mediaRecorder.ondataavailable = handleDataAvailable;
       mediaRecorder.start();
       // socket
-      // socket.emit("record-start", device, user._id);
       socket.emit("record", "start", device, user._id);
       startVideoTime.textContent = `開始時間：${getCurrentTime()}`;
       stopVideoBtn.textContent = "停止紀錄";
@@ -70,7 +68,6 @@ export const desktopController = {
     const stopVideoTime = document.getElementById("stopVideoTime");
     mediaRecorder.stop();
     // socket
-    // socket.emit("record-stop", device, user._id);
     socket.emit("record", "stop", device, user._id);
     startVideoBtn.textContent = "開始紀錄";
     stopVideoBtn.textContent = "已停止紀錄";

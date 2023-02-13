@@ -15,14 +15,6 @@ let record = {
   endTime: null,
 };
 
-// --- send record button ---
-// sendDataBtn.addEventListener("click", sendSensorData.bind(null, record));
-
-// function sendSensorData(record) {
-//   socket.emit("send-data", "動作資料傳送", user._id);
-// }
-// --- not yet ---
-
 export const mobileController = {
   accessSensor: async function (device, socket, user) {
     let access;
@@ -56,15 +48,12 @@ export const mobileController = {
     startSensorBtn.disabled = false;
   },
   startSensor: function (device, socket, user) {
-    const startSensorTime = document.getElementById("startSensorTime");
     recordData = [];
     record.startTime = getCurrentTime();
-    startSensorTime.textContent = `開始時間：${getCurrentTime()}`;
     if (!recordingInterval) {
       recordingInterval = setInterval(saveCurrentData, 33.3);
     }
     // socket
-    // socket.emit("record-start", device, user._id);
     socket.emit("record", "start", device, user._id);
     startSensorBtn.disabled = true;
     startSensorBtn.textContent = "紀錄中";
@@ -74,15 +63,13 @@ export const mobileController = {
     sendDataBtn.disabled = true;
   },
   stopSensor: function (device, socket, user) {
-    const stopSensorTime = document.getElementById("stopSensorTime");
     clearInterval(recordingInterval);
     // socket
-    // socket.emit("record-stop", device, user._id);
     socket.emit("record", "stop", device, user._id);
     record.endTime = getCurrentTime();
     recordingInterval = null;
     record.data = recordData;
-    stopSensorTime.textContent = `結束時間：${getCurrentTime()}`;
+    socket.emit("send-record", record, user._id);
     startSensorBtn.disabled = false;
     startSensorBtn.textContent = "開始紀錄";
     stopSensorBtn.disabled = true;
@@ -90,12 +77,10 @@ export const mobileController = {
     showDataBtn.disabled = false;
     sendDataBtn.disabled = false;
   },
-  showSensorData: function () {
-    // const recordTable = document.getElementById("recordTable");
-    const recordContainer = document.getElementById("recordContainer");
+  showSensorData: function (record) {
+    const recordSec = document.getElementById("recordSec");
     const recordTbody = document.getElementById("recordTbody");
-    // recordTable.style.display = "table";
-    recordContainer.style.display = "block";
+    recordSec.style.display = "block";
     recordTbody.innerHTML = null;
     appendRecord(recordTbody, record);
   },

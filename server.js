@@ -122,12 +122,17 @@ recordingIo.on("connection", (socket) => {
     } else {
       if (state === "start") {
         // 對 startDevice (sender) 給 失敗訊息
-        socket.emit(`${state}-result`, startDevice, result);
+        socket.emit(`${state}-result`, triggerDevice, result);
       } else {
         // 對 stopDevice (sender)外的另一裝置 給 失敗訊息
         socket.to(userId).emit(`${state}-result`, triggerDevice, result);
       }
     }
+  });
+
+  socket.on("send-record", (record, userId) => {
+    socket.to(userId).emit("receive-record", record);
+    // recordingIo.in(userId).emit("receive-record", record);
   });
 
   socket.on("disconnect", () => {

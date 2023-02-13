@@ -20,6 +20,7 @@ const msgMobile = document.getElementById("msgMobile");
 //   data: [],
 //   endTime: null,
 // };
+let localRecord;
 // desktop
 // let mediaRecorder;
 // let recordedBlobs;
@@ -34,8 +35,8 @@ const playVideoBtn = document.getElementById("playVideoBtn");
 const accessSensorBtn = document.getElementById("accessSensorBtn");
 const startSensorBtn = document.getElementById("startSensorBtn");
 const stopSensorBtn = document.getElementById("stopSensorBtn");
-const showDataBtn = document.getElementById("showDataBtn");
-const sendDataBtn = document.getElementById("sendDataBtn");
+// const showDataBtn = document.getElementById("showDataBtn");
+// const sendDataBtn = document.getElementById("sendDataBtn");
 
 async function init() {
   if (localStorage.token) {
@@ -81,7 +82,7 @@ async function init() {
         "click",
         mobileController.stopSensor.bind(null, device, socket, user)
       );
-      showDataBtn.addEventListener("click", mobileController.showSensorData);
+      // showDataBtn.addEventListener("click", mobileController.showSensorData);
     } catch (error) {
       console.log(error);
       window.location.href = "/";
@@ -211,6 +212,12 @@ socket.on("stop-result", (stopDevice, result) => {
       msgDesktop.textContent = result.msg;
     }
   }
+});
+
+socket.on("receive-record", (record) => {
+  mobileController.showSensorData(record);
+  localRecord = record;
+  // console.log("record-received", localRecord.startTime);
 });
 
 function displayView(device) {
