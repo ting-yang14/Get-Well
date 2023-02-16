@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/ting-yang14/Get-Well#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.267.0",
+    "@aws-sdk/s3-request-presigner": "^3.267.0",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "dotenv": "^16.0.3",
@@ -29,6 +31,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.0",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "socket.io": "^4.5.4"

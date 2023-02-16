@@ -88,7 +88,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  id="exercise"
+                  id="exerciseName"
                   placeholder="鐘擺運動"
                 />
                 <label for="exercise" class="form-label">動作名稱</label>
@@ -98,7 +98,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  id="count"
+                  id="exerciseCounts"
                   placeholder="10次"
                 />
                 <label for="count" class="form-label">動作次數</label>
@@ -109,7 +109,11 @@
               <p class="lead text-center" id="startVideoTime"></p>
               <p class="lead text-center" id="stopVideoTime"></p>
             </div>
-            <button class="btn btn-primary w-100" type="button">
+            <button
+              class="btn btn-primary w-100"
+              type="button"
+              id="postRecordBtn"
+            >
               送出紀錄
             </button>
           </div>
@@ -183,6 +187,7 @@
             </tbody>
           </table>
         </div>
+
         <!-- <div class="d-flex justify-content-center mb-3">
           <button
             type="button"
@@ -234,9 +239,6 @@
       </div>
     </section>
     <%- include('./partials/footer') %>
-    <!-- <script src="/js/init.js"></script> -->
     <script type="module" src="/js/recording.js"></script>
-    <!-- <script type="module" src="/js/recordingDesktop.js"></script> -->
-    <!-- <script type="module" src="/js/recordingMobile.js"></script> -->
   </body>
 </html>
