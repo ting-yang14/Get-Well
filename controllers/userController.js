@@ -1,9 +1,14 @@
 import asyncHandler from "express-async-handler";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { User } from "../model/userModel.js";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
 dotenv.config();
+
+function generateToken(id) {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+}
 
 export const userController = {
   // @desc   User register
@@ -87,11 +92,8 @@ export const userController = {
     // const { _id, username, email } = await User.findById(req.user.id);
     const projection = { password: 0, createdAt: 0, updatedAt: 0, __v: 0 };
     const user = await User.findById(req.user, projection);
+    console.log("getme", user);
     // res.status(200).json({ id: _id, username, email });
     res.status(200).json({ success: true, data: user });
   }),
 };
-
-function generateToken(id) {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-}

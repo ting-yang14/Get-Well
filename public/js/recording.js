@@ -219,8 +219,8 @@ socket.on("receive-record", (record) => {
 const postRecordBtn = document.getElementById("postRecordBtn");
 postRecordBtn.addEventListener("click", postRecord);
 function postRecord() {
-  desktopController.sendRecordMulter(localRecord, user._id);
-  // desktopController.sendRecordFrontend(localRecord);
+  // desktopController.sendRecordMulter(localRecord, user._id);
+  desktopController.sendRecordFrontend(localRecord);
 }
 function displayView(device) {
   if (device === "Desktop") {

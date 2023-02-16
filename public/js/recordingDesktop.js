@@ -99,57 +99,57 @@ export const desktopController = {
     recorded.controls = true;
     recorded.play();
   },
-  sendRecordMulter: async function (localRecord, userId) {
-    const exerciseName = document.getElementById("exerciseName");
-    const exerciseCounts = document.getElementById("exerciseCounts");
-    const blob = new Blob(recordedBlobs, { type: "video/webm" });
-    const file = new File([blob], "filename.webm", {
-      type: blob.type,
-      lastModified: new Date().getTime(),
-    });
-    const formData = new FormData();
-    formData.append("exerciseCounts", exerciseCounts.value);
-    formData.append("exerciseName", exerciseName.value);
-    formData.append("uploadVideo", file);
-    formData.append("record", JSON.stringify(localRecord));
-    formData.append("userId", userId);
-    try {
-      const headers = {
-        Authorization: localStorage.token,
-        "content-type": "multipart/form-data",
-      };
-      const response = await axios.post("/api/record", formData, {
-        headers: headers,
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  // sendRecordFrontend: async function (localRecord) {
+  // sendRecordMulter: async function (localRecord, userId) {
   //   const exerciseName = document.getElementById("exerciseName");
   //   const exerciseCounts = document.getElementById("exerciseCounts");
   //   const blob = new Blob(recordedBlobs, { type: "video/webm" });
-
+  //   const file = new File([blob], "filename.webm", {
+  //     type: blob.type,
+  //     lastModified: new Date().getTime(),
+  //   });
+  //   const formData = new FormData();
+  //   formData.append("exerciseCounts", exerciseCounts.value);
+  //   formData.append("exerciseName", exerciseName.value);
+  //   formData.append("uploadVideo", file);
+  //   formData.append("record", JSON.stringify(localRecord));
+  //   formData.append("userId", userId);
   //   try {
-  //     const response = await axios.get("/api/record/s3Url");
-  //     console.log(response.data);
-  //     const s3response = await axios.put(response.data.url, blob);
-  //     console.log(s3response);
-  //     const requestBody = {
-  //       exerciseName: exerciseName.value,
-  //       exerciseCounts: exerciseCounts.value,
-  //       exerciseRecord: localRecord,
-  //       videoFileName: response.data.fileName,
+  //     const headers = {
+  //       Authorization: localStorage.token,
+  //       "content-type": "multipart/form-data",
   //     };
-  //     const postResponse = await axios.post("/api/record", requestBody, {
-  //       headers: { Authorization: localStorage.token },
+  //     const response = await axios.post("/api/record", formData, {
+  //       headers: headers,
   //     });
-  //     console.log(postResponse);
+  //     console.log(response);
   //   } catch (error) {
   //     console.log(error);
   //   }
   // },
+  sendRecordFrontend: async function (localRecord) {
+    const exerciseName = document.getElementById("exerciseName");
+    const exerciseCounts = document.getElementById("exerciseCounts");
+    const blob = new Blob(recordedBlobs, { type: "video/webm" });
+
+    try {
+      const response = await axios.get("/api/record/s3Url");
+      console.log(response.data);
+      const s3response = await axios.put(response.data.url, blob);
+      console.log(s3response);
+      const requestBody = {
+        exerciseName: exerciseName.value,
+        exerciseCounts: exerciseCounts.value,
+        exerciseRecord: localRecord,
+        videoFileName: response.data.fileName,
+      };
+      const postResponse = await axios.post("/api/record", requestBody, {
+        headers: { Authorization: localStorage.token },
+      });
+      console.log(postResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 function handleDataAvailable(event) {

@@ -10,17 +10,17 @@ recordRouter
   .route("/")
   // .get(protect, recordController.getRecords)
   .get(recordController.getRecords)
-  // .post(
-  //   passport.authenticate("jwt", { session: false }),
-  //   recordController.createRecordFrontend
-  // );
   .post(
     passport.authenticate("jwt", { session: false }),
-    upload.single("uploadVideo"),
-    recordController.createRecordMulter
+    recordController.createRecordFrontend
   );
+// .post(
+//   passport.authenticate("jwt", { session: false }),
+//   upload.single("uploadVideo"),
+//   recordController.createRecordMulter
+// );
 
-// recordRouter.get("/s3Url", recordController.getPutObjectSignedUrl);
+recordRouter.get("/s3Url", recordController.getPutObjectSignedUrl);
 
 recordRouter
   .route("/:recordId")

@@ -6,7 +6,7 @@ import {
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { generateFileName } from "../public/js/utils.js";
+import { generateFileName } from "./utils.js";
 
 dotenv.config();
 
@@ -23,15 +23,16 @@ const s3Client = new S3Client({
 });
 
 export const s3Handler = {
-  uploadVideo: function (file, fileName, mimetype) {
-    const uploadParams = {
-      Bucket: bucketName,
-      Body: file,
-      Key: fileName,
-      ContentType: mimetype,
-    };
-    return s3Client.send(new PutObjectCommand(uploadParams));
-  },
+  // createRecordMulter
+  //   uploadVideo: function (file, fileName, mimetype) {
+  //     const uploadParams = {
+  //       Bucket: bucketName,
+  //       Body: file,
+  //       Key: fileName,
+  //       ContentType: mimetype,
+  //     };
+  //     return s3Client.send(new PutObjectCommand(uploadParams));
+  //   },
   getObjectSignedUrl: async function (fileName) {
     const params = {
       Bucket: bucketName,
@@ -46,6 +47,7 @@ export const s3Handler = {
       console.log(error);
     }
   },
+  // createRecordFrontend
   putObjectSignedUrl: async function () {
     const fileName = generateFileName();
     const params = {

@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import { Record } from "../model/recordModel.js";
 import { User } from "../model/userModel.js";
 import { s3Handler } from "../public/js/s3.js";
-import { generateFileName } from "../public/js/utils.js";
+// import { generateFileName } from "../public/js/utils.js";
 
 export const recordController = {
   // @desc   Get records
@@ -25,77 +25,77 @@ export const recordController = {
     const records = await Record.find({ user: req.user.id });
     res.status(200).json(records);
   }),
-  // // @desc   Create record
-  // // @route  POST /api/record
-  // // @access Private
-  // createRecordFrontend: asyncHandler(async (req, res) => {
-  //   if (!req.body.exerciseName || !req.body.exerciseCounts) {
-  //     res.status(400);
-  //     throw new Error("請填入動作名稱和次數");
-  //   }
-  //   const record = await Record.create({
-  //     user: req.user,
-  //     exerciseName: req.body.exerciseName,
-  //     exerciseCounts: req.body.exerciseCounts,
-  //     exerciseRecord: req.body.exerciseRecord,
-  //     videoFileName: req.body.videoFileName,
-  //   });
-  //   if (record) {
-  //     res.status(201).json({ success: true, data: record });
-  //   } else {
-  //     throw new Error("紀錄儲存失敗");
-  //   }
-  // }),
   // @desc   Create record
   // @route  POST /api/record
   // @access Private
-  createRecordMulter: asyncHandler(async (req, res) => {
+  createRecordFrontend: asyncHandler(async (req, res) => {
     if (!req.body.exerciseName || !req.body.exerciseCounts) {
       res.status(400);
       throw new Error("請填入動作名稱和次數");
     }
-    // 產生亂數檔名
-    const fileName = generateFileName();
-    // req.user=userId 由 passport jwt 產生
-    console.log("jwt userId", req.user);
-    const user = await User.findById(req.body.userId);
-    console.log("user._id", user._id.toString());
-    // Check for user
-    if (!user) {
-      res.status(401);
-      throw new Error("查無此使用者");
-    }
-    console.log("req.body.userId", req.body.userId);
-    // Make sure the logged in user matches the record user
-    if (req.body.userId !== user._id.toString()) {
-      res.status(401);
-      throw new Error("使用者未授權");
-    }
-    try {
-      // multer 暫存的檔案在 req.file
-      const response = await s3Handler.uploadVideo(
-        req.file.buffer,
-        fileName,
-        req.file.mimetype
-      );
-      console.log(response.$metadata);
-      const record = await Record.create({
-        user: req.body.userId,
-        exerciseName: req.body.exerciseName,
-        exerciseCounts: req.body.exerciseCounts,
-        exerciseRecord: JSON.parse(req.body.record),
-        videoFileName: fileName,
-      });
-      console.log(record);
-      if (record) {
-        res.status(201).json({ success: true, data: record });
-      }
-    } catch (error) {
-      console.log(error);
-      res.status(400);
-      throw new Error(error);
+    const record = await Record.create({
+      user: req.user,
+      exerciseName: req.body.exerciseName,
+      exerciseCounts: req.body.exerciseCounts,
+      exerciseRecord: req.body.exerciseRecord,
+      videoFileName: req.body.videoFileName,
+    });
+    if (record) {
+      res.status(201).json({ success: true, data: record });
+    } else {
+      throw new Error("紀錄儲存失敗");
     }
   }),
+  // @desc   Create record
+  // @route  POST /api/record
+  // @access Private
+  // createRecordMulter: asyncHandler(async (req, res) => {
+  //   if (!req.body.exerciseName || !req.body.exerciseCounts) {
+  //     res.status(400);
+  //     throw new Error("請填入動作名稱和次數");
+  //   }
+  //   // 產生亂數檔名
+  //   const fileName = generateFileName();
+  //   // req.user=userId 由 passport jwt 產生
+  //   console.log("jwt userId", req.user);
+  //   const user = await User.findById(req.body.userId);
+  //   console.log("user._id", user._id.toString());
+  //   // Check for user
+  //   if (!user) {
+  //     res.status(401);
+  //     throw new Error("查無此使用者");
+  //   }
+  //   console.log("req.body.userId", req.body.userId);
+  //   // Make sure the logged in user matches the record user
+  //   if (req.body.userId !== user._id.toString()) {
+  //     res.status(401);
+  //     throw new Error("使用者未授權");
+  //   }
+  //   try {
+  //     // multer 暫存的檔案在 req.file
+  //     const response = await s3Handler.uploadVideo(
+  //       req.file.buffer,
+  //       fileName,
+  //       req.file.mimetype
+  //     );
+  //     console.log(response.$metadata);
+  //     const record = await Record.create({
+  //       user: req.body.userId,
+  //       exerciseName: req.body.exerciseName,
+  //       exerciseCounts: req.body.exerciseCounts,
+  //       exerciseRecord: JSON.parse(req.body.record),
+  //       videoFileName: fileName,
+  //     });
+  //     console.log(record);
+  //     if (record) {
+  //       res.status(201).json({ success: true, data: record });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(400);
+  //     throw new Error(error);
+  //   }
+  // }),
   getPutObjectSignedUrl: asyncHandler(async (req, res) => {
     const { url, fileName } = await s3Handler.putObjectSignedUrl();
     // console.log(url);
