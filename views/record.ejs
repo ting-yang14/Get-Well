@@ -2,9 +2,129 @@
 <html lang="en">
   <head>
     <%- include('./partials/head') %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <%- include('./partials/nav') %> <%- include('./partials/footer') %>
+    <%- include('./partials/nav') %>
+    <section class="bg-dark pt-5 text-center text-md-start text-light">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-12 col-xl-8">
+            <h3>動作影片</h3>
+            <video
+              id="recordVideo"
+              class="w-100 ratio ratio-16x9 mb-3"
+              controls
+            ></video>
+          </div>
+          <div class="col-12 col-xl-4">
+            <h3>動作資訊</h3>
+            <div
+              class="container d-flex flex-wrap justify-content-between mb-3"
+            >
+              <p class="lead" id="startVideoTime"></p>
+              <p class="lead" id="stopVideoTime"></p>
+            </div>
+            <div class="table-responsive mb-3 text-center" id="recordContainer">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col" colspan="3">加速度(m/s<sup>2</sup>)</th>
+                    <th scope="col" colspan="3">旋轉角度(deg)</th>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th>Max</th>
+                    <th>Min</th>
+                    <th></th>
+                    <th>Max</th>
+                    <th>Min</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>x</th>
+                    <td id="xMax">12.3432</td>
+                    <td id="xMin">-0.1234</td>
+                    <th>&alpha;</th>
+                    <td id="alphaMax">360</td>
+                    <td id="alphaMin">0</td>
+                  </tr>
+                  <tr>
+                    <th>y</th>
+                    <td id="yMax">12.3432</td>
+                    <td id="yMin">-0.1234</td>
+                    <th>&beta;</th>
+                    <td id="betaMax">180</td>
+                    <td id="betaMin">-180</td>
+                  </tr>
+                  <tr>
+                    <th>z</th>
+                    <td id="zMax">12.3432</td>
+                    <td id="zMin">-0.1234</td>
+                    <th>&gamma;</th>
+                    <td id="gammaMax">90</td>
+                    <td id="gammaMin">-90</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="input-group mb-3 text-dark">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exerciseName"
+                  placeholder="鐘擺運動"
+                  disabled
+                />
+                <label for="exercise" class="form-label">動作名稱</label>
+              </div>
+              <span class="input-group-text">完成</span>
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="exerciseCounts"
+                  placeholder="10次"
+                  disabled
+                />
+                <label for="count" class="form-label">動作次數</label>
+              </div>
+              <span class="input-group-text">次</span>
+            </div>
+            <div class="d-flex justify-content-end mb-3">
+              <button
+                type="button"
+                class="btn btn-secondary me-3"
+                id="modifyRecordBtn"
+              >
+                編輯記錄
+              </button>
+              <button
+                type="button"
+                class="btn btn-success me-3"
+                id="saveRecordBtn"
+              >
+                儲存修改
+              </button>
+              <button type="button" class="btn btn-danger" id="deleteRecordBtn">
+                刪除紀錄
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="bg-dark text-center text-md-start text-light">
+      <div class="container col-12">
+        <h3>加速度折線圖</h3>
+        <canvas class="mb-3" id="accChart"></canvas>
+        <h3>旋轉角度折線圖</h3>
+        <canvas id="oriChart"></canvas>
+      </div>
+    </section>
+    <%- include('./partials/footer') %>
     <script type="module" src="/js/record.js"></script>
   </body>
 </html>

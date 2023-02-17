@@ -47,7 +47,7 @@ app.get("/recording", (req, res) => {
   res.render("recording", { title: "紀錄復健" });
 });
 
-app.get("/record/:id", (req, res) => {
+app.get("/record/:recordId", (req, res) => {
   res.render("record", { title: "我的紀錄" });
 });
 
