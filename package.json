@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/ting-yang14/Get-Well#readme",
   "dependencies": {
+    "@aws-sdk/client-cloudfront": "^3.272.0",
     "@aws-sdk/client-s3": "^3.267.0",
+    "@aws-sdk/cloudfront-signer": "^3.272.0",
     "@aws-sdk/s3-request-presigner": "^3.267.0",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",

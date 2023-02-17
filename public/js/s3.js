@@ -7,7 +7,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { generateFileName } from "./utils.js";
-
+import { cloudfrontHandler } from "./cloudfront.js";
 dotenv.config();
 
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -34,14 +34,8 @@ export const s3Handler = {
   //     return s3Client.send(new PutObjectCommand(uploadParams));
   //   },
   getObjectSignedUrl: async function (fileName) {
-    const params = {
-      Bucket: bucketName,
-      Key: fileName,
-    };
-    const command = new GetObjectCommand(params);
-    const seconds = 60;
     try {
-      const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
+      const url = cloudfrontHandler.generateCloudfrontSignedUrl(fileName);
       return url;
     } catch (error) {
       console.log(error);

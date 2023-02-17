@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import { Record } from "../model/recordModel.js";
 import { User } from "../model/userModel.js";
+import { cloudfrontHandler } from "../public/js/cloudfront.js";
 import { s3Handler } from "../public/js/s3.js";
 // import { generateFileName } from "../public/js/utils.js";
 
@@ -172,21 +173,27 @@ export const recordController = {
       res.status(400);
       throw new Error("查無此資料");
     }
-    const user = await User.findById(req.user);
-    // Check for user
-    if (!user) {
-      res.status(401);
-      throw new Error("查無此使用者");
-    }
+    // const user = await User.findById(req.user);
+    // // Check for user
+    // if (!user) {
+    //   res.status(401);
+    //   throw new Error("查無此使用者");
+    // }
 
-    // Make sure the logged in user matches the record user
-    if (record.user.toString() !== user.id) {
-      res.status(401);
-      throw new Error("使用者未授權");
-    }
+    // // Make sure the logged in user matches the record user
+    // if (record.user.toString() !== user.id) {
+    //   res.status(401);
+    //   throw new Error("使用者未授權");
+    // }
     try {
-      await s3Handler.deleteFile(record.videoFilename);
-      await record.remove();
+      const s3Response = await s3Handler.deleteFile(record.videoFileName);
+      console.log(s3Response);
+      const cfResponse = await cloudfrontHandler.createCloudfrontInvalid(
+        record.videoFileName
+      );
+      console.log(cfResponse);
+      const dbResponse = await record.remove();
+      console.log(dbResponse);
       res.status(200).json({ success: true });
     } catch (error) {
       console.log(error);

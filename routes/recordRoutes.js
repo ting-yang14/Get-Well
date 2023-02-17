@@ -27,6 +27,6 @@ recordRouter
   .get(recordController.getRecord)
   .put(recordController.updateRecord)
   .delete(
-    passport.authenticate("jwt", { session: false }),
+    // passport.authenticate("jwt", { session: false }),
     recordController.deleteRecord
   );
