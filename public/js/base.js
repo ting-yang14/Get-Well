@@ -1,8 +1,8 @@
 export async function fetchUser(headers) {
   try {
     const response = await axios.get("/api/user/me", { headers: headers });
-    const user = response.data.data;
-    return user;
+    const userData = response.data.data;
+    return userData;
   } catch (error) {
     console.log(error);
   }

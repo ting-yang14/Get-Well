@@ -8,6 +8,10 @@ const userSchema = mongoose.Schema(
       unique: true,
     },
     password: { type: String, required: [true, "Please filled in password"] },
+    avatarFileName: { type: String },
+    gender: { type: String },
+    height: { type: Number },
+    weight: { type: Number },
   },
   { timestamps: true }
 );

@@ -42,7 +42,8 @@ async function init() {
     try {
       device = checkDevice();
       displayView(device);
-      user = await fetchUser(headers);
+      const userData = await fetchUser(headers);
+      user = userData.user;
       // setup nav button
       navView.recording();
 

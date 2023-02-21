@@ -33,7 +33,8 @@ async function init() {
   if (localStorage.token) {
     const headers = { Authorization: localStorage.token };
     try {
-      user = await fetchUser(headers);
+      const userData = await fetchUser(headers);
+      user = userData.user;
       navView.index();
       console.log(user._id);
     } catch (error) {

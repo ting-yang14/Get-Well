@@ -2,9 +2,145 @@
 <html lang="en">
   <head>
     <%- include('./partials/head') %>
+    <script
+      src="https://kit.fontawesome.com/aa47a86f7a.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="/css/user.css" />
   </head>
   <body>
-    <%- include('./partials/nav') %> <%- include('./partials/footer') %>
+    <%- include('./partials/nav') %>
+    <section class="bg-dark pt-5 mt-5 text-start text-light">
+      <div class="container mb-5">
+        <h3 class="mb-3">基本會員資料</h3>
+        <div
+          class="row justify-content-center align-items-center position-relative"
+        >
+          <div class="col-6 mb-3 col-sm-4 col-md-3 col-lg-2 position-relative">
+            <!-- <div
+              class="ratio ratio-1x1 overflow-hidden"
+            >
+              <img  id="avatar" class="rounded-circle" />
+            </div> -->
+            <img  id="avatar"/>
+            <label for="upload" class="text-white border-2 border-light rounded-circle border bg-secondary position-absolute position-relative" id="uploadLabel">
+              <i class=" position-absolute top-50 start-50 translate-middle fa-solid fa-image fa-lg bottom-50" id="uploadIcon"></i>
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              id="avatarInput"
+              class="hide"
+            >
+            </input>
+          </div>
+          <div class=" col-12 col-sm-8 col-md-6">
+            <div class="container">
+              <div class="row mb-3">
+                <label for="username" class="col-2 col-form-label">名稱</label>
+                <div class="col-10">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext text-light"
+                    id="username"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="email" class="col-2 col-form-label">Email</label>
+                <div class="col-10">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext text-light"
+                    id="email"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <legend class="col-form-label col-2 pt-0">性別</legend>
+                <div class="col-10">
+                  <div id="genderSelector" class="d-none">
+                  <div class="form-check form-check-inline" id="maleRadio">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="genderRadios"
+                      id="male"
+                      value="男"
+                      checked
+                    />
+                    <label class="form-check-label" for="male"> 男 </label>
+                  </div>
+                  <div class="form-check form-check-inline " id="femaleRadio">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="genderRadios"
+                      id="female"
+                      value="女"
+                    />
+                    <label class="form-check-label" for="female"> 女 </label>
+                  </div>
+                  <div class="form-check form-check-inline " id="otherRadio">
+                    <label class="form-check-label" for="other"> 其他 </label>
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="genderRadios"
+                      id="other"
+                      value="其他"
+                    />
+                  </div>
+                </div>
+                  <label class="form-check-label text-secondary" for="default" id="defaultGender">待填寫</label>
+                </div>
+                
+              </div>
+              <div class="mb-3 row">
+                <label for="height" class="col-2 col-form-label">身高</label>
+                <div class="col-4">
+                  <input
+                    type="number"
+                    readonly
+                    class="form-control-plaintext text-light"
+                    id="height"
+                    value=""
+                    min="0"
+                    placeholder="...公分"
+                  />
+                  
+                </div>
+                <label for="weight" class="col-2 col-form-label">體重</label>
+                <div class="col-4">
+                  <input
+                    type="number"
+                    readonly
+                    class="form-control-plaintext text-light"
+                    id="weight"
+                    value=""
+                    min="0"
+                    placeholder="...公斤"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="container d-flex justify-content-end" id="editControl">
+              <i class="fa-solid fa-pencil fa-xl me-3" id="editUserBtn"></i>
+              <i class="fa-solid fa-floppy-disk fa-xl d-none" id="updateUserBtn"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container text-light">
+        <h3>我的復健紀錄</h3>
+        <div class="row">calender</div>
+      </div>
+    </section>
+    <%- include('./partials/footer') %>
     <script type="module" src="/js/user.js"></script>
   </body>
 </html>

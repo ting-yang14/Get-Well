@@ -15,7 +15,8 @@ async function init() {
   if (localStorage.token) {
     const headers = { Authorization: localStorage.token };
     try {
-      user = await fetchUser(headers);
+      const userData = await fetchUser(headers);
+      user = userData.user;
       navView.record();
       console.log(user._id);
       record = await getRecord();
