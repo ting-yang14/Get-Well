@@ -1,37 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('./partials/head') %>
-    <script
-      src="https://kit.fontawesome.com/aa47a86f7a.js"
-      crossorigin="anonymous"
-    ></script>
+
+<head>
+  <%- include('./partials/head') %>
+    
     <link rel="stylesheet" href="/css/user.css" />
-  </head>
-  <body>
-    <%- include('./partials/nav') %>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
     <section class="bg-dark pt-5 mt-5 text-start text-light">
       <div class="container mb-5">
         <h3 class="mb-3">基本會員資料</h3>
-        <div
-          class="row justify-content-center align-items-center position-relative"
-        >
+        <div class="row justify-content-center align-items-center position-relative">
           <div class="col-6 mb-3 col-sm-4 col-md-3 col-lg-2 position-relative">
-            <!-- <div
-              class="ratio ratio-1x1 overflow-hidden"
-            >
-              <img  id="avatar" class="rounded-circle" />
-            </div> -->
-            <img  id="avatar"/>
-            <label for="upload" class="text-white border-2 border-light rounded-circle border bg-secondary position-absolute position-relative" id="uploadLabel">
-              <i class=" position-absolute top-50 start-50 translate-middle fa-solid fa-image fa-lg bottom-50" id="uploadIcon"></i>
+            <img id="avatar" />
+            <label for="avatarInput"
+              class="text-white border-2 border-light rounded-circle border bg-secondary position-absolute position-relative"
+              id="uploadLabel">
+              <i class=" position-absolute top-50 start-50 translate-middle fa-solid fa-image fa-lg bottom-50"
+                id="uploadIcon"></i>
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="avatarInput"
-              class="hide"
-            >
+            <input type="file" accept="image/*" id="avatarInput" class="hide">
             </input>
           </div>
           <div class=" col-12 col-sm-8 col-md-6">
@@ -39,92 +29,46 @@
               <div class="row mb-3">
                 <label for="username" class="col-2 col-form-label">名稱</label>
                 <div class="col-10">
-                  <input
-                    type="text"
-                    readonly
-                    class="form-control-plaintext text-light"
-                    id="username"
-                    value=""
-                  />
+                  <input type="text" readonly class="form-control-plaintext text-light" id="username" value="" />
                 </div>
               </div>
               <div class="mb-3 row">
                 <label for="email" class="col-2 col-form-label">Email</label>
                 <div class="col-10">
-                  <input
-                    type="text"
-                    readonly
-                    class="form-control-plaintext text-light"
-                    id="email"
-                    value=""
-                  />
+                  <input type="text" readonly class="form-control-plaintext text-light" id="email" value="" />
                 </div>
               </div>
               <div class="row mb-3">
                 <legend class="col-form-label col-2 pt-0">性別</legend>
                 <div class="col-10">
                   <div id="genderSelector" class="d-none">
-                  <div class="form-check form-check-inline" id="maleRadio">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="genderRadios"
-                      id="male"
-                      value="男"
-                      checked
-                    />
-                    <label class="form-check-label" for="male"> 男 </label>
+                    <div class="form-check form-check-inline" id="maleRadio">
+                      <input class="form-check-input" type="radio" name="genderRadios" id="male" value="男" checked />
+                      <label class="form-check-label" for="male"> 男 </label>
+                    </div>
+                    <div class="form-check form-check-inline " id="femaleRadio">
+                      <input class="form-check-input" type="radio" name="genderRadios" id="female" value="女" />
+                      <label class="form-check-label" for="female"> 女 </label>
+                    </div>
+                    <div class="form-check form-check-inline " id="otherRadio">
+                      <label class="form-check-label" for="other"> 其他 </label>
+                      <input class="form-check-input" type="radio" name="genderRadios" id="other" value="其他" />
+                    </div>
                   </div>
-                  <div class="form-check form-check-inline " id="femaleRadio">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="genderRadios"
-                      id="female"
-                      value="女"
-                    />
-                    <label class="form-check-label" for="female"> 女 </label>
-                  </div>
-                  <div class="form-check form-check-inline " id="otherRadio">
-                    <label class="form-check-label" for="other"> 其他 </label>
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="genderRadios"
-                      id="other"
-                      value="其他"
-                    />
-                  </div>
-                </div>
                   <label class="form-check-label text-secondary" for="default" id="defaultGender">待填寫</label>
                 </div>
-                
               </div>
               <div class="mb-3 row">
                 <label for="height" class="col-2 col-form-label">身高</label>
                 <div class="col-4">
-                  <input
-                    type="number"
-                    readonly
-                    class="form-control-plaintext text-light"
-                    id="height"
-                    value=""
-                    min="0"
-                    placeholder="...公分"
-                  />
-                  
+                  <input type="number" readonly class="form-control-plaintext text-light" id="height" value="" min="0"
+                    placeholder="...公分" />
+
                 </div>
                 <label for="weight" class="col-2 col-form-label">體重</label>
                 <div class="col-4">
-                  <input
-                    type="number"
-                    readonly
-                    class="form-control-plaintext text-light"
-                    id="weight"
-                    value=""
-                    min="0"
-                    placeholder="...公斤"
-                  />
+                  <input type="number" readonly class="form-control-plaintext text-light" id="weight" value="" min="0"
+                    placeholder="...公斤" />
                 </div>
               </div>
             </div>
@@ -135,12 +79,156 @@
           </div>
         </div>
       </div>
-      <div class="container text-light">
+      <div class="container">
         <h3>我的復健紀錄</h3>
-        <div class="row">calender</div>
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8" id="calender">
+            
+              <div class="d-flex justify-content-evenly align-items-center my-3">
+                <span class="fa-solid fa-circle-chevron-left fa-xl" id="prev"></span>
+                <span class="d-flex align-items-center">
+                  <span class="text-light fs-3 fw-border" id="year">2023</span>
+                  <span class="text-secondary fs-6 fw-border mx-2"> / </span> 
+                  <span class="text-warning fs-3 fw-border" id="month">02</span>
+                </span>
+                <span class="fa-solid fa-circle-chevron-right fa-xl" id="next"></span>
+              </div>
+              <table class="table table-bordered align-middle text-center table-light mb-0" >
+                <thead>
+                  <tr class="table-primary">
+                    <th scope="col" class="text-danger">日</th>
+                    <th scope="col">一</th>
+                    <th scope="col">二</th>
+                    <th scope="col">三</th>
+                    <th scope="col">四</th>
+                    <th scope="col">五</th>
+                    <th scope="col" class="text-danger">六</th>
+                  </tr>
+                </thead>
+                <tbody id="calendarTbody">
+                  <tr>                    
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>
+                  </tr>
+                  <tr>                    
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>                 
+                  </tr>
+                  <tr>                    
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>                 
+                  </tr>
+                  <tr>                    
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>                 
+                  </tr>
+                  <tr>                    
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>                 
+                  </tr>
+                </tbody>
+              </table>
+            
+          </div>
+          <div class="col-12 col-md-4" >
+              <div class="d-flex align-items-center my-3"id="searchBar">
+                <input class="form-control" type="search" placeholder="搜尋動作名稱" >
+                <p class="fa-solid fa-magnifying-glass fa-xl text-center mb-0"></p>
+              </div>
+              <div class="overflow-auto" id="recordBoard">
+                <div class="card text-dark my-2 mx-auto card-width">
+                  <div class="card-header text-end">
+                    2022-01-14
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                      <h5 class="card-title">手指爬牆</h5>
+                      <h6 class="text-muted">完成<span>&nbsp;10&nbsp;</span>次</h6>
+                    </div>
+                    <div class="row mb-2">
+                      <span class="card-text col-6 col-md-12">開始：14:23:13</span>
+                      <span class="card-text col-6 col-md-12">結束：14:23:13</span>
+                    </div>
+                    <div class="text-end"><a href="#" class="btn btn-primary">
+                      <span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</a></div>
+                  </div>
+                </div>
+                <div class="card text-dark my-2 mx-auto card-width">
+                  <div class="card-header text-end">
+                    2022-01-14
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                      <h5 class="card-title">手指爬牆</h5>
+                      <h6 class="text-muted">完成<span>&nbsp;10&nbsp;</span>次</h6>
+                    </div>
+                    <div class="row mb-2">
+                      <span class="card-text col-6 col-md-12">開始：14:23:13</span>
+                      <span class="card-text col-6 col-md-12">結束：14:23:13</span>
+                    </div>
+                    <div class="text-end"><a href="#" class="btn btn-primary">
+                      <span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</a></div>
+                  </div>
+                </div>
+                <div class="card text-dark my-2 mx-auto card-width">
+                  <div class="card-header text-end">
+                    2022-01-14
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                      <h5 class="card-title">手指爬牆</h5>
+                      <h6 class="text-muted">完成<span>&nbsp;10&nbsp;</span>次</h6>
+                    </div>
+                    <div class="row mb-2">
+                      <span class="card-text col-6 col-md-12">開始：14:23:13</span>
+                      <span class="card-text col-6 col-md-12">結束：14:23:13</span>
+                    </div>
+                    <div class="text-end"><a href="#" class="btn btn-primary">
+                      <span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</a></div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center my-2 ">
+                  <p class="fa-solid fa-circle-chevron-down fa-xl mb-0" id="loadMore"></p><p class="mb-0 text-border">&nbsp;&nbsp;載入更多...</p>
+                </div>
+                
+              </div>
+              <!-- <div class="text-center py-5" id="noRecord">
+                <p class="fa-solid fa-person-circle-plus fa-4x"></p>
+                <h5 >今日尚無紀錄</h5>
+                <a href="/recording" class="btn btn-primary">開始復健吧！</a>
+              </div> -->
+              
+          </div>
+        </div>
       </div>
     </section>
     <%- include('./partials/footer') %>
-    <script type="module" src="/js/user.js"></script>
-  </body>
+      <script type="module" src="/js/user.js"></script>
+</body>
+
 </html>

@@ -1,7 +1,7 @@
 #avatar {
   width: 100%;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
+  border-radius: 50rem;
+  border: none;
   overflow: hidden;
   object-fit: cover;
 }
@@ -21,4 +21,49 @@
 #updateUserBtn,
 #uploadLabel {
   cursor: pointer;
+}
+
+#prev,
+#next {
+  cursor: pointer;
+}
+.hasRecord {
+  cursor: pointer;
+}
+
+.hasRecord:hover {
+  background: var(--bs-gray-dark);
+  color: var(--bs-white);
+}
+
+.recordDot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 10%;
+  right: 10%;
+  background-color: darkorange;
+  border-radius: 50%;
+}
+#searchBar {
+  border-radius: 50rem;
+  background: var(--bs-primary);
+}
+input[type="search"] {
+  border-radius: 50rem 0 0 50rem;
+  border: none;
+}
+#searchBar p {
+  width: 20%;
+  cursor: pointer;
+}
+#recordBoard,
+#noRecord {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 1rem;
+  max-height: 450px;
+}
+.card-width {
+  width: 95%;
+  z-index: 1;
 }
