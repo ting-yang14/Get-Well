@@ -10,6 +10,7 @@ const currentPathname = window.location.pathname;
 const editRecordBtn = document.getElementById("editRecordBtn");
 const saveRecordBtn = document.getElementById("saveRecordBtn");
 const deleteRecordBtn = document.getElementById("deleteRecordBtn");
+
 let user;
 let record;
 let countDownNum = 3;
@@ -115,28 +116,28 @@ async function getRecord() {
   }
 }
 
-function generateAccChart(exerciseRecord) {
+function generateAccChart(individualVariableArray) {
   const accChart = document.getElementById("accChart");
   const accData = {
-    labels: generateLabels(exerciseRecord.data.length),
+    labels: generateLabels(individualVariableArray.accX.length),
     datasets: [
       {
         label: "X axis",
-        data: exerciseRecord.data.map((row) => row.acc_X),
+        data: individualVariableArray.accX,
         pointStyle: false,
         cubicInterpolationMode: "monotone",
         tension: 0.4,
       },
       {
         label: "Y axis",
-        data: exerciseRecord.data.map((row) => row.acc_Y),
+        data: individualVariableArray.accY,
         pointStyle: false,
         cubicInterpolationMode: "monotone",
         tension: 0.4,
       },
       {
         label: "Z axis",
-        data: exerciseRecord.data.map((row) => row.acc_Z),
+        data: individualVariableArray.accZ,
         pointStyle: false,
         cubicInterpolationMode: "monotone",
         tension: 0.4,
@@ -216,14 +217,14 @@ function generateAccChart(exerciseRecord) {
   new Chart(accChart, accConfig);
 }
 
-function generateOriChart(exerciseRecord) {
+function generateOriChart(individualVariableArray) {
   const oriChart = document.getElementById("oriChart");
   const oriData = {
-    labels: generateLabels(exerciseRecord.data.length),
+    labels: generateLabels(individualVariableArray.oriAlpha.length),
     datasets: [
       {
         label: "alpha",
-        data: exerciseRecord.data.map((row) => row.ori_alpha),
+        data: individualVariableArray.oriAlpha,
         pointStyle: false,
         cubicInterpolationMode: "monotone",
         tension: 0.4,
@@ -232,14 +233,14 @@ function generateOriChart(exerciseRecord) {
       },
       {
         label: "beta",
-        data: exerciseRecord.data.map((row) => row.ori_beta),
+        data: individualVariableArray.oriBeta,
         pointStyle: false,
         cubicInterpolationMode: "monotone",
         tension: 0.4,
       },
       {
         label: "gamma",
-        data: exerciseRecord.data.map((row) => row.ori_gamma),
+        data: individualVariableArray.oriGamma,
         pointStyle: false,
         cubicInterpolationMode: "monotone",
         tension: 0.4,
@@ -335,6 +336,43 @@ function generateLabels(length) {
   return labels;
 }
 
+function generateIndividualVariableArray(exerciseRecord) {
+  const accX = exerciseRecord.data.map((row) => row.acc_X);
+  const accY = exerciseRecord.data.map((row) => row.acc_Y);
+  const accZ = exerciseRecord.data.map((row) => row.acc_Z);
+  const oriAlpha = exerciseRecord.data.map((row) => row.ori_alpha);
+  const oriBeta = exerciseRecord.data.map((row) => row.ori_beta);
+  const oriGamma = exerciseRecord.data.map((row) => row.ori_gamma);
+  return { accX, accY, accZ, oriAlpha, oriBeta, oriGamma };
+}
+
+function setVariableMinMax(individualVariableArray) {
+  const xMax = document.getElementById("xMax");
+  const yMax = document.getElementById("yMax");
+  const zMax = document.getElementById("zMax");
+  const alphaMax = document.getElementById("alphaMax");
+  const betaMax = document.getElementById("betaMax");
+  const gammaMax = document.getElementById("gammaMax");
+  const xMin = document.getElementById("xMin");
+  const yMin = document.getElementById("yMin");
+  const zMin = document.getElementById("zMin");
+  const alphaMin = document.getElementById("alphaMin");
+  const betaMin = document.getElementById("betaMin");
+  const gammaMin = document.getElementById("gammaMin");
+  xMax.textContent = Math.max(...individualVariableArray.accX);
+  xMin.textContent = Math.min(...individualVariableArray.accX);
+  yMax.textContent = Math.max(...individualVariableArray.accY);
+  yMin.textContent = Math.min(...individualVariableArray.accY);
+  zMax.textContent = Math.max(...individualVariableArray.accZ);
+  zMin.textContent = Math.min(...individualVariableArray.accZ);
+  alphaMax.textContent = Math.max(...individualVariableArray.oriAlpha);
+  alphaMin.textContent = Math.min(...individualVariableArray.oriAlpha);
+  betaMax.textContent = Math.max(...individualVariableArray.oriBeta);
+  betaMin.textContent = Math.min(...individualVariableArray.oriBeta);
+  gammaMax.textContent = Math.max(...individualVariableArray.oriGamma);
+  gammaMin.textContent = Math.min(...individualVariableArray.oriGamma);
+}
+
 async function init() {
   if (localStorage.token) {
     const headers = { Authorization: localStorage.token };
@@ -352,10 +390,13 @@ async function init() {
       stopVideoTime.textContent = `結束時間：${exerciseRecord.endTime}`;
       exerciseName.value = record.record.exerciseName;
       exerciseCounts.value = record.record.exerciseCounts;
-
+      // get each variable array
+      const individualVariableArray =
+        generateIndividualVariableArray(exerciseRecord);
+      setVariableMinMax(individualVariableArray);
       // chart
-      generateAccChart(exerciseRecord);
-      generateOriChart(exerciseRecord);
+      generateAccChart(individualVariableArray);
+      generateOriChart(individualVariableArray);
     } catch (error) {
       console.log(error);
       window.location.href = "/";
