@@ -6,48 +6,110 @@ const startVideoTime = document.getElementById("startVideoTime");
 const stopVideoTime = document.getElementById("stopVideoTime");
 const exerciseName = document.getElementById("exerciseName");
 const exerciseCounts = document.getElementById("exerciseCounts");
+const currentPathname = window.location.pathname;
+const editRecordBtn = document.getElementById("editRecordBtn");
+const saveRecordBtn = document.getElementById("saveRecordBtn");
+const deleteRecordBtn = document.getElementById("deleteRecordBtn");
 let user;
 let record;
+let countDownNum = 3;
 
-init();
+editRecordBtn.addEventListener("click", editToggle);
+saveRecordBtn.addEventListener("click", saveRecord);
+deleteRecordBtn.addEventListener("click", deleteRecord);
 
-async function init() {
-  if (localStorage.token) {
-    const headers = { Authorization: localStorage.token };
-    try {
-      const userData = await fetchUser(headers);
-      user = userData.user;
-      navView.record();
-      console.log(user._id);
-      record = await getRecord();
-
-      // default setup
-      const exerciseRecord = await record.record.exerciseRecord;
-      recordVideo.src = record.recordUrl;
-      startVideoTime.textContent = `開始時間：${exerciseRecord.startTime}`;
-      stopVideoTime.textContent = `結束時間：${exerciseRecord.endTime}`;
-      exerciseName.value = record.record.exerciseName;
-      exerciseCounts.value = record.record.exerciseCounts;
-
-      // chart
-      generateAccChart(exerciseRecord);
-      generateOriChart(exerciseRecord);
-    } catch (error) {
-      console.log(error);
-      window.location.href = "/";
-    }
+function editToggle() {
+  if (saveRecordBtn.classList.contains("btn-warning")) {
+    saveRecordBtn.classList.remove("text-danger");
+    saveRecordBtn.classList.replace("btn-warning", "btn-primary");
+  }
+  if (saveRecordBtn.classList.contains("btn-success")) {
+    saveRecordBtn.classList.replace("btn-success", "btn-primary");
+  }
+  saveRecordBtn.textContent = "儲存修改";
+  saveRecordBtn.classList.toggle("d-none");
+  if (exerciseName.readOnly && exerciseCounts.readOnly) {
+    exerciseName.readOnly = false;
+    exerciseCounts.readOnly = false;
   } else {
-    window.location.href = "/";
+    exerciseName.readOnly = true;
+    exerciseCounts.readOnly = true;
+  }
+}
+
+async function saveRecord() {
+  const requestBody = {
+    exerciseName: exerciseName.value,
+    exerciseCounts: exerciseCounts.value,
+  };
+  try {
+    const patchResponse = await axios.patch(
+      `/api${currentPathname}`,
+      requestBody,
+      {
+        headers: { Authorization: localStorage.token },
+      }
+    );
+    console.log(patchResponse);
+    if (patchResponse.data.success) {
+      saveRecordBtn.classList.replace("btn-primary", "btn-success");
+      saveRecordBtn.textContent = "儲存成功";
+    } else {
+      saveRecordBtn.classList.replace("btn-primary", "btn-warning");
+      saveRecordBtn.classList.add("text-danger");
+      saveRecordBtn.textContent = "儲存失敗";
+    }
+  } catch (error) {
+    console.log(error);
+    saveRecordBtn.classList.replace("btn-primary", "btn-warning");
+    saveRecordBtn.classList.add("text-danger");
+    saveRecordBtn.textContent = "儲存失敗";
+  }
+}
+
+function alert(message, type) {
+  const deleteResponseAlert = document.getElementById("deleteResponseAlert");
+  const alertContent = document.createElement("div");
+  alertContent.innerHTML = `<div class="alert alert-${type} alert-dismissible" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+  deleteResponseAlert.appendChild(alertContent);
+}
+
+function countDown() {
+  document.getElementById("countDownTime").textContent = `${countDownNum}...`;
+  countDownNum -= 1;
+  if (countDownNum == 0) {
+    location.href = "/user";
+  }
+  setTimeout(countDown, 1000);
+}
+
+async function deleteRecord() {
+  try {
+    const deleteResponse = await axios.delete(`/api${currentPathname}`, {
+      headers: { Authorization: localStorage.token },
+    });
+    console.log(deleteResponse);
+    if (deleteResponse.data.success) {
+      alert("紀錄刪除成功，本頁面將於3秒後前往我的紀錄", "success");
+      countDown();
+    } else {
+      alert("紀錄刪除失敗", "danger");
+    }
+  } catch (error) {
+    console.log(error);
+    alert("紀錄刪除失敗", "danger");
   }
 }
 
 async function getRecord() {
-  const pathname = window.location.pathname;
   try {
-    const response = await axios.get(`/api${pathname}`, {
+    const response = await axios.get(`/api${currentPathname}`, {
       headers: { Authorization: localStorage.token },
     });
-    return response.data;
+    console.log(response.data);
+    if (response.data.success) {
+      return response.data.data;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -272,3 +334,35 @@ function generateLabels(length) {
   }
   return labels;
 }
+
+async function init() {
+  if (localStorage.token) {
+    const headers = { Authorization: localStorage.token };
+    try {
+      const userData = await fetchUser(headers);
+      user = userData.user;
+      navView.record();
+      console.log(user._id);
+      record = await getRecord();
+
+      // default setup
+      const exerciseRecord = record.record.exerciseRecord;
+      recordVideo.src = record.recordUrl;
+      startVideoTime.textContent = `開始時間：${exerciseRecord.startTime}`;
+      stopVideoTime.textContent = `結束時間：${exerciseRecord.endTime}`;
+      exerciseName.value = record.record.exerciseName;
+      exerciseCounts.value = record.record.exerciseCounts;
+
+      // chart
+      generateAccChart(exerciseRecord);
+      generateOriChart(exerciseRecord);
+    } catch (error) {
+      console.log(error);
+      window.location.href = "/";
+    }
+  } else {
+    window.location.href = "/";
+  }
+}
+
+init();

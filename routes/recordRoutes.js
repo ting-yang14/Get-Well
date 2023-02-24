@@ -31,8 +31,11 @@ recordRouter
     passport.authenticate("jwt", { session: false }),
     recordController.getRecord
   )
-  .put(recordController.updateRecord)
+  .patch(
+    passport.authenticate("jwt", { session: false }),
+    recordController.updateRecord
+  )
   .delete(
-    // passport.authenticate("jwt", { session: false }),
+    passport.authenticate("jwt", { session: false }),
     recordController.deleteRecord
   );

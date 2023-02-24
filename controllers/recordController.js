@@ -12,13 +12,11 @@ export const recordController = {
   // @access Private
   getRecords: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user);
-    // console.log("user._id", user._id.toString());
     // Check for user
     if (!user) {
       res.status(401);
       throw new Error("查無此使用者");
     }
-    // console.log("req.body.userId", req.user);
     // Make sure the logged in user matches the record user
     if (req.user !== user._id.toString()) {
       res.status(401);
@@ -139,8 +137,6 @@ export const recordController = {
   // @access Private
   getPutObjectSignedUrl: asyncHandler(async (req, res) => {
     const { url, fileName } = await s3Handler.putObjectSignedUrl();
-    // console.log(url);
-
     if (!url || !fileName) {
       throw new Error("無法連結S3");
     } else {
@@ -153,13 +149,13 @@ export const recordController = {
   getRecord: asyncHandler(async (req, res) => {
     console.log(req.user);
     const user = await User.findById(req.user);
-    // console.log("user._id", user._id.toString());
+
     // Check for user
     if (!user) {
       res.status(401);
       throw new Error("查無此使用者");
     }
-    // console.log("req.body.userId", req.body.userId);
+
     // Make sure the logged in user matches the record user
     if (req.user !== user._id.toString()) {
       res.status(401);
@@ -174,7 +170,7 @@ export const recordController = {
     res.status(200).json({ success: true, data: { record, recordUrl } });
   }),
   // @desc   Update record
-  // @route  PUT /api/record/:recordId
+  // @route  PATCH /api/record/:recordId
   // @access Private
   updateRecord: asyncHandler(async (req, res) => {
     const record = await Record.findById(req.params.recordId);
@@ -189,7 +185,9 @@ export const recordController = {
       throw new Error("查無此使用者");
     }
     // Make sure the logged in user matches the record user
-    if (record.user !== user._id.toString()) {
+    console.log("record user", record.user);
+    console.log("user _id", user._id.toString());
+    if (record.user.toString() !== user._id.toString()) {
       res.status(401);
       throw new Error("User not authorized");
     }
@@ -198,10 +196,13 @@ export const recordController = {
       req.body,
       { new: true }
     );
-    console.log(`record ${req.params.recordId} :modify record`);
-    res
-      .status(200)
-      .json({ success: true, data: { recordId: req.params.recordId } });
+
+    if (updatedRecord) {
+      console.log(`record ${req.params.recordId} :modify record`);
+      res
+        .status(200)
+        .json({ success: true, data: { recordId: req.params.recordId } });
+    }
   }),
   // @desc   Delete record
   // @route  DELETE /api/record/:recordId
@@ -212,18 +213,18 @@ export const recordController = {
       res.status(400);
       throw new Error("查無此資料");
     }
-    // const user = await User.findById(req.user);
-    // // Check for user
-    // if (!user) {
-    //   res.status(401);
-    //   throw new Error("查無此使用者");
-    // }
+    const user = await User.findById(req.user);
+    // Check for user
+    if (!user) {
+      res.status(401);
+      throw new Error("查無此使用者");
+    }
 
-    // // Make sure the logged in user matches the record user
-    // if (record.user.toString() !== user.id) {
-    //   res.status(401);
-    //   throw new Error("使用者未授權");
-    // }
+    // Make sure the logged in user matches the record user
+    if (record.user.toString() !== user._id.toString()) {
+      res.status(401);
+      throw new Error("使用者未授權");
+    }
     try {
       const s3Response = await s3Handler.deleteFile(record.videoFileName);
       console.log(s3Response);
