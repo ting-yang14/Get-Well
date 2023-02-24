@@ -3,7 +3,7 @@
 
 <head>
   <%- include('./partials/head') %>
-    
+
     <link rel="stylesheet" href="/css/user.css" />
 </head>
 
@@ -14,7 +14,7 @@
         <h3 class="mb-3">基本會員資料</h3>
         <div class="row justify-content-center align-items-center position-relative">
           <div class="col-6 mb-3 col-sm-4 col-md-3 col-lg-2 position-relative">
-            <img id="avatar" />
+            <img id="avatar" src="/img/user.png" />
             <label for="avatarInput"
               class="text-white border-2 border-light rounded-circle border bg-secondary position-absolute position-relative"
               id="uploadLabel">
@@ -63,7 +63,6 @@
                 <div class="col-4">
                   <input type="number" readonly class="form-control-plaintext text-light" id="height" value="" min="0"
                     placeholder="...公分" />
-
                 </div>
                 <label for="weight" class="col-2 col-form-label">體重</label>
                 <div class="col-4">
@@ -81,148 +80,49 @@
       </div>
       <div class="container">
         <h3>我的復健紀錄</h3>
-        <div class="row justify-content-center">
+        <div class="row">
           <div class="col-12 col-md-8" id="calender">
-            
-              <div class="d-flex justify-content-evenly align-items-center my-3">
-                <span class="fa-solid fa-circle-chevron-left fa-xl" id="prev"></span>
-                <span class="d-flex align-items-center">
-                  <span class="text-light fs-3 fw-border" id="year">2023</span>
-                  <span class="text-secondary fs-6 fw-border mx-2"> / </span> 
-                  <span class="text-warning fs-3 fw-border" id="month">02</span>
-                </span>
-                <span class="fa-solid fa-circle-chevron-right fa-xl" id="next"></span>
-              </div>
-              <table class="table table-bordered align-middle text-center table-light mb-0" >
-                <thead>
-                  <tr class="table-primary">
-                    <th scope="col" class="text-danger">日</th>
-                    <th scope="col">一</th>
-                    <th scope="col">二</th>
-                    <th scope="col">三</th>
-                    <th scope="col">四</th>
-                    <th scope="col">五</th>
-                    <th scope="col" class="text-danger">六</th>
-                  </tr>
-                </thead>
-                <tbody id="calendarTbody">
-                  <tr>                    
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                  </tr>
-                  <tr>                    
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>                 
-                  </tr>
-                  <tr>                    
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>                 
-                  </tr>
-                  <tr>                    
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>                 
-                  </tr>
-                  <tr>                    
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>                 
-                  </tr>
-                </tbody>
-              </table>
-            
+            <div class="d-flex justify-content-evenly align-items-center my-3">
+              <span class="fa-solid fa-circle-chevron-left fa-xl" id="prev"></span>
+              <span class="d-flex align-items-center">
+                <span class="text-light fs-3 fw-border" id="year"></span>
+                <span class="text-secondary fs-6 fw-border mx-2"> / </span>
+                <span class="text-warning fs-3 fw-border" id="month"></span>
+              </span>
+              <span class="fa-solid fa-circle-chevron-right fa-xl" id="next"></span>
+            </div>
+            <table class="table table-bordered align-middle text-center table-light mb-0">
+              <thead>
+                <tr class="table-primary">
+                  <th scope="col" class="text-danger">日</th>
+                  <th scope="col">一</th>
+                  <th scope="col">二</th>
+                  <th scope="col">三</th>
+                  <th scope="col">四</th>
+                  <th scope="col">五</th>
+                  <th scope="col" class="text-danger">六</th>
+                </tr>
+              </thead>
+              <tbody id="calendarTbody">
+
+              </tbody>
+            </table>
           </div>
-          <div class="col-12 col-md-4" >
-              <div class="d-flex align-items-center my-3"id="searchBar">
-                <input class="form-control" type="search" placeholder="搜尋動作名稱" >
-                <p class="fa-solid fa-magnifying-glass fa-xl text-center mb-0"></p>
+          <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center my-3" id="searchBar">
+              <input class="form-control" type="search" placeholder="搜尋動作名稱">
+              <div class="fa-solid fa-magnifying-glass fa-xl text-center mb-0" id="searchBtn"></div>
+            </div>
+            <div class="d-flex justify-content-center flex-wrap overflow-auto" id="recordBoard">
+              <div class="d-none text-center py-3" id="recordResult">
+                <p class="fa-solid fa-4x" id="resultIcon"></p>
+                <h5 id="resultText"></h5>
+                <a href="/recording" class="btn btn-primary d-none" id="resultLink">開始復健吧！</a>
               </div>
-              <div class="overflow-auto" id="recordBoard">
-                <div class="card text-dark my-2 mx-auto card-width">
-                  <div class="card-header text-end">
-                    2022-01-14
-                  </div>
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                      <h5 class="card-title">手指爬牆</h5>
-                      <h6 class="text-muted">完成<span>&nbsp;10&nbsp;</span>次</h6>
-                    </div>
-                    <div class="row mb-2">
-                      <span class="card-text col-6 col-md-12">開始：14:23:13</span>
-                      <span class="card-text col-6 col-md-12">結束：14:23:13</span>
-                    </div>
-                    <div class="text-end"><a href="#" class="btn btn-primary">
-                      <span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</a></div>
-                  </div>
-                </div>
-                <div class="card text-dark my-2 mx-auto card-width">
-                  <div class="card-header text-end">
-                    2022-01-14
-                  </div>
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                      <h5 class="card-title">手指爬牆</h5>
-                      <h6 class="text-muted">完成<span>&nbsp;10&nbsp;</span>次</h6>
-                    </div>
-                    <div class="row mb-2">
-                      <span class="card-text col-6 col-md-12">開始：14:23:13</span>
-                      <span class="card-text col-6 col-md-12">結束：14:23:13</span>
-                    </div>
-                    <div class="text-end"><a href="#" class="btn btn-primary">
-                      <span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</a></div>
-                  </div>
-                </div>
-                <div class="card text-dark my-2 mx-auto card-width">
-                  <div class="card-header text-end">
-                    2022-01-14
-                  </div>
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center">
-                      <h5 class="card-title">手指爬牆</h5>
-                      <h6 class="text-muted">完成<span>&nbsp;10&nbsp;</span>次</h6>
-                    </div>
-                    <div class="row mb-2">
-                      <span class="card-text col-6 col-md-12">開始：14:23:13</span>
-                      <span class="card-text col-6 col-md-12">結束：14:23:13</span>
-                    </div>
-                    <div class="text-end"><a href="#" class="btn btn-primary">
-                      <span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</a></div>
-                  </div>
-                </div>
-                <div class="d-flex justify-content-center align-items-center my-2 ">
-                  <p class="fa-solid fa-circle-chevron-down fa-xl mb-0" id="loadMore"></p><p class="mb-0 text-border">&nbsp;&nbsp;載入更多...</p>
-                </div>
-                
-              </div>
-              <!-- <div class="text-center py-5" id="noRecord">
-                <p class="fa-solid fa-person-circle-plus fa-4x"></p>
-                <h5 >今日尚無紀錄</h5>
-                <a href="/recording" class="btn btn-primary">開始復健吧！</a>
-              </div> -->
-              
+              <p class="d-none fa-solid fa-circle-chevron-down fa-xl text-border my-3" id="loadMoreBtn">
+                &nbsp;&nbsp;載入更多...
+              </p>
+            </div>
           </div>
         </div>
       </div>

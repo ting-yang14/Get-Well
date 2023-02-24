@@ -19,16 +19,15 @@
 
 #editUserBtn,
 #updateUserBtn,
-#uploadLabel {
-  cursor: pointer;
-}
-
+#uploadLabel,
 #prev,
-#next {
+#next,
+#loadMoreBtn {
   cursor: pointer;
 }
 .hasRecord {
   cursor: pointer;
+  position: relative;
 }
 
 .hasRecord:hover {
@@ -53,12 +52,13 @@ input[type="search"] {
   border-radius: 50rem 0 0 50rem;
   border: none;
 }
-#searchBar p {
+#searchBtn {
   width: 20%;
+  height: 100%;
   cursor: pointer;
 }
-#recordBoard,
-#noRecord {
+
+#recordBoard {
   background: rgba(255, 255, 255, 0.6);
   border-radius: 1rem;
   max-height: 450px;

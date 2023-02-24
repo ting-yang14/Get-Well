@@ -9,7 +9,10 @@ export const recordRouter = express.Router();
 recordRouter
   .route("/")
   // .get(protect, recordController.getRecords)
-  .get(recordController.getRecords)
+  .get(
+    passport.authenticate("jwt", { session: false }),
+    recordController.getRecords
+  )
   .post(
     passport.authenticate("jwt", { session: false }),
     recordController.createRecordFrontend
@@ -24,7 +27,10 @@ recordRouter.get("/s3Url", recordController.getPutObjectSignedUrl);
 
 recordRouter
   .route("/:recordId")
-  .get(recordController.getRecord)
+  .get(
+    passport.authenticate("jwt", { session: false }),
+    recordController.getRecord
+  )
   .put(recordController.updateRecord)
   .delete(
     // passport.authenticate("jwt", { session: false }),
