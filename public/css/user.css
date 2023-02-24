@@ -5,7 +5,9 @@
   overflow: hidden;
   object-fit: cover;
 }
-
+.avatarUser {
+  bottom: 10%;
+}
 #uploadLabel {
   bottom: 8%;
   right: 8%;

@@ -2,8 +2,9 @@ import { navView } from "./navView.js";
 import { fetchUser } from "./base.js";
 
 // --- avatar ---
-// input
 const avatar = document.getElementById("avatar");
+const avatarUsername = document.getElementById("avatarUsername");
+// input
 const username = document.getElementById("username");
 const email = document.getElementById("email");
 const defaultGender = document.getElementById("defaultGender");
@@ -86,6 +87,8 @@ function setUserChange() {
   editToggle(username);
   editToggle(height);
   editToggle(weight);
+  // 更新大頭貼名字
+  avatarUsername.textContent = username.value;
 }
 
 async function updateUser() {
@@ -143,38 +146,6 @@ async function updateUser() {
     updateUserBtn.classList.add("text-danger");
     updateUserBtn.textContent = ` 儲存失敗 `;
   }
-}
-
-// default avatar function
-function generateDefaultAvatar(user) {
-  // set background
-  avatar.style.backgroundColor = generateAvatarBackgroundColor(user.username);
-  // set username
-  const avatarP = document.createElement("p");
-  const pContent = document.createTextNode(user.username);
-  const classToAdd = [
-    "position-absolute",
-    "top-50",
-    "start-50",
-    "translate-middle",
-    "fs-1",
-    "fw-bolder",
-  ];
-  const uploadLabel = document.getElementById("uploadLabel");
-  avatarP.appendChild(pContent);
-  avatarP.classList.add(...classToAdd);
-  uploadLabel.insertAdjacentElement("beforebegin", avatarP);
-}
-
-function generateAvatarBackgroundColor(username) {
-  const charCodeRed = Math.pow(username.charCodeAt(0), 7) % 200;
-  const charCodeGreen =
-    Math.pow(username.charCodeAt(1), 7) % 200 || charCodeRed;
-  const charCodeBlue =
-    Math.pow(username.charCodeAt(2), 7) % 200 ||
-    (charCodeGreen + charCodeRed) % 200;
-  const backgroundColor = `rgb(${charCodeRed}, ${charCodeGreen}, ${charCodeBlue})`;
-  return backgroundColor;
 }
 // --- avatar END---
 
@@ -517,7 +488,8 @@ async function init() {
       const userData = await fetchUser(headers);
       user = userData.user;
       if (userData.avatarUrl === null) {
-        generateDefaultAvatar(user);
+        avatarUsername.textContent = user.username;
+        avatarUsername.classList.remove("d-none");
       } else {
         avatar.src = userData.avatarUrl;
       }
