@@ -17,7 +17,6 @@ export function resetExerciseValidation() {
     if (exerciseName.classList.contains(className)) {
       exerciseName.classList.remove(className);
     }
-
     if (exerciseCounts.classList.contains(className)) {
       exerciseCounts.classList.remove(className);
     }
