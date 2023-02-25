@@ -1,6 +1,9 @@
 import { navView } from "./navView.js";
 import { fetchUser } from "./base.js";
-
+import {
+  exerciseInputValidation,
+  resetExerciseValidation,
+} from "./validation.js";
 const recordVideo = document.getElementById("recordVideo");
 const startVideoTime = document.getElementById("startVideoTime");
 const stopVideoTime = document.getElementById("stopVideoTime");
@@ -36,35 +39,41 @@ function editToggle() {
     exerciseName.readOnly = true;
     exerciseCounts.readOnly = true;
   }
+  resetExerciseValidation();
 }
 
 async function saveRecord() {
-  const requestBody = {
-    exerciseName: exerciseName.value,
-    exerciseCounts: exerciseCounts.value,
-  };
-  try {
-    const patchResponse = await axios.patch(
-      `/api${currentPathname}`,
-      requestBody,
-      {
-        headers: { Authorization: localStorage.token },
+  if (exerciseInputValidation()) {
+    const requestBody = {
+      exerciseName: exerciseName.value,
+      exerciseCounts: Number(exerciseCounts.value),
+    };
+    try {
+      const patchResponse = await axios.patch(
+        `/api${currentPathname}`,
+        requestBody,
+        {
+          headers: { Authorization: localStorage.token },
+        }
+      );
+      console.log(patchResponse);
+      if (patchResponse.data.success) {
+        saveRecordBtn.classList.replace("btn-primary", "btn-success");
+        saveRecordBtn.textContent = "儲存成功";
+      } else {
+        saveRecordBtn.classList.replace("btn-primary", "btn-warning");
+        saveRecordBtn.classList.add("text-danger");
+        saveRecordBtn.textContent = "儲存失敗";
       }
-    );
-    console.log(patchResponse);
-    if (patchResponse.data.success) {
-      saveRecordBtn.classList.replace("btn-primary", "btn-success");
-      saveRecordBtn.textContent = "儲存成功";
-    } else {
+    } catch (error) {
+      console.log(error);
       saveRecordBtn.classList.replace("btn-primary", "btn-warning");
       saveRecordBtn.classList.add("text-danger");
       saveRecordBtn.textContent = "儲存失敗";
     }
-  } catch (error) {
-    console.log(error);
-    saveRecordBtn.classList.replace("btn-primary", "btn-warning");
-    saveRecordBtn.classList.add("text-danger");
-    saveRecordBtn.textContent = "儲存失敗";
+  } else {
+    console.log("nono");
+    return;
   }
 }
 
@@ -341,8 +350,20 @@ function generateIndividualVariableArray(exerciseRecord) {
   const accY = exerciseRecord.data.map((row) => row.acc_Y);
   const accZ = exerciseRecord.data.map((row) => row.acc_Z);
   const oriAlpha = exerciseRecord.data.map((row) => row.ori_alpha);
-  const oriBeta = exerciseRecord.data.map((row) => row.ori_beta);
-  const oriGamma = exerciseRecord.data.map((row) => row.ori_gamma);
+  const originalBeta = exerciseRecord.data.map((row) => row.ori_beta);
+  const oriBeta = originalBeta.map((num) => {
+    if (num < 0) {
+      num += 360;
+    }
+    return num;
+  });
+  const originalGamma = exerciseRecord.data.map((row) => row.ori_gamma);
+  const oriGamma = originalGamma.map((num) => {
+    if (num < 0) {
+      num = -num;
+    }
+    return num;
+  });
   return { accX, accY, accZ, oriAlpha, oriBeta, oriGamma };
 }
 
