@@ -14,11 +14,9 @@
   width: 2rem;
   height: 2rem;
 }
-
 .hide {
   display: none;
 }
-
 #editUserBtn,
 #updateUserBtn,
 #uploadLabel,
@@ -31,12 +29,10 @@
   cursor: pointer;
   position: relative;
 }
-
 .hasRecord:hover {
   background: var(--bs-gray-dark);
   color: var(--bs-white);
 }
-
 .recordDot {
   position: absolute;
   width: 10px;
@@ -59,7 +55,6 @@ input[type="search"] {
   height: 100%;
   cursor: pointer;
 }
-
 #recordBoard {
   background: rgba(255, 255, 255, 0.6);
   border-radius: 1rem;

@@ -3,7 +3,6 @@
 
 <head>
   <%- include('./partials/head') %>
-
     <link rel="stylesheet" href="/css/user.css" />
 </head>
 
@@ -34,7 +33,7 @@
                   <input type="text" readonly class="form-control-plaintext text-light" id="username" value="" />
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="row mb-3">
                 <label for="email" class="col-2 col-form-label">Email</label>
                 <div class="col-10">
                   <input type="text" readonly class="form-control-plaintext text-light" id="email" value="" />
@@ -60,7 +59,7 @@
                   <label class="form-check-label text-secondary" for="default" id="defaultGender">待填寫</label>
                 </div>
               </div>
-              <div class="mb-3 row">
+              <div class="row mb-3">
                 <label for="height" class="col-2 col-form-label">身高</label>
                 <div class="col-4">
                   <input type="number" readonly class="form-control-plaintext text-light" id="height" value="" min="0"
@@ -72,62 +71,60 @@
                     placeholder="...公斤" />
                 </div>
               </div>
-            </div>
-            <div class="container d-flex justify-content-end" id="editControl">
-              <i class="fa-solid fa-pencil fa-xl me-3" id="editUserBtn"></i>
-              <i class="fa-solid fa-floppy-disk fa-xl d-none" id="updateUserBtn"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <h3>我的復健紀錄</h3>
-        <div class="row">
-          <div class="col-12 col-md-8" id="calender">
-            <div class="d-flex justify-content-evenly align-items-center my-3">
-              <span class="fa-solid fa-circle-chevron-left fa-xl" id="prev"></span>
-              <span class="d-flex align-items-center">
-                <span class="text-light fs-3 fw-border" id="year"></span>
-                <span class="text-secondary fs-6 fw-border mx-2"> / </span>
-                <span class="text-warning fs-3 fw-border" id="month"></span>
-              </span>
-              <span class="fa-solid fa-circle-chevron-right fa-xl" id="next"></span>
-            </div>
-            <table class="table table-bordered align-middle text-center table-light mb-0">
-              <thead>
-                <tr class="table-primary">
-                  <th scope="col" class="text-danger">日</th>
-                  <th scope="col">一</th>
-                  <th scope="col">二</th>
-                  <th scope="col">三</th>
-                  <th scope="col">四</th>
-                  <th scope="col">五</th>
-                  <th scope="col" class="text-danger">六</th>
-                </tr>
-              </thead>
-              <tbody id="calendarTbody">
-
-              </tbody>
-            </table>
-          </div>
-          <div class="col-12 col-md-4">
-            <div class="d-flex align-items-center my-3" id="searchBar">
-              <input class="form-control" type="search" placeholder="搜尋動作名稱">
-              <div class="fa-solid fa-magnifying-glass fa-xl text-center mb-0" id="searchBtn"></div>
-            </div>
-            <div class="d-flex justify-content-center flex-wrap overflow-auto" id="recordBoard">
-              <div class="d-none text-center py-3" id="recordResult">
-                <p class="fa-solid fa-4x" id="resultIcon"></p>
-                <h5 id="resultText"></h5>
-                <a href="/recording" class="btn btn-primary d-none" id="resultLink">開始復健吧！</a>
+              <div class="text-end">
+                <button type="button" class="btn btn-dark fa-solid fa-pencil" id="editUserBtn"></button>
+                <button type="button" class="btn btn-dark d-none fa-solid fa-floppy-disk ms-3"
+                  id="updateUserBtn"></button>
               </div>
-              <p class="d-none fa-solid fa-circle-chevron-down fa-xl text-border my-3" id="loadMoreBtn">
-                &nbsp;&nbsp;載入更多...
-              </p>
             </div>
           </div>
         </div>
-      </div>
+        <div class="container">
+          <h3>我的復健紀錄</h3>
+          <div class="row">
+            <div class="col-12 col-md-8" id="calender">
+              <div class="d-flex justify-content-evenly align-items-center my-3">
+                <span class="fa-solid fa-circle-chevron-left fa-xl" id="prev"></span>
+                <span class="d-flex align-items-center">
+                  <span class="text-light fs-3 fw-border" id="year"></span>
+                  <span class="text-secondary fs-6 fw-border mx-2"> / </span>
+                  <span class="text-warning fs-3 fw-border" id="month"></span>
+                </span>
+                <span class="fa-solid fa-circle-chevron-right fa-xl" id="next"></span>
+              </div>
+              <table class="table table-bordered align-middle text-center table-light mb-0">
+                <thead>
+                  <tr class="table-primary">
+                    <th scope="col" class="text-danger">日</th>
+                    <th scope="col">一</th>
+                    <th scope="col">二</th>
+                    <th scope="col">三</th>
+                    <th scope="col">四</th>
+                    <th scope="col">五</th>
+                    <th scope="col" class="text-danger">六</th>
+                  </tr>
+                </thead>
+                <tbody id="calendarTbody">
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="d-flex align-items-center my-3" id="searchBar">
+                <input class="form-control" type="search" placeholder="搜尋動作名稱">
+                <div class="fa-solid fa-magnifying-glass fa-xl text-center mb-0" id="searchBtn"></div>
+              </div>
+              <div class="d-flex justify-content-center flex-wrap overflow-auto" id="recordBoard">
+                <div class="d-none text-center py-3" id="recordResult">
+                  <p class="fa-solid fa-4x" id="resultIcon"></p>
+                  <h5 id="resultText"></h5>
+                  <a href="/recording" class="btn btn-primary d-none" id="resultLink">開始復健吧！</a>
+                </div>
+                <p class="d-none fa-solid fa-circle-chevron-down text-border my-3" id="loadMoreBtn">&nbsp;&nbsp;載入更多...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
     </section>
     <%- include('./partials/footer') %>
       <script type="module" src="/js/user.js"></script>

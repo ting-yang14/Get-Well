@@ -56,6 +56,12 @@ function setDefaultUserInfo(user) {
 
 function showInputColumn() {
   // 顯示儲存按鈕
+  ["text-success", "text-danger"].forEach((className) => {
+    if (updateUserBtn.classList.contains(className)) {
+      updateUserBtn.classList.remove(className);
+    }
+  });
+  updateUserBtn.innerHTML = "";
   updateUserBtn.classList.toggle("d-none");
   // 重複點擊，顯示已更新內容
   setUserChange();
@@ -136,15 +142,15 @@ async function updateUser() {
     console.log(patchResponse);
     if (patchResponse.data.success) {
       updateUserBtn.classList.add("text-success");
-      updateUserBtn.textContent = ` 儲存成功 `;
+      updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存成功`;
     } else {
       updateUserBtn.classList.add("text-danger");
-      updateUserBtn.textContent = ` 儲存失敗 `;
+      updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
     }
   } catch (error) {
     console.log(error);
     updateUserBtn.classList.add("text-danger");
-    updateUserBtn.textContent = ` 儲存失敗 `;
+    updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
   }
 }
 // --- avatar END---
@@ -280,9 +286,9 @@ const recordBoardViewControl = {
     const cardLinkContainer = document.createElement("div");
     cardLinkContainer.classList.add("text-end");
     const cardLink = document.createElement("a");
-    cardLink.classList.add("btn", "btn-primary");
+    cardLink.classList.add("btn", "btn-primary", "fa-solid", "fa-file-pen");
     cardLink.href = `/record/${record._id}`;
-    cardLink.innerHTML = `<span class="fa-solid fa-file-pen">&nbsp;&nbsp;檢視紀錄</span>`;
+    cardLink.innerHTML = `&nbsp;&nbsp;檢視紀錄`;
     cardLinkContainer.appendChild(cardLink);
     cardBody.appendChild(cardTitleContainer);
     cardBody.appendChild(cardTimeContainer);
@@ -494,8 +500,6 @@ async function init() {
         avatar.src = userData.avatarUrl;
       }
       navView.user();
-      // console.log(user);
-      // console.log(user._id);
       setDefaultUserInfo(user);
       await generateCalendar();
       checkTodayRecord();

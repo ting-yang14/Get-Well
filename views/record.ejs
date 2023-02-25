@@ -8,6 +8,7 @@
 
 <body>
   <%- include('./partials/nav') %>
+    <!-- record display -->
     <section class="bg-dark p-5 mt-5 text-center text-md-start text-light">
       <div class="container">
         <div class="row justify-content-between">
@@ -80,27 +81,27 @@
               <span class="input-group-text">次</span>
             </div>
             <div class="d-flex justify-content-end mb-3">
-              <button type="button" class="btn btn-secondary fa-solid fa-pencil me-3" id="editRecordBtn">
-                編輯記錄
-              </button>
-              <button type="button" class="d-none btn btn-primary fa-solid fa-floppy-disk me-3 " id="saveRecordBtn">
-                儲存修改
-              </button>
+              <button type="button" class="btn btn-secondary fa-solid fa-pencil me-3"
+                id="editRecordBtn">&nbsp;&nbsp;編輯記錄</button>
+              <button type="button" class="d-none btn btn-primary fa-solid fa-floppy-disk me-3 "
+                id="saveRecordBtn">&nbsp;&nbsp;儲存修改</button>
               <button type="button" class="btn btn-danger fa-solid fa-trash" data-bs-toggle="modal"
-                data-bs-target="#deleteRecordModal">
-                刪除紀錄
-              </button>
+                data-bs-target="#deleteRecordModal">&nbsp;&nbsp;刪除紀錄</button>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <!-- data line chart -->
     <section class="bg-dark text-center text-md-start text-light">
       <div class="container col-12">
         <h3>加速度折線圖</h3>
         <canvas class="mb-3" id="accChart"></canvas>
         <h3>旋轉角度折線圖</h3>
         <canvas id="oriChart"></canvas>
+        <div class="d-flex justify-content-end mt-4">
+          <a type="button" class="btn btn-secondary fa-solid fa-right-from-bracket " href="/user">&nbsp;&nbsp;回上一頁</a>
+        </div>
       </div>
     </section>
     <!-- delete record Modal -->

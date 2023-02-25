@@ -1,5 +1,5 @@
 import { navView } from "./navView.js";
-import { fetchUser } from "./base.js";
+import { fetchUser, raiseAlert } from "./base.js";
 import {
   exerciseInputValidation,
   resetExerciseValidation,
@@ -30,7 +30,7 @@ function editToggle() {
   if (saveRecordBtn.classList.contains("btn-success")) {
     saveRecordBtn.classList.replace("btn-success", "btn-primary");
   }
-  saveRecordBtn.textContent = "儲存修改";
+  saveRecordBtn.innerHTML = `&nbsp;&nbsp;儲存修改`;
   saveRecordBtn.classList.toggle("d-none");
   if (exerciseName.readOnly && exerciseCounts.readOnly) {
     exerciseName.readOnly = false;
@@ -59,29 +59,22 @@ async function saveRecord() {
       console.log(patchResponse);
       if (patchResponse.data.success) {
         saveRecordBtn.classList.replace("btn-primary", "btn-success");
-        saveRecordBtn.textContent = "儲存成功";
+        saveRecordBtn.innerHTML = `&nbsp;&nbsp;儲存成功`;
       } else {
         saveRecordBtn.classList.replace("btn-primary", "btn-warning");
         saveRecordBtn.classList.add("text-danger");
-        saveRecordBtn.textContent = "儲存失敗";
+        saveRecordBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
       }
     } catch (error) {
       console.log(error);
       saveRecordBtn.classList.replace("btn-primary", "btn-warning");
       saveRecordBtn.classList.add("text-danger");
-      saveRecordBtn.textContent = "儲存失敗";
+      saveRecordBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
     }
   } else {
     console.log("nono");
     return;
   }
-}
-
-function alert(message, type) {
-  const deleteResponseAlert = document.getElementById("deleteResponseAlert");
-  const alertContent = document.createElement("div");
-  alertContent.innerHTML = `<div class="alert alert-${type} alert-dismissible" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
-  deleteResponseAlert.appendChild(alertContent);
 }
 
 function countDown() {
@@ -99,15 +92,25 @@ async function deleteRecord() {
       headers: { Authorization: localStorage.token },
     });
     console.log(deleteResponse);
+    const deleteResponseAlert = document.getElementById("deleteResponseAlert");
     if (deleteResponse.data.success) {
-      alert("紀錄刪除成功，本頁面將於3秒後前往我的紀錄", "success");
+      deleteResponseAlert.innerHTML = raiseAlert(
+        true,
+        "紀錄刪除成功，本頁面將於3秒後前往我的紀錄"
+      );
       countDown();
     } else {
-      alert("紀錄刪除失敗", "danger");
+      deleteResponseAlert.innerHTML = raiseAlert(
+        false,
+        "紀錄刪除失敗，請稍後再嘗試"
+      );
     }
   } catch (error) {
     console.log(error);
-    alert("紀錄刪除失敗", "danger");
+    deleteResponseAlert.innerHTML = raiseAlert(
+      false,
+      "紀錄刪除失敗，請稍後再嘗試"
+    );
   }
 }
 
@@ -403,7 +406,6 @@ async function init() {
       navView.record();
       console.log(user._id);
       record = await getRecord();
-
       // default setup
       const exerciseRecord = record.record.exerciseRecord;
       recordVideo.src = record.recordUrl;
