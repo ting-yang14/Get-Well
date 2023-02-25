@@ -1,8 +1,13 @@
-import { getCurrentTime } from "./base.js";
+import { getCurrentTime, raiseAlert } from "./base.js";
+import {
+  exerciseInputValidation,
+  resetExerciseValidation,
+} from "./validation.js";
 
 const preview = document.getElementById("preview");
 const recorded = document.getElementById("recorded");
-
+const exerciseName = document.getElementById("exerciseName");
+const exerciseCounts = document.getElementById("exerciseCounts");
 let mediaRecorder;
 let recordedBlobs;
 
@@ -20,9 +25,9 @@ export const desktopController = {
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      access = true;
       // socket
-      msg = "視訊鏡頭已開啟";
+      access = true;
+      msg = "視訊鏡頭畫面存取成功";
       socket.emit("device-access", user._id, { access, msg });
       startVideoBtn.disabled = false;
       accessCameraBtn.remove();
@@ -33,7 +38,8 @@ export const desktopController = {
     } catch (err) {
       console.log("navigator.getUserMedia error:", err);
       // socket
-      msg = "存取視訊鏡頭失敗";
+      access = false;
+      msg = "請開啟視訊鏡頭存取權限並重新整理頁面";
       socket.emit("device-access", user._id, { access, msg });
     }
   },
@@ -59,9 +65,7 @@ export const desktopController = {
       console.log("MediaRecorder started", mediaRecorder);
     } catch (err) {
       console.error("Exception while creating MediaRecorder:", err);
-      msgDesktop.textContent = `Exception while creating MediaRecorder: ${JSON.stringify(
-        err
-      )}`;
+      msgDesktop.innerHTML = raiseAlert(false, "請重新開啟頁面並啟動視訊鏡頭");
     }
   },
   stopVideo: function (device, socket, user) {
@@ -76,6 +80,9 @@ export const desktopController = {
     stopVideoBtn.disabled = true;
     playVideoBtn.disabled = false;
     downloadVideoBtn.disabled = false;
+    exerciseName.disabled = false;
+    exerciseCounts.disabled = false;
+    postRecordBtn.disabled = false;
   },
   downloadVideo: function () {
     const blob = new Blob(recordedBlobs, { type: "video/webm" });
@@ -98,6 +105,40 @@ export const desktopController = {
     recorded.src = window.URL.createObjectURL(blob);
     recorded.controls = true;
     recorded.play();
+  },
+  sendRecordFrontend: async function (localRecord) {
+    resetExerciseValidation();
+    const blob = new Blob(recordedBlobs, { type: "video/webm" });
+    if (blob.size === 0) {
+      msgDesktop.innerHTML = raiseAlert(false, "尚未紀錄影像");
+    }
+    if (exerciseInputValidation()) {
+      const requestBody = {
+        exerciseName: exerciseName.value,
+        exerciseCounts: Number(exerciseCounts.value),
+        exerciseRecord: localRecord,
+      };
+      try {
+        const response = await axios.get("/api/record/s3Url");
+        const s3response = await axios.put(response.data.url, blob);
+        requestBody.videoFileName = response.data.fileName;
+        const postResponse = await axios.post("/api/record", requestBody, {
+          headers: { Authorization: localStorage.token },
+        });
+        console.log(postResponse);
+        if (postResponse.data.success) {
+          exerciseCounts.value = null;
+          exerciseName.value = null;
+          resetExerciseValidation();
+          msgDesktop.innerHTML = raiseAlert(true, "紀錄上傳成功");
+        } else {
+          msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
+        }
+      } catch (error) {
+        console.log(error);
+        msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
+      }
+    }
   },
   // sendRecordMulter: async function (localRecord, userId) {
   //   const exerciseName = document.getElementById("exerciseName");
@@ -126,30 +167,6 @@ export const desktopController = {
   //     console.log(error);
   //   }
   // },
-  sendRecordFrontend: async function (localRecord) {
-    const exerciseName = document.getElementById("exerciseName");
-    const exerciseCounts = document.getElementById("exerciseCounts");
-    const blob = new Blob(recordedBlobs, { type: "video/webm" });
-
-    try {
-      const response = await axios.get("/api/record/s3Url");
-      console.log(response.data);
-      const s3response = await axios.put(response.data.url, blob);
-      console.log(s3response);
-      const requestBody = {
-        exerciseName: exerciseName.value,
-        exerciseCounts: exerciseCounts.value,
-        exerciseRecord: localRecord,
-        videoFileName: response.data.fileName,
-      };
-      const postResponse = await axios.post("/api/record", requestBody, {
-        headers: { Authorization: localStorage.token },
-      });
-      console.log(postResponse);
-    } catch (error) {
-      console.log(error);
-    }
-  },
 };
 
 function handleDataAvailable(event) {

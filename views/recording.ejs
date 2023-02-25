@@ -1,107 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('./partials/head') %>
+
+<head>
+  <%- include('./partials/head') %>
     <link rel="stylesheet" href="/css/recording.css" />
     <script src="/socket.io/socket.io.js"></script>
-  </head>
-  <body>
-    <%- include('./partials/nav') %>
-    <!--Showcase-->
-    <section
-      class="bg-dark pt-5 mt-5 text-center text-md-start text-light desktop"
-      id="desktopSec"
-    >
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+    <!-- desktop section -->
+    <section class="bg-dark pt-5 mt-5 text-center text-md-start text-light desktop" id="desktopSec">
       <div class="container">
         <div class="row">
           <div class="col-12 col-md-6 col-lg-8">
             <h3>動作預覽</h3>
-            <video
-              id="preview"
-              class="w-100 ratio ratio-16x9 mb-3"
-              autoplay
-              controls
-              muted
-            ></video>
+            <video id="preview" class="w-100 ratio ratio-16x9 mb-3" autoplay controls muted></video>
             <div class="container mb-3">
-              <div
-                class="btn-group w-100"
-                role="group"
-                aria-label="recording control"
-              >
-                <button
-                  type="button"
-                  class="btn btn-outline-warning"
-                  id="accessCameraBtn"
-                >
-                  啟動相機
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-success"
-                  id="startVideoBtn"
-                  disabled
-                >
-                  開始紀錄
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger"
-                  id="stopVideoBtn"
-                  disabled
-                >
-                  停止紀錄
-                </button>
+              <div class="btn-group w-100" role="group" aria-label="recording control">
+                <button type="button" class="btn btn-outline-warning fa-solid fa-camera"
+                  id="accessCameraBtn">&nbsp;&nbsp;啟動相機</button>
+                <button type="button" class="btn btn-outline-success fa-solid fa-video" id="startVideoBtn"
+                  disabled>&nbsp;&nbsp;開始紀錄</button>
+                <button type="button" class="btn btn-outline-danger fa-solid fa-video-slash" id="stopVideoBtn"
+                  disabled>&nbsp;&nbsp;停止紀錄</button>
               </div>
             </div>
-            <div class="container mb-3">
-              <p class="lead" id="msgDesktop"></p>
+            <div class="container mb-3" id="msgDesktop">
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-4">
             <h3>影片回顧</h3>
-            <video
-              id="recorded"
-              class="w-100 ratio ratio-16x9 mb-3"
-              controls
-            ></video>
+            <video id="recorded" class="w-100 ratio ratio-16x9 mb-3" controls></video>
             <div class="d-flex justify-content-end mb-3">
-              <button
-                type="button"
-                class="btn btn-light me-3"
-                id="downloadVideoBtn"
-                disabled
-              >
-                下載影片
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                id="playVideoBtn"
-                disabled
-              >
-                播放影片
-              </button>
+              <button type="button" class="btn btn-light me-3 fa-solid fa-file-arrow-down" id="downloadVideoBtn"
+                disabled>&nbsp;&nbsp;下載影片</button>
+              <button type="button" class="btn btn-primary fa-solid fa-circle-play" id="playVideoBtn"
+                disabled>&nbsp;&nbsp;播放影片</button>
             </div>
             <div class="input-group mb-3 text-dark">
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exerciseName"
-                  placeholder="鐘擺運動"
-                />
+                <input type="text" class="form-control" id="exerciseName" placeholder="鐘擺運動" disabled />
                 <label for="exercise" class="form-label">動作名稱</label>
+                <div id="exerciseNameValidation"></div>
               </div>
               <span class="input-group-text">完成</span>
               <div class="form-floating">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exerciseCounts"
-                  placeholder="10次"
-                />
+                <input type="number" class="form-control" min=1 id="exerciseCounts" placeholder="10次" disabled />
                 <label for="count" class="form-label">動作次數</label>
+                <div id="exerciseCountsValidation"></div>
               </div>
               <span class="input-group-text">次</span>
             </div>
@@ -109,54 +56,54 @@
               <p class="lead text-center" id="startVideoTime"></p>
               <p class="lead text-center" id="stopVideoTime"></p>
             </div>
-            <button
-              class="btn btn-primary w-100"
-              type="button"
-              id="postRecordBtn"
-            >
-              送出紀錄
-            </button>
+            <button class="btn btn-primary w-100 fa-solid fa-cloud-arrow-up" type="button" disabled
+              id="postRecordBtn">&nbsp;&nbsp;送出紀錄</button>
           </div>
         </div>
       </div>
     </section>
-    <section
-      class="bg-dark p-5 mt-5 text-center text-light mobile"
-      id="mobileSec"
-    >
+    <!-- desktop show mobile record -->
+    <section class="bg-dark pb-5 text-center text-light pt-5" id="recordSec">
+      <h3>手機感測器記錄</h3>
+      <div class="table-responsive mb-3" id="recordContainer">
+        <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col" colspan="3">加速度(m/s<sup>2</sup>)</th>
+              <th scope="col" colspan="3">旋轉角度(deg)</th>
+              <th scope="col"></th>
+            </tr>
+            <tr>
+              <th>idx</th>
+              <th>x</th>
+              <th>y</th>
+              <th>z</th>
+              <th>&alpha;</th>
+              <th>&beta;</th>
+              <th>&gamma;</th>
+              <th>timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="recordTbody"></tbody>
+        </table>
+      </div>
+    </section>
+    <!-- mobile section -->
+    <section class="bg-dark p-5 mt-5 text-center text-light mobile" id="mobileSec">
       <div class="container">
         <div class="container mb-3">
-          <div
-            class="btn-group w-100"
-            role="group"
-            aria-label="recording control"
-          >
-            <button
-              type="button"
-              class="btn btn-outline-warning"
-              id="accessSensorBtn"
-            >
-              取得許可
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-success"
-              id="startSensorBtn"
-              disabled
-            >
-              開始紀錄
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-danger"
-              id="stopSensorBtn"
-              disabled
-            >
-              停止紀錄
-            </button>
+          <div class="btn-group w-100" role="group" aria-label="recording control">
+            <button type="button" class="btn btn-outline-warning fa-solid fa-mobile-screen-button"
+              id="accessSensorBtn">&nbsp;&nbsp;取得許可</button>
+            <button type="button" class="btn btn-outline-success fa-solid fa-video" id="startSensorBtn"
+              disabled>&nbsp;&nbsp;開始紀錄</button>
+            <button type="button" class="btn btn-outline-danger fa-solid fa-video-slash" id="stopSensorBtn"
+              disabled>&nbsp;&nbsp;停止紀錄</button>
           </div>
         </div>
-        <div class="container mb-3"><p class="lead" id="msgMobile"></p></div>
+        <div class="container mb-3" id="msgMobile">
+        </div>
         <h3>動作資訊</h3>
         <div class="table-responsive">
           <table class="table table-dark table-hover">
@@ -190,58 +137,10 @@
             </tbody>
           </table>
         </div>
-
-        <!-- <div class="d-flex justify-content-center mb-3">
-          <button
-            type="button"
-            class="btn btn-primary me-3"
-            id="showDataBtn"
-            disabled
-          >
-            顯示紀錄
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            id="sendDataBtn"
-            disabled
-          >
-            傳送紀錄
-          </button>
-        </div> -->
-        <!-- <div class="container mb-3">
-          <p class="lead text-center" id="startSensorTime"></p>
-          <p class="lead text-center" id="stopSensorTime"></p>
-        </div> -->
-      </div>
-    </section>
-    <section class="bg-dark pb-5 text-center text-light" id="recordSec">
-      <h3>手機感測器記錄</h3>
-      <div class="table-responsive mb-3" id="recordContainer">
-        <table class="table table-dark table-hover">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" colspan="3">加速度(m/s<sup>2</sup>)</th>
-              <th scope="col" colspan="3">旋轉角度(deg)</th>
-              <th scope="col"></th>
-            </tr>
-            <tr>
-              <th>idx</th>
-              <th>x</th>
-              <th>y</th>
-              <th>z</th>
-              <th>&alpha;</th>
-              <th>&beta;</th>
-              <th>&gamma;</th>
-              <th>timestamp</th>
-            </tr>
-          </thead>
-          <tbody id="recordTbody"></tbody>
-        </table>
       </div>
     </section>
     <%- include('./partials/footer') %>
-    <script type="module" src="/js/recording.js"></script>
-  </body>
+      <script type="module" src="/js/recording.js"></script>
+</body>
+
 </html>

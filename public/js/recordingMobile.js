@@ -23,26 +23,26 @@ export const mobileController = {
       try {
         const response = await DeviceMotionEvent.requestPermission();
         if (response !== "granted") {
-          access = false;
-          msg = "請關閉瀏覽器後，許可存取";
           // socket
+          access = false;
+          msg = "請關閉瀏覽器後再開啟分頁允許資料存取";
           socket.emit("device-access", user._id, { access, msg });
           return;
         }
       } catch (err) {
         console.log(err);
-        access = false;
-        msg = "手機感測器連結失敗";
         // socket
+        access = false;
+        msg = "請關閉瀏覽器後再開啟分頁允許資料存取";
         socket.emit("device-access", user._id, { access, msg });
         return;
       }
     }
     window.addEventListener("deviceorientation", deviceOrientationHandler);
     window.addEventListener("devicemotion", deviceMotionHandler);
-    access = true;
-    msg = "手機感測器已連結";
     // socket
+    access = true;
+    msg = "手機感測器資料存取成功";
     socket.emit("device-access", user._id, { access, msg });
     accessSensorBtn.remove();
     startSensorBtn.disabled = false;

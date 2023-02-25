@@ -14,3 +14,15 @@ export function getCurrentTime() {
   const time = now.toTimeString().slice(0, 8);
   return `${day} ${time}`;
 }
+
+export function raiseAlert(result, message) {
+  let type;
+  if (result === true) {
+    type = "success";
+  } else {
+    type = "danger";
+  }
+  const innerHTMLContent = `<div class="alert alert-${type} alert-dismissible" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+
+  return innerHTMLContent;
+}

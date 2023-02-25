@@ -73,7 +73,10 @@ export const socketHandler = {
       mobile: { both: false, msg: "請取得電腦視訊鏡頭許可" },
     },
     stop: {
-      both: { both: true, msg: "裝置已同步停止紀錄" },
+      both: {
+        both: true,
+        msg: "裝置已同步停止紀錄，請填寫動作名稱和次數並送出紀錄",
+      },
       desktop: { both: false, msg: "請確認手機感測器許可" },
       mobile: { both: false, msg: "請確認電腦視訊鏡頭許可" },
     },

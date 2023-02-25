@@ -92,11 +92,11 @@ recordingIo.on("connection", (socket) => {
         rooms[userId] = [{ [socket.id]: [joinDevice] }];
       }
       // to device(s) in room userId
-      recordingIo.in(userId).emit("join-result", result.msg);
+      recordingIo.in(userId).emit("join-result", result);
       console.log(userId, "連線裝置：", rooms[userId]);
     } else {
       // user is rejected, back to sender
-      socket.emit("join-result", result.msg);
+      socket.emit("join-result", result);
     }
   });
 
@@ -105,10 +105,10 @@ recordingIo.on("connection", (socket) => {
     if (result.access) {
       socketHandler.access(userId, socket.id, rooms);
       // to device(s) in room userId
-      recordingIo.in(userId).emit("access-result", result.msg);
+      recordingIo.in(userId).emit("access-result", result);
     } else {
       // access is denied, back to sender
-      socket.emit("access-result", result.msg);
+      socket.emit("access-result", result);
     }
   });
 
