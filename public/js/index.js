@@ -46,8 +46,7 @@ async function init() {
     try {
       const userData = await fetchUser(headers);
       user = userData.user;
-      navView.index();
-      console.log(user._id);
+      navView.login(userData.avatarUrl);
     } catch (error) {
       console.log(error);
     }
@@ -57,26 +56,26 @@ async function init() {
 }
 
 async function login() {
-  if (loginInputValidation()) {
-    const requestBody = {
-      email: loginEmail.value,
-      password: loginPassword.value,
-    };
-    try {
-      const response = await axios.post("/api/user/login", requestBody);
-      console.log(response.data);
-      displayResponseMsg(loginMsg, "成功登入", "text-success");
-      loginForm.reset();
-      localStorage.setItem("token", response.data.data.token);
-      window.location.href = "/user";
-    } catch (error) {
-      console.error(error);
-      console.log(error.response.data.message);
-      displayResponseMsg(loginMsg, error.response.data.message, "text-danger");
-    }
-  } else {
-    return;
+  // if (loginInputValidation()) {
+  const requestBody = {
+    email: loginEmail.value,
+    password: loginPassword.value,
+  };
+  try {
+    const response = await axios.post("/api/user/login", requestBody);
+    console.log(response.data);
+    displayResponseMsg(loginMsg, "成功登入", "text-success");
+    loginForm.reset();
+    localStorage.setItem("token", response.data.data.token);
+    window.location.href = "/user";
+  } catch (error) {
+    console.error(error);
+    console.log(error.response.data.message);
+    displayResponseMsg(loginMsg, error.response.data.message, "text-danger");
   }
+  // } else {
+  //   return;
+  // }
 }
 
 async function register() {

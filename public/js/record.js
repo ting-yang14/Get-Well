@@ -72,7 +72,6 @@ async function saveRecord() {
       saveRecordBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
     }
   } else {
-    console.log("nono");
     return;
   }
 }
@@ -403,8 +402,7 @@ async function init() {
     try {
       const userData = await fetchUser(headers);
       user = userData.user;
-      navView.record();
-      console.log(user._id);
+      navView.login(userData.avatarUrl);
       record = await getRecord();
       // default setup
       const exerciseRecord = record.record.exerciseRecord;

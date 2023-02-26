@@ -1,71 +1,27 @@
-const functionLink = document.getElementById("functionLink");
-const userLink = document.getElementById("userLink");
-
 export const navView = {
-  index: function () {
-    this.setRecording();
-    this.setLogout();
-  },
-  recording: function () {
-    this.setUser();
-    this.setLogout();
-  },
-  record: function () {
-    this.setRecording();
-    this.setLogout();
-  },
-  user: function () {
-    this.setRecording();
-    this.setLogout();
-  },
-  setLogout: function () {
-    userLink.textContent = "會員登出";
-    userLink.dataset.bsTarget = null;
-    userLink.dataset.bsToggle = null;
-    userLink.addEventListener("click", () => {
+  login: function (avatarUrl) {
+    const logLink = document.getElementById("logLink");
+    logLink.innerHTML = `&nbsp;&nbsp;會員登出`;
+    logLink.classList.remove("fa-circle-user");
+    logLink.classList.add("fa-right-from-bracket");
+    logLink.dataset.bsTarget = null;
+    logLink.dataset.bsToggle = null;
+    // set logout button
+    logLink.addEventListener("click", () => {
       localStorage.removeItem("token");
       window.location.href = "/";
     });
-  },
-  setRecording: function () {
-    functionLink.dataset.bsTarget = null;
-    functionLink.dataset.bsToggle = null;
-    functionLink.href = "/recording";
-  },
-  setUser: function () {
-    functionLink.textContent = "我的紀錄";
-    functionLink.dataset.bsTarget = null;
-    functionLink.dataset.bsToggle = null;
-    functionLink.href = "/user";
+    // toggler icon
+    const unLoginBtn = document.getElementById("unLoginBtn");
+    const navImg = document.getElementById("navImg");
+    unLoginBtn.classList.add("d-none");
+    navImg.classList.remove("d-none");
+    if (avatarUrl) {
+      navImg.src = avatarUrl;
+    }
+    const userLink = document.getElementById("userLink");
+    const recordingLink = document.getElementById("recordingLink");
+    userLink.classList.remove("d-none");
+    recordingLink.classList.remove("d-none");
   },
 };
-
-// let user;
-
-// init();
-
-// async function init() {
-//   const currentPath = window.location.pathname.split("/")[1];
-//   if (localStorage.token) {
-//     const headers = { Authorization: localStorage.token };
-//     await fetchUser(headers);
-//     if (currentPath === "") {
-//       navView.index();
-//     }
-//     if (currentPath === "recording") {
-//       navView.recording();
-//     }
-//     if (currentPath === "record") {
-//       navView.record();
-//     }
-//     if (currentPath === "user") {
-//       navView.user();
-//     }
-//   } else {
-//     if (currentPath === "") {
-//       return;
-//     } else {
-//       window.location.href = "/";
-//     }
-//   }
-// }

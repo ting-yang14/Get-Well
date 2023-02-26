@@ -2,37 +2,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 fixed-top">
   <div class="container">
     <a class="navbar-brand" href="/"> 漸健康復 Get Well </a>
-
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navmenu"
-    >
-      <span class="navbar-toggler-icon"></span>
+    <button class="navbar-toggler" id="navBtn" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+      <img src="/img/user.png" class="d-none" id="navImg" />
+      <span class="navbar-toggler-icon" id="unLoginBtn"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navmenu">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a
-            class="nav-link"
-            href="#register"
-            data-bs-target="#register"
-            data-bs-toggle="modal"
-            id="functionLink"
-            >開始復健</a
-          >
+          <a class="nav-link fa-solid fa-clipboard d-none" href="/user" id="userLink">&nbsp;&nbsp;我的紀錄</a>
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link"
-            href="#login"
-            data-bs-target="#login"
-            data-bs-toggle="modal"
-            id="userLink"
-            >登入/註冊</a
-          >
+          <a class="nav-link fa-solid fa-pen-to-square d-none" href="/recording" id="recordingLink">&nbsp;&nbsp;開始復健</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fa-solid fa-circle-user" href="#login" data-bs-target="#login" data-bs-toggle="modal"
+            id="logLink">&nbsp;&nbsp;會員登入</a>
         </li>
       </ul>
     </div>

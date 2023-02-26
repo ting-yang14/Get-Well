@@ -1,0 +1,13 @@
+#navImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50rem;
+  overflow: hidden;
+  object-fit: cover;
+}
+#navBtn {
+  border: none;
+}
+#navBtn:focus {
+  box-shadow: none;
+}

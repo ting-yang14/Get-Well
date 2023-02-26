@@ -36,7 +36,14 @@ function previewAvatar() {
   }
 }
 
-function setDefaultUserInfo(user) {
+function setDefaultUserInfo(userData) {
+  const user = userData.user;
+  if (userData.avatarUrl) {
+    avatar.src = userData.avatarUrl;
+  } else {
+    avatarUsername.textContent = user.username;
+    avatarUsername.classList.remove("d-none");
+  }
   username.value = user.username;
   email.value = user.email;
   if (user.gender) {
@@ -489,14 +496,8 @@ async function init() {
     try {
       const userData = await fetchUser(headers);
       user = userData.user;
-      if (userData.avatarUrl === null) {
-        avatarUsername.textContent = user.username;
-        avatarUsername.classList.remove("d-none");
-      } else {
-        avatar.src = userData.avatarUrl;
-      }
-      navView.user();
-      setDefaultUserInfo(user);
+      navView.login(userData.avatarUrl);
+      setDefaultUserInfo(userData);
       await generateCalendar();
       checkTodayRecord();
     } catch (error) {

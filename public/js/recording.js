@@ -183,8 +183,7 @@ async function init() {
       const userData = await fetchUser(headers);
       user = userData.user;
       // setup nav button
-      navView.recording();
-
+      navView.login(userData.avatarUrl);
       // join socket room with userId
       socket.emit("user-join", device, user._id);
 
