@@ -9,7 +9,7 @@
 <body>
   <%- include('./partials/nav') %>
     <section class="bg-dark pt-5 mt-5 text-start text-light">
-      <div class="container mb-5">
+      <div class="container">
         <h3 class="mb-3">基本會員資料</h3>
         <div class="row justify-content-center align-items-center position-relative">
           <div class="col-6 mb-3 col-sm-4 col-md-3 col-lg-2 position-relative">
@@ -27,19 +27,20 @@
           </div>
           <div class=" col-12 col-sm-8 col-md-6">
             <div class="container">
-              <div class="row mb-3">
+              <div class="row mb-4">
                 <label for="username" class="col-2 col-form-label">名稱</label>
-                <div class="col-10">
+                <div class="col-10 position-relative">
                   <input type="text" readonly class="form-control-plaintext text-light" id="username" value="" />
+                  <div id="updateUsernameValidation"></div>
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-4">
                 <label for="email" class="col-2 col-form-label">Email</label>
                 <div class="col-10">
                   <input type="text" readonly class="form-control-plaintext text-light" id="email" value="" />
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-4">
                 <legend class="col-form-label col-2 pt-0">性別</legend>
                 <div class="col-10">
                   <div id="genderSelector" class="d-none">
@@ -59,16 +60,18 @@
                   <label class="form-check-label text-secondary" for="default" id="defaultGender">待填寫</label>
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-5">
                 <label for="height" class="col-2 col-form-label">身高</label>
-                <div class="col-4">
-                  <input type="number" readonly class="form-control-plaintext text-light" id="height" value="" min="0"
-                    placeholder="...公分" />
+                <div class="col-4 position-relative">
+                  <input type="number" readonly class="form-control-plaintext text-light" id="height" value="" min="80"
+                    max="200" placeholder="...公分" />
+                  <div id="updateHeightValidation"></div>
                 </div>
                 <label for="weight" class="col-2 col-form-label">體重</label>
-                <div class="col-4">
-                  <input type="number" readonly class="form-control-plaintext text-light" id="weight" value="" min="0"
-                    placeholder="...公斤" />
+                <div class="col-4 position-relative">
+                  <input type="number" readonly class="form-control-plaintext text-light" id="weight" value="" min="30"
+                    max="200" placeholder="...公斤" />
+                  <div id="updateWeightValidation"></div>
                 </div>
               </div>
               <div class="text-end">

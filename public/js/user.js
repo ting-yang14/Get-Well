@@ -1,6 +1,6 @@
 import { navView } from "./navView.js";
 import { fetchUser } from "./base.js";
-
+import { resetUpdateValidation, updateInputValidation } from "./validation.js";
 // --- avatar ---
 const avatar = document.getElementById("avatar");
 const avatarUsername = document.getElementById("avatarUsername");
@@ -63,8 +63,15 @@ function showInputColumn() {
   });
   updateUserBtn.innerHTML = "";
   updateUserBtn.classList.toggle("d-none");
+  defaultGender.classList.toggle("d-none");
+  genderSelector.classList.toggle("d-none");
+  // 恢復readonly 身高體重
+  editToggle(username);
+  editToggle(height);
+  editToggle(weight);
   // 重複點擊，顯示已更新內容
   setUserChange();
+  resetUpdateValidation();
 }
 
 function editToggle(element) {
@@ -87,12 +94,6 @@ function setUserChange() {
   if (defaultGender.classList.contains("text-secondary")) {
     defaultGender.classList.add("text-light");
   }
-  defaultGender.classList.toggle("d-none");
-  genderSelector.classList.toggle("d-none");
-  // 恢復readonly 身高體重
-  editToggle(username);
-  editToggle(height);
-  editToggle(weight);
   // 更新大頭貼名字
   avatarUsername.textContent = username.value;
 }
@@ -100,57 +101,52 @@ function setUserChange() {
 async function updateUser() {
   // 顯示紀錄
   setUserChange();
-  // 上傳新 user data
-  try {
-    const requestBody = {};
+  if (updateInputValidation()) {
     const genderSelected = document.querySelector(
       'input[name="genderRadios"]:checked'
     ).value;
-    // 若有更新大頭貼，先上傳得到檔名
-    if (avatarInput.files[0]) {
-      const uploadedFile = avatarInput.files[0];
-      // 獲得 putObjectSignedUrl
-      const response = await axios.get("/api/record/s3Url");
-      console.log(response.data);
-      // put file to S3
-      const s3response = await axios.put(response.data.url, uploadedFile);
-      console.log(s3response);
-      // add fileName to requestBody
-      requestBody.avatarFileName = response.data.fileName;
-    }
-    // 取得 user data
-    if (username.value) {
-      requestBody.username = username.value;
-    }
-    if (genderSelected) {
-      requestBody.gender = genderSelected;
-    }
-    if (height.value) {
-      requestBody.height = height.value;
-    }
-    if (weight.value) {
-      requestBody.weight = weight.value;
-    }
-    // patch user data
-    const patchResponse = await axios.patch(
-      `/api/user/${user._id}`,
-      requestBody,
-      {
-        headers: { Authorization: localStorage.token },
+    const requestBody = {
+      username: username.value,
+      gender: genderSelected,
+      height: parseFloat(height.value),
+      weight: parseFloat(weight.value),
+    };
+    try {
+      // 若有更新大頭貼，先上傳得到檔名
+      if (avatarInput.files[0]) {
+        const uploadedFile = avatarInput.files[0];
+        // 獲得 putObjectSignedUrl
+        const response = await axios.get("/api/record/s3Url");
+        console.log(response.data);
+        // put file to S3
+        const s3response = await axios.put(response.data.url, uploadedFile);
+        console.log(s3response);
+        // add fileName to requestBody
+        requestBody.avatarFileName = response.data.fileName;
       }
-    );
-    console.log(patchResponse);
-    if (patchResponse.data.success) {
-      updateUserBtn.classList.add("text-success");
-      updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存成功`;
-    } else {
+      // patch user data
+      const patchResponse = await axios.patch(
+        `/api/user/${user._id}`,
+        requestBody,
+        {
+          headers: { Authorization: localStorage.token },
+        }
+      );
+      console.log(patchResponse);
+      if (patchResponse.data.success) {
+        updateUserBtn.classList.add("text-success");
+        updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存成功`;
+      } else {
+        updateUserBtn.classList.add("text-danger");
+        updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
+      }
+    } catch (error) {
+      console.log(error);
       updateUserBtn.classList.add("text-danger");
       updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
     }
-  } catch (error) {
-    console.log(error);
-    updateUserBtn.classList.add("text-danger");
-    updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存失敗`;
+  } else {
+    return;
   }
 }
 // --- avatar END---
@@ -505,7 +501,7 @@ async function init() {
       checkTodayRecord();
     } catch (error) {
       console.log(error);
-      window.location.href = "/";
+      // window.location.href = "/";
     }
   } else {
     window.location.href = "/";

@@ -23,6 +23,7 @@ export function resetExerciseValidation() {
     }
   });
 }
+
 export function exerciseInputValidation() {
   let isExerciseNameValid;
   let isExerciseCountsValid;
@@ -200,6 +201,87 @@ export function loginInputValidation() {
   }
 
   if (isLoginEmailValid && isLoginPasswordValid) {
+    return true;
+  } else {
+    return false;
+  }
+}
+// user
+const updateUsernameValidation = document.getElementById(
+  "updateUsernameValidation"
+);
+const updateHeightValidation = document.getElementById(
+  "updateHeightValidation"
+);
+const updateWeightValidation = document.getElementById(
+  "updateWeightValidation"
+);
+
+export function resetUpdateValidation() {
+  // reset
+  updateUsernameValidation.classList = [];
+  updateHeightValidation.classList = [];
+  updateWeightValidation.classList = [];
+  updateUsernameValidation.textContent = "";
+  updateHeightValidation.textContent = "";
+  updateWeightValidation.textContent = "";
+  inputClassName.forEach((className) => {
+    if (username.classList.contains(className)) {
+      username.classList.remove(className);
+    }
+    if (height.classList.contains(className)) {
+      height.classList.remove(className);
+    }
+    if (weight.classList.contains(className)) {
+      weight.classList.remove(className);
+    }
+  });
+}
+export function updateInputValidation() {
+  resetUpdateValidation();
+  //validate
+  const usernameValue = username.value;
+  const heightValue = parseFloat(height.value);
+  const weightValue = parseFloat(weight.value);
+
+  const isUsernameValid = usernameRegex.test(usernameValue);
+  let isHeightValid;
+  let isWeightValid;
+  if (isUsernameValid) {
+    username.classList.add(inputClassName[0]);
+    updateUsernameValidation.classList.add(tooltipClassName[0]);
+    updateUsernameValidation.textContent = "格式正確";
+  } else {
+    username.classList.add(inputClassName[1]);
+    updateUsernameValidation.classList.add(tooltipClassName[1]);
+    updateUsernameValidation.textContent =
+      "請輸入一至八字元的數字、中英文字母組合";
+  }
+
+  if (heightValue > 80 && heightValue < 200) {
+    height.classList.add(inputClassName[0]);
+    updateHeightValidation.classList.add(tooltipClassName[0]);
+    updateHeightValidation.textContent = "格式正確";
+    isHeightValid = true;
+  } else {
+    height.classList.add(inputClassName[1]);
+    updateHeightValidation.classList.add(tooltipClassName[1]);
+    updateHeightValidation.textContent = "請輸入介於80~200公分";
+    isHeightValid = false;
+  }
+  if (weightValue > 30 && weightValue < 200) {
+    weight.classList.add(inputClassName[0]);
+    updateWeightValidation.classList.add(tooltipClassName[0]);
+    updateWeightValidation.textContent = "格式正確";
+    isWeightValid = true;
+  } else {
+    weight.classList.add(inputClassName[1]);
+    updateWeightValidation.classList.add(tooltipClassName[1]);
+    updateWeightValidation.textContent = "請輸入介於30~200公斤";
+    isWeightValid = false;
+  }
+
+  if (isUsernameValid && isHeightValid && isWeightValid) {
     return true;
   } else {
     return false;
