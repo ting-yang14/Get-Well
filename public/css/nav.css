@@ -11,3 +11,7 @@
 #navBtn:focus {
   box-shadow: none;
 }
+.invalid-tooltip,
+.valid-tooltip {
+  opacity: 80%;
+}

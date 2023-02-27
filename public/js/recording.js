@@ -143,10 +143,28 @@ socket.on("stop-result", (stopDevice, result) => {
     }
   }
 });
-
+// desktop receive record from mobile
 socket.on("receive-record", (record) => {
-  mobileController.showSensorData(record);
+  desktopController.showSensorData(record);
   localRecord = record;
+});
+// desktop receive acceleration data from mobile
+socket.on("receive-acc", (acc) => {
+  desktopController.showAccData(acc);
+});
+// desktop receive orientation data from mobile
+socket.on("receive-ori", (ori) => {
+  desktopController.showOriData(ori);
+});
+// Both receive send record to db result
+socket.on("receive-result", (result) => {
+  console.log("send-result", result.msg);
+  // 依據 device 顯示 result.msg
+  if (device === "Desktop") {
+    msgDesktop.innerHTML = raiseAlert(result.send, result.msg);
+  } else {
+    msgMobile.innerHTML = raiseAlert(result.send, result.msg);
+  }
 });
 
 function postRecord() {

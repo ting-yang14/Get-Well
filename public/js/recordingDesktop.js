@@ -8,13 +8,23 @@ const preview = document.getElementById("preview");
 const recorded = document.getElementById("recorded");
 const exerciseName = document.getElementById("exerciseName");
 const exerciseCounts = document.getElementById("exerciseCounts");
+// table content
+const desktopAccX = document.getElementById("desktopAccX");
+const desktopAccY = document.getElementById("desktopAccY");
+const desktopAccZ = document.getElementById("desktopAccZ");
+const desktopOriAlpha = document.getElementById("desktopOriAlpha");
+const desktopOriBeta = document.getElementById("desktopOriBeta");
+const desktopOriGamma = document.getElementById("desktopOriGamma");
 let mediaRecorder;
 let recordedBlobs;
-
+let localSocket;
+let localUser;
 export const desktopController = {
   accessCamera: async function (socket, user) {
     let access;
     let msg;
+    localSocket = socket;
+    localUser = user;
     try {
       const constraints = {
         audio: true,
@@ -45,7 +55,7 @@ export const desktopController = {
   },
   startVideo: function (device, socket, user) {
     const startVideoTime = document.getElementById("startVideoTime");
-    startVideoBtn.textContent = "紀錄中";
+    startVideoBtn.innerHTML = `&nbsp;&nbsp;紀錄中`;
     startVideoBtn.disabled = true;
     recordedBlobs = [];
     try {
@@ -61,7 +71,7 @@ export const desktopController = {
       // socket
       socket.emit("record", "start", device, user._id);
       startVideoTime.textContent = `開始時間：${getCurrentTime()}`;
-      stopVideoBtn.textContent = "停止紀錄";
+      stopVideoBtn.innerHTML = `&nbsp;&nbsp;停止紀錄`;
       console.log("MediaRecorder started", mediaRecorder);
     } catch (err) {
       console.error("Exception while creating MediaRecorder:", err);
@@ -73,8 +83,8 @@ export const desktopController = {
     mediaRecorder.stop();
     // socket
     socket.emit("record", "stop", device, user._id);
-    startVideoBtn.textContent = "開始紀錄";
-    stopVideoBtn.textContent = "已停止紀錄";
+    startVideoBtn.innerHTML = `&nbsp;&nbsp;開始紀錄`;
+    stopVideoBtn.innerHTML = `&nbsp;&nbsp;已停止紀錄`;
     stopVideoTime.textContent = `結束時間：${getCurrentTime()}`;
     startVideoBtn.disabled = false;
     stopVideoBtn.disabled = true;
@@ -130,15 +140,42 @@ export const desktopController = {
           exerciseCounts.value = null;
           exerciseName.value = null;
           resetExerciseValidation();
-          msgDesktop.innerHTML = raiseAlert(true, "紀錄上傳成功");
+          const result = { send: true, msg: "紀錄上傳成功" };
+          localSocket.emit("send-result", result, localUser._id);
+          // msgDesktop.innerHTML = raiseAlert(true, "紀錄上傳成功");
         } else {
-          msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
+          const result = { send: false, msg: "紀錄上傳失敗" };
+          localSocket.emit("send-result", result, localUser._id);
+          // msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
         }
       } catch (error) {
         console.log(error);
-        msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
+        const result = { send: false, msg: "紀錄上傳失敗" };
+        localSocket.emit("send-ori", result, localUser._id);
+        // msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
       }
     }
+  },
+  showSensorData: function (record) {
+    const recordSec = document.getElementById("recordSec");
+    const recordTbody = document.getElementById("recordTbody");
+    recordSec.style.display = "block";
+    recordTbody.innerHTML = null;
+    appendRecord(recordTbody, record);
+  },
+  showAccData: function (acc) {
+    [
+      desktopAccX.textContent,
+      desktopAccY.textContent,
+      desktopAccZ.textContent,
+    ] = acc;
+  },
+  showOriData: function (ori) {
+    [
+      desktopOriAlpha.textContent,
+      desktopOriBeta.textContent,
+      desktopOriGamma.textContent,
+    ] = ori;
   },
   // sendRecordMulter: async function (localRecord, userId) {
   //   const exerciseName = document.getElementById("exerciseName");
@@ -168,6 +205,32 @@ export const desktopController = {
   //   }
   // },
 };
+
+function appendRecord(table, record) {
+  record.data.forEach((rowData, index) => {
+    insertRow(table, rowData, index);
+  });
+}
+
+function insertRow(table, rowData, index) {
+  const row = table.insertRow(-1);
+  const cellIdx = row.insertCell(0);
+  const cellAccX = row.insertCell(1);
+  const cellAccY = row.insertCell(2);
+  const cellAccZ = row.insertCell(3);
+  const cellOriAlpha = row.insertCell(4);
+  const cellOriBeta = row.insertCell(5);
+  const cellOriGamma = row.insertCell(6);
+  const cellTime = row.insertCell(7);
+  cellIdx.innerHTML = index;
+  cellAccX.innerHTML = rowData.acc_X;
+  cellAccY.innerHTML = rowData.acc_Y;
+  cellAccZ.innerHTML = rowData.acc_Z;
+  cellOriAlpha.innerHTML = rowData.ori_alpha;
+  cellOriBeta.innerHTML = rowData.ori_beta;
+  cellOriGamma.innerHTML = rowData.ori_gamma;
+  cellTime.innerHTML = rowData.time;
+}
 
 function handleDataAvailable(event) {
   console.log("handleDataAvailable", event);

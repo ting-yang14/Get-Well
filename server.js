@@ -135,6 +135,21 @@ recordingIo.on("connection", (socket) => {
     // recordingIo.in(userId).emit("receive-record", record);
   });
 
+  socket.on("send-acc", (acc, userId) => {
+    socket.to(userId).emit("receive-acc", acc);
+    // recordingIo.in(userId).emit("receive-record", record);
+  });
+
+  socket.on("send-ori", (ori, userId) => {
+    socket.to(userId).emit("receive-ori", ori);
+    // recordingIo.in(userId).emit("receive-record", record);
+  });
+
+  socket.on("send-result", (result, userId) => {
+    // socket.to(userId).emit("receive-result", result);
+    recordingIo.in(userId).emit("receive-result", result);
+  });
+
   socket.on("disconnect", () => {
     console.log(socket.id, "disconnected");
     socketHandler.removeDisconnectedDeviceSocketId(socket.id, rooms);

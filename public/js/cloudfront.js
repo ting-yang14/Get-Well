@@ -6,7 +6,14 @@ import {
 import dotenv from "dotenv";
 dotenv.config();
 const cloudfrontKeyPairId = process.env.CLOUDFRONT_KEY_PAIR_ID;
+// -- for docker build --
+// const cloudfrontPrivateKey = process.env.CLOUDFRONT_PRIVATE_KEY.split(
+//   String.raw`\n`
+// ).join("\n");
+// ---
+// -- for local dev --
 const cloudfrontPrivateKey = process.env.CLOUDFRONT_PRIVATE_KEY;
+// ---
 const cloudfrontDistributionId = process.env.CLOUDFRONT_DISTRIBUTION_ID;
 const cloudfrontUrl = process.env.CLOUDFRONT_URL;
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;

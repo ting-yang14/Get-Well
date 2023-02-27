@@ -30,6 +30,39 @@
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-4">
+            <h3>即時動作資訊</h3>
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col">加速度(m/s<sup>2</sup>)</th>
+                    <th scope="col"></th>
+                    <th scope="col">旋轉角度(deg)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">x</th>
+                    <td id="desktopAccX"></td>
+                    <th scope="row">&alpha;</th>
+                    <td id="desktopOriAlpha"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">y</th>
+                    <td id="desktopAccY"></td>
+                    <th scope="row">&beta;</th>
+                    <td id="desktopOriBeta"></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">z</th>
+                    <td id="desktopAccZ"></td>
+                    <th scope="row">&gamma;</th>
+                    <td id="desktopOriGamma"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <h3>影片回顧</h3>
             <video id="recorded" class="w-100 ratio ratio-16x9 mb-3" controls></video>
             <div class="d-flex justify-content-end mb-3">
@@ -38,6 +71,7 @@
               <button type="button" class="btn btn-primary fa-solid fa-circle-play" id="playVideoBtn"
                 disabled>&nbsp;&nbsp;播放影片</button>
             </div>
+
             <div class="input-group mb-3 text-dark">
               <div class="form-floating">
                 <input type="text" class="form-control" id="exerciseName" placeholder="鐘擺運動" disabled />
@@ -63,30 +97,32 @@
       </div>
     </section>
     <!-- desktop show mobile record -->
-    <section class="bg-dark pb-5 text-center text-light pt-5" id="recordSec">
-      <h3>手機感測器記錄</h3>
-      <div class="table-responsive mb-3" id="recordContainer">
-        <table class="table table-dark table-hover">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" colspan="3">加速度(m/s<sup>2</sup>)</th>
-              <th scope="col" colspan="3">旋轉角度(deg)</th>
-              <th scope="col"></th>
-            </tr>
-            <tr>
-              <th>idx</th>
-              <th>x</th>
-              <th>y</th>
-              <th>z</th>
-              <th>&alpha;</th>
-              <th>&beta;</th>
-              <th>&gamma;</th>
-              <th>timestamp</th>
-            </tr>
-          </thead>
-          <tbody id="recordTbody"></tbody>
-        </table>
+    <section class="bg-dark pb-5 text-center text-md-start text-light pt-5" id="recordSec">
+      <div class="container">
+        <h3 class="mb-5">手機感測器記錄</h3>
+        <div class="table-responsive mb-3" id="recordContainer">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" colspan="3">加速度(m/s<sup>2</sup>)</th>
+                <th scope="col" colspan="3">旋轉角度(deg)</th>
+                <th scope="col"></th>
+              </tr>
+              <tr>
+                <th>idx</th>
+                <th>x</th>
+                <th>y</th>
+                <th>z</th>
+                <th>&alpha;</th>
+                <th>&beta;</th>
+                <th>&gamma;</th>
+                <th>timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="recordTbody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
     <!-- mobile section -->
@@ -118,21 +154,21 @@
             <tbody>
               <tr>
                 <th scope="row">x</th>
-                <td id="accX"></td>
+                <td id="mobileAccX"></td>
                 <th scope="row">&alpha;</th>
-                <td id="oriAlpha"></td>
+                <td id="mobileOriAlpha"></td>
               </tr>
               <tr>
                 <th scope="row">y</th>
-                <td id="accY"></td>
+                <td id="mobileAccY"></td>
                 <th scope="row">&beta;</th>
-                <td id="oriBeta"></td>
+                <td id="mobileOriBeta"></td>
               </tr>
               <tr>
                 <th scope="row">z</th>
-                <td id="accZ"></td>
+                <td id="mobileAccZ"></td>
                 <th scope="row">&gamma;</th>
-                <td id="oriGamma"></td>
+                <td id="mobileOriGamma"></td>
               </tr>
             </tbody>
           </table>
