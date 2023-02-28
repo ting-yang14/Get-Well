@@ -2,6 +2,8 @@ import express from "express";
 import { recordController } from "../controllers/recordController.js";
 // import { protect } from "../middleware/authMiddleware.js";
 import passport from "passport";
+import { recordSchemas } from "../config/joi.js";
+import { joiMiddleware } from "../middleware/joiMiddleware.js";
 // import multer from "multer";
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: storage });
@@ -15,6 +17,7 @@ recordRouter
   )
   .post(
     passport.authenticate("jwt", { session: false }),
+    joiMiddleware(recordSchemas.postRecord, "body"),
     recordController.createRecordFrontend
   );
 // .post(
@@ -33,6 +36,7 @@ recordRouter
   )
   .patch(
     passport.authenticate("jwt", { session: false }),
+    joiMiddleware(recordSchemas.patchRecord, "body"),
     recordController.updateRecord
   )
   .delete(

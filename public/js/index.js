@@ -71,7 +71,7 @@ async function login() {
   } catch (error) {
     console.error(error);
     console.log(error.response.data.message);
-    displayResponseMsg(loginMsg, error.response.data.message, "text-danger");
+    displayResponseMsg(loginMsg, "登入失敗", "text-danger");
   }
   // } else {
   //   return;
@@ -98,11 +98,7 @@ async function register() {
     } catch (error) {
       console.error(error);
       console.log(error.response.data.message);
-      displayResponseMsg(
-        registerMsg,
-        error.response.data.message,
-        "text-danger"
-      );
+      displayResponseMsg(registerMsg, "登入失敗", "text-danger");
     }
   } else {
     return;

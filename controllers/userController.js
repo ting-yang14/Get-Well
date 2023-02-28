@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { s3Handler } from "../public/js/s3.js";
 import { cloudfrontHandler } from "../public/js/cloudfront.js";
+import { userSchemas } from "../config/joi.js";
 dotenv.config();
 
 function generateToken(id) {
@@ -17,6 +18,8 @@ export const userController = {
   // @access Public
   registerUser: asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
+    // const requestBody = userSchemas.register.validate(req.body);
+
     if (!username || !email || !password) {
       res.status(400);
       throw new Error("請填入所有欄位");

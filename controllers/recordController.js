@@ -3,6 +3,7 @@ import { Record } from "../model/recordModel.js";
 import { User } from "../model/userModel.js";
 import { cloudfrontHandler } from "../public/js/cloudfront.js";
 import { s3Handler } from "../public/js/s3.js";
+
 // import { generateFileName } from "../public/js/utils.js";
 
 export const recordController = {
@@ -126,6 +127,7 @@ export const recordController = {
       exerciseRecord: req.body.exerciseRecord,
       videoFileName: req.body.videoFileName,
     });
+
     if (record) {
       res.status(201).json({ success: true, data: record });
     } else {
