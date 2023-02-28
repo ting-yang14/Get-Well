@@ -34,8 +34,8 @@ export const recordController = {
         const year = parseInt(timeUnit[0]);
         const month = parseInt(timeUnit[1]);
         const date = parseInt(timeUnit[2]);
-        const startOfDate = new Date(Date.UTC(year, month, date));
-        const endOfDate = new Date(Date.UTC(year, month, date + 1));
+        const startOfDate = new Date(year, month, date);
+        const endOfDate = new Date(year, month, date + 1);
         const records = await Record.find(
           {
             user: req.user,
@@ -52,7 +52,7 @@ export const recordController = {
             "exerciseRecord.endTime": 1,
             createdAt: 1,
           }
-        );
+        ).sort({ createdAt: -1 });
         res.status(200).json({ success: true, data: records });
       } else if (timeUnit.length === 2) {
         // record for a month
@@ -132,7 +132,7 @@ export const recordController = {
       throw new Error("紀錄儲存失敗");
     }
   }),
-  // @desc   get S3 signed Url
+  // @desc   get S3 signed put objectUrl
   // @route  GET /api/record/s3Url
   // @access Private
   getPutObjectSignedUrl: asyncHandler(async (req, res) => {

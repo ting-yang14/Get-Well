@@ -119,6 +119,11 @@ export const desktopController = {
   sendRecordFrontend: async function (localRecord) {
     resetExerciseValidation();
     const blob = new Blob(recordedBlobs, { type: "video/webm" });
+    // const file = new File([blob], "filename.mp4", {
+    //   type: blob.type,
+    //   lastModified: new Date().getTime(),
+    // });
+    // console.log(file);
     if (blob.size === 0) {
       msgDesktop.innerHTML = raiseAlert(false, "尚未紀錄影像");
     }
@@ -130,7 +135,12 @@ export const desktopController = {
       };
       try {
         const response = await axios.get("/api/record/s3Url");
-        const s3response = await axios.put(response.data.url, blob);
+        const s3response = await axios.put(response.data.url, blob, {
+          headers: { "Content-Type": blob.type },
+        });
+        // const s3response = await axios.put(response.data.url, file, {
+        //   headers: { "Content-Type": file.type },
+        // });
         requestBody.videoFileName = response.data.fileName;
         const postResponse = await axios.post("/api/record", requestBody, {
           headers: { Authorization: localStorage.token },

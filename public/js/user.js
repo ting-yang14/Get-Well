@@ -255,7 +255,7 @@ const recordBoardViewControl = {
     card.classList.add("card", "text-dark", "my-2", "card-width");
     const cardHead = document.createElement("div");
     cardHead.classList.add("card-header", "text-end");
-    cardHead.textContent = record.createdAt.slice(0, 10);
+    cardHead.textContent = `${record.exerciseRecord.startTime.slice(0, 10)}`;
     const cardBody = document.createElement("div");
     cardBody.classList.add("card-body");
     const cardTitleContainer = document.createElement("div");
@@ -422,6 +422,7 @@ async function getHasRecordDate() {
         hasRecordDate.push(parseInt(record.createdAt.slice(8, 10)))
       );
       const uniqueHasRecordDate = [...new Set(hasRecordDate)];
+      console.log(uniqueHasRecordDate);
       return uniqueHasRecordDate;
     }
   } catch (error) {
