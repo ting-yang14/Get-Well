@@ -9,3 +9,11 @@
 #recordContainer {
   max-height: 300px;
 }
+#spinner {
+  z-index: 9999;
+  background: rgba(225, 225, 225, 0.3);
+}
+.spinner-size {
+  width: 3rem;
+  height: 3rem;
+}

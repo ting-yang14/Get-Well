@@ -129,24 +129,24 @@ recordingIo.on("connection", (socket) => {
       }
     }
   });
-
+  // mobile to desktop
   socket.on("send-record", (record, userId) => {
     socket.to(userId).emit("receive-record", record);
-    // recordingIo.in(userId).emit("receive-record", record);
   });
 
   socket.on("send-acc", (acc, userId) => {
     socket.to(userId).emit("receive-acc", acc);
-    // recordingIo.in(userId).emit("receive-record", record);
   });
 
   socket.on("send-ori", (ori, userId) => {
     socket.to(userId).emit("receive-ori", ori);
-    // recordingIo.in(userId).emit("receive-record", record);
   });
-
-  socket.on("send-result", (result, userId) => {
-    // socket.to(userId).emit("receive-result", result);
+  // desktop to mobile on postRecordBtn click
+  socket.on("post-start", (userId) => {
+    socket.to(userId).emit("receive-start");
+  });
+  // desktop to both
+  socket.on("post-result", (result, userId) => {
     recordingIo.in(userId).emit("receive-result", result);
   });
 

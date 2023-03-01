@@ -15,10 +15,12 @@ const desktopAccZ = document.getElementById("desktopAccZ");
 const desktopOriAlpha = document.getElementById("desktopOriAlpha");
 const desktopOriBeta = document.getElementById("desktopOriBeta");
 const desktopOriGamma = document.getElementById("desktopOriGamma");
+
 let mediaRecorder;
 let recordedBlobs;
 let localSocket;
 let localUser;
+
 export const desktopController = {
   accessCamera: async function (socket, user) {
     let access;
@@ -116,7 +118,7 @@ export const desktopController = {
     recorded.controls = true;
     recorded.play();
   },
-  sendRecordFrontend: async function (localRecord) {
+  postRecordFrontend: async function (localRecord) {
     resetExerciseValidation();
     const blob = new Blob(recordedBlobs, { type: "video/webm" });
     // const file = new File([blob], "filename.mp4", {
@@ -133,6 +135,8 @@ export const desktopController = {
         exerciseCounts: Number(exerciseCounts.value),
         exerciseRecord: localRecord,
       };
+      spinner.classList.remove("d-none");
+      localSocket.emit("post-start", localUser._id);
       try {
         const response = await axios.get("/api/record/s3Url");
         const s3response = await axios.put(response.data.url, blob, {
@@ -150,19 +154,16 @@ export const desktopController = {
           exerciseCounts.value = null;
           exerciseName.value = null;
           resetExerciseValidation();
-          const result = { send: true, msg: "紀錄上傳成功" };
-          localSocket.emit("send-result", result, localUser._id);
-          // msgDesktop.innerHTML = raiseAlert(true, "紀錄上傳成功");
+          const result = { post: true, msg: "紀錄上傳成功" };
+          localSocket.emit("post-result", result, localUser._id);
         } else {
-          const result = { send: false, msg: "紀錄上傳失敗" };
-          localSocket.emit("send-result", result, localUser._id);
-          // msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
+          const result = { post: false, msg: "紀錄上傳失敗" };
+          localSocket.emit("post-result", result, localUser._id);
         }
       } catch (error) {
         console.log(error);
-        const result = { send: false, msg: "紀錄上傳失敗" };
-        localSocket.emit("send-ori", result, localUser._id);
-        // msgDesktop.innerHTML = raiseAlert(false, "紀錄上傳失敗");
+        const result = { post: false, msg: "紀錄上傳失敗" };
+        localSocket.emit("post-result", result, localUser._id);
       }
     }
   },

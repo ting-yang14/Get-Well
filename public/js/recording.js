@@ -20,6 +20,8 @@ const postRecordBtn = document.getElementById("postRecordBtn");
 const accessSensorBtn = document.getElementById("accessSensorBtn");
 const startSensorBtn = document.getElementById("startSensorBtn");
 const stopSensorBtn = document.getElementById("stopSensorBtn");
+// spinner
+const spinner = document.getElementById("spinner");
 // socket
 const socket = io("/recording");
 // socket on event
@@ -143,33 +145,43 @@ socket.on("stop-result", (stopDevice, result) => {
     }
   }
 });
+
 // desktop receive record from mobile
 socket.on("receive-record", (record) => {
   desktopController.showSensorData(record);
   localRecord = record;
 });
+
 // desktop receive acceleration data from mobile
 socket.on("receive-acc", (acc) => {
   desktopController.showAccData(acc);
 });
+
 // desktop receive orientation data from mobile
 socket.on("receive-ori", (ori) => {
   desktopController.showOriData(ori);
 });
-// Both receive send record to db result
+
+// mobile receive desktop click send record button
+socket.on("receive-start", () => {
+  spinner.classList.remove("d-none");
+});
+
+// Both receive post record to db result
 socket.on("receive-result", (result) => {
-  console.log("send-result", result.msg);
+  console.log("post-result", result.msg);
+  spinner.classList.add("d-none");
   // 依據 device 顯示 result.msg
   if (device === "Desktop") {
-    msgDesktop.innerHTML = raiseAlert(result.send, result.msg);
+    msgDesktop.innerHTML = raiseAlert(result.post, result.msg);
   } else {
-    msgMobile.innerHTML = raiseAlert(result.send, result.msg);
+    msgMobile.innerHTML = raiseAlert(result.post, result.msg);
   }
 });
 
 function postRecord() {
   // desktopController.sendRecordMulter(localRecord, user._id);
-  desktopController.sendRecordFrontend(localRecord);
+  desktopController.postRecordFrontend(localRecord);
 }
 function displayView(device) {
   if (device === "Desktop") {
@@ -204,7 +216,6 @@ async function init() {
       navView.login(userData.avatarUrl);
       // join socket room with userId
       socket.emit("user-join", device, user._id);
-
       // desktop button event
       accessCameraBtn.addEventListener(
         "click",
