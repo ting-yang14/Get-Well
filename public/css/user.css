@@ -1,6 +1,7 @@
 #avatar {
   width: 100%;
   border-radius: 50rem;
+  aspect-ratio: 1;
   border: none;
   overflow: hidden;
   object-fit: cover;
