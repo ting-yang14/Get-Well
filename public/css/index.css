@@ -1,0 +1,17 @@
+.gif {
+  max-width: 100%;
+  box-shadow: 3px 3px 5px rgb(73 80 87 / 60%);
+}
+hr {
+  border-top: 3px solid #ffe107;
+  opacity: 0.75;
+}
+.line {
+  height: 1px;
+}
+.second-background {
+  background: #292e33;
+}
+h4 {
+  color: #0d6efd;
+}

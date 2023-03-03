@@ -1,0 +1,77 @@
+<!-- register Modal -->
+<div class="modal fade" id="register" tabindex="-1" aria-labelledby="registerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerLabel">註冊會員</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="lead">請填入會員註冊資料</p>
+                <form id="registerForm">
+                    <div class="mb-4 form-floating">
+                        <input type="text" class="form-control" id="registerUsername" placeholder="王小明" required />
+                        <label for="username" class="form-label">會員名稱</label>
+                        <div id="registerUsernameValidation"></div>
+                    </div>
+                    <div class="mb-4 form-floating">
+                        <input type="email" class="form-control" id="registerEmail" placeholder="name@example.com" />
+                        <label for="email" class="form-label">電子信箱</label>
+                        <div id="registerEmailValidation"></div>
+                    </div>
+                    <div class="mb-4 form-floating">
+                        <input type="password" class="form-control" id="registerPassword" placeholder="password" />
+                        <label for="password" class="form-label">密碼</label>
+                        <div id="registerPasswordValidation"></div>
+                    </div>
+                    <div class="container lead text-center" id="registerMsg"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-target="#login" data-bs-toggle="modal" data-bs-dismiss="modal"
+                    id="toggleLoginBtn">
+                    會員登入
+                </button>
+                <button type="button" class="btn btn-primary" id="registerBtn">
+                    註冊會員
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- login Modal -->
+<div class="modal fade" id="login" tabindex="-1" aria-labelledby="loginLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginLabel">會員登入</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="lead">請輸入帳號密碼</p>
+                <form id="loginForm">
+                    <div class="mb-4 form-floating">
+                        <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" />
+                        <label for="email" class="form-label">電子信箱</label>
+                        <div id="loginEmailValidation"></div>
+                    </div>
+                    <div class="mb-4 form-floating">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="password" />
+                        <label for="password" class="form-label">密碼</label>
+                        <div id="loginPasswordValidation"></div>
+                    </div>
+                    <div class="container lead text-center" id="loginMsg"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-target="#register" data-bs-toggle="modal"
+                    data-bs-dismiss="modal" id="toggleRegisterBtn">
+                    註冊會員
+                </button>
+                <button type="button" class="btn btn-primary" id="loginBtn">
+                    登入
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

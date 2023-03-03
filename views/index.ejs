@@ -3,105 +3,119 @@
 
 <head>
   <%- include('./partials/head') %>
+    <link rel="stylesheet" href="/css/index.css" />
 </head>
 
 <body>
   <%- include('./partials/nav') %>
     <!--Showcase-->
-    <section class="bg-dark text-light p-5 mt-5 text-center text-sm-start">
+    <section class="bg-dark text-light py-5 mt-5 text-center text-sm-start">
       <div class="container">
-        <div class="d-sm-flex align-items-center justify-content-between">
+        <div class="d-sm-flex align-items-center justify-content-evenly">
           <div>
-            <h1>你的努力<span class="text-warning">值得被看見</span></h1>
-            <p class="lead my-4">紀錄每日復健，找回健康的自己</p>
-            <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#register">
-              註冊健康人生
+            <h1>漸<span class="text-warning">健康</span>復&nbsp;&nbsp;&nbsp;Get&nbsp;Well</span>
+            </h1>
+            <p class="lead my-4">你的數位居家復健筆記</p>
+            <p>量化動作品質，看見自己的進步</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#register">
+              開始紀錄
             </button>
           </div>
-          <img class="img-fluid w-50 d-none d-sm-block" src="/img/showcase.jpg" alt="" />
+          <img class="img-fluid w-50 d-none d-sm-block" src="/img/3726297.png" alt="" />
         </div>
       </div>
     </section>
+    <section class="second-background text-light py-5 text-center text-sm-start">
+      <div class="container ">
+        <div class="d-flex align-items-center justify-content-evenly">
+          <div class="bg-light w-25 line"></div>
+          <h2 class="my-3 text-center">紀錄</h2>
+          <div class="bg-light w-25 line"></div>
+        </div>
+        <div class="row align-items-center py-3">
+          <div class="col-8 col-md-4 m-auto py-2 p-md-0">
+            <h4>裝置設置</h4>
+            <hr>
+            <p>手機及電腦開啟「開始復健」頁面</p>
+            <p>取得資料存取許可</p>
+          </div>
+          <div class="col-12 col-md-7">
+            <div class="row align-items-center">
+              <div class="col-3"><img class="rounded-3 gif" src="/img/mobile_access.gif" alt=""></div>
+              <div class="col-9"><img class="rounded-3 gif" src="/img/camera_access.gif" alt=""></div>
+            </div>
+          </div>
+        </div>
+        <div class="row align-items-center py-3">
+          <div class="col-12 col-md-7">
+            <img class="rounded-3 gif" src="/img/recording.gif" alt="">
+          </div>
+          <div class="col-8 col-md-4 m-auto py-2 p-md-0">
+            <h4>開始復健</h4>
+            <hr>
+            <p>手機及電腦同步操控紀錄</p>
+            <p>即時活動影像及動作訊號呈現</p>
+          </div>
+        </div>
+        <div class="row align-items-center py-3">
+          <div class="col-8 col-md-4 m-auto py-2 p-md-0">
+            <h4>上傳紀錄</h4>
+            <hr>
+            <p>回顧影像、即時下載</p>
+            <p>撰寫並送出復健紀錄</p>
+          </div>
+          <div class="col-12 col-md-7">
+            <img class="rounded-3 gif" src="/img/save_record.gif" alt="">
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="bg-dark text-light py-5 text-center text-sm-start">
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-evenly">
+          <div class="bg-light w-25 line"></div>
+          <h2 class="my-3 text-center">分析</h2>
+          <div class="bg-light w-25 line"></div>
+        </div>
+        <div class="row align-items-center py-3">
+          <div class="col-12 col-md-7">
+            <img class="rounded-3 gif" src="/img/record_review.gif" alt="">
+          </div>
+          <div class="col-8 col-md-4 m-auto py-2 p-md-0">
+            <h4>客觀評估</h4>
+            <hr>
+            <p>復健影像回顧</p>
+            <p>動作特徵量化</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="second-background text-light py-5 text-center text-sm-start">
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-evenly">
+          <div class="bg-light w-25 line"></div>
+          <h2 class="my-3 text-center">回顧</h2>
+          <div class="bg-light w-25 line"></div>
+        </div>
+        <div class="row align-items-center py-3">
+          <div class="col-8 col-md-4 m-auto py-2 p-md-0">
+            <h4>長期性追蹤</h4>
+            <hr>
+            <p>每日記錄檢索</p>
+            <p>特定動作搜尋</p>
+          </div>
+          <div class="col-12 col-md-7">
+            <img class="rounded-3 gif" src="/img/record_demo.gif" alt="">
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+    </section>
     <%- include('./partials/footer') %>
-      <!-- register Modal -->
-      <div class="modal fade" id="register" tabindex="-1" aria-labelledby="registerLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="registerLabel">註冊會員</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p class="lead">請填入會員註冊資料</p>
-              <form id="registerForm">
-                <div class="mb-4 form-floating">
-                  <input type="text" class="form-control" id="registerUsername" placeholder="王小明" required />
-                  <label for="username" class="form-label">會員名稱</label>
-                  <div id="registerUsernameValidation"></div>
-                </div>
-                <div class="mb-4 form-floating">
-                  <input type="email" class="form-control" id="registerEmail" placeholder="name@example.com" />
-                  <label for="email" class="form-label">電子信箱</label>
-                  <div id="registerEmailValidation"></div>
-                </div>
-                <div class="mb-4 form-floating">
-                  <input type="password" class="form-control" id="registerPassword" placeholder="password" />
-                  <label for="password" class="form-label">密碼</label>
-                  <div id="registerPasswordValidation"></div>
-                </div>
-                <div class="container lead text-center" id="registerMsg"></div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-target="#login" data-bs-toggle="modal" data-bs-dismiss="modal"
-                id="toggleLoginBtn">
-                會員登入
-              </button>
-              <button type="button" class="btn btn-primary" id="registerBtn">
-                註冊會員
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- login Modal -->
-      <div class="modal fade" id="login" tabindex="-1" aria-labelledby="loginLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="loginLabel">會員登入</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p class="lead">請輸入帳號密碼</p>
-              <form id="loginForm">
-                <div class="mb-4 form-floating">
-                  <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" />
-                  <label for="email" class="form-label">電子信箱</label>
-                  <div id="loginEmailValidation"></div>
-                </div>
-                <div class="mb-4 form-floating">
-                  <input type="password" class="form-control" id="loginPassword" placeholder="password" />
-                  <label for="password" class="form-label">密碼</label>
-                  <div id="loginPasswordValidation"></div>
-                </div>
-                <div class="container lead text-center" id="loginMsg"></div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-target="#register" data-bs-toggle="modal"
-                data-bs-dismiss="modal" id="toggleRegisterBtn">
-                註冊會員
-              </button>
-              <button type="button" class="btn btn-primary" id="loginBtn">
-                登入
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- <script src="/js/navView.js"></script> -->
-      <script type="module" src="/js/index.js"></script>
+      <%- include('./partials/register') %>
+        <!-- <script src="/js/navView.js"></script> -->
+        <script type="module" src="/js/index.js"></script>
 </body>
 
 </html>
