@@ -13,6 +13,7 @@ import { Server } from "socket.io";
 import { getDirname } from "./public/js/utils.js";
 import { socketHandler } from "./public/js/socketHandler.js";
 import { userRouter } from "./routes/userRoutes.js";
+import { s3Router } from "./routes/s3Routes.js";
 import { recordRouter } from "./routes/recordRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 import { connectDB } from "./config/db.js";
@@ -32,7 +33,7 @@ app.use("/css", express.static(path.join(__dirname, "public", "css")));
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ limit: " 1mb ", extended: true }));
-
+app.use("/api/s3", s3Router);
 app.use("/api/user", userRouter);
 app.use("/api/record", recordRouter);
 

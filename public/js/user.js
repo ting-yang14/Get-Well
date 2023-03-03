@@ -123,7 +123,7 @@ async function updateUser() {
       if (avatarInput.files[0]) {
         const uploadedFile = avatarInput.files[0];
         // 獲得 putObjectSignedUrl
-        const response = await axios.get("/api/record/s3Url");
+        const response = await axios.get("/api/s3");
         console.log(response.data);
         // put file to S3
         const s3response = await axios.put(response.data.url, uploadedFile);
@@ -422,7 +422,6 @@ async function getHasRecordDate() {
         hasRecordDate.push(parseInt(record.createdAt.slice(8, 10)))
       );
       const uniqueHasRecordDate = [...new Set(hasRecordDate)];
-      console.log(uniqueHasRecordDate);
       return uniqueHasRecordDate;
     }
   } catch (error) {
@@ -503,7 +502,7 @@ async function init() {
       checkTodayRecord();
     } catch (error) {
       console.log(error);
-      // window.location.href = "/";
+      window.location.href = "/";
     }
   } else {
     window.location.href = "/";

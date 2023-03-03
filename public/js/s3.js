@@ -1,20 +1,13 @@
 import dotenv from "dotenv";
-import {
-  S3Client,
-  PutObjectCommand,
-  DeleteObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { generateFileName } from "./utils.js";
-import { cloudfrontHandler } from "./cloudfront.js";
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+
 dotenv.config();
 
-const bucketName = process.env.AWS_BUCKET_NAME;
+export const bucketName = process.env.AWS_BUCKET_NAME;
 const bucketRegion = process.env.AWS_BUCKET_REGION;
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-const s3Client = new S3Client({
+export const s3Client = new S3Client({
   credentials: {
     accessKeyId: accessKeyId,
     secretAccessKey: secretAccessKey,
@@ -33,30 +26,6 @@ export const s3Handler = {
   //     };
   //     return s3Client.send(new PutObjectCommand(uploadParams));
   //   },
-  getObjectSignedUrl: async function (fileName) {
-    try {
-      const url = cloudfrontHandler.generateCloudfrontSignedUrl(fileName);
-      return url;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  // createRecordFrontend
-  putObjectSignedUrl: async function () {
-    const fileName = generateFileName();
-    const params = {
-      Bucket: bucketName,
-      Key: fileName,
-    };
-    const command = new PutObjectCommand(params);
-    const seconds = 60;
-    try {
-      const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
-      return { url, fileName };
-    } catch (error) {
-      console.log(error);
-    }
-  },
   deleteFile: function (fileName) {
     const deleteParams = {
       Bucket: bucketName,

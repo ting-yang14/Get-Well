@@ -168,7 +168,10 @@ export const recordController = {
       res.status(400);
       throw new Error("查無此紀錄");
     }
-    const recordUrl = await s3Handler.getObjectSignedUrl(record.videoFileName);
+    // const recordUrl = await s3Handler.getObjectSignedUrl(record.videoFileName);
+    const recordUrl = await cloudfrontHandler.generateCloudfrontSignedUrl(
+      record.videoFileName
+    );
     res.status(200).json({ success: true, data: { record, recordUrl } });
   }),
   // @desc   Update record

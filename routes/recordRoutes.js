@@ -26,8 +26,6 @@ recordRouter
 //   recordController.createRecordMulter
 // );
 
-recordRouter.get("/s3Url", recordController.getPutObjectSignedUrl);
-
 recordRouter
   .route("/:recordId")
   .get(

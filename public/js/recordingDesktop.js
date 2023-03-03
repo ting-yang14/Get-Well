@@ -138,7 +138,7 @@ export const desktopController = {
       spinner.classList.remove("d-none");
       localSocket.emit("post-start", localUser._id);
       try {
-        const response = await axios.get("/api/record/s3Url");
+        const response = await axios.get("/api/s3");
         const s3response = await axios.put(response.data.url, blob, {
           headers: { "Content-Type": blob.type },
         });

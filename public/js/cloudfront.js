@@ -28,14 +28,18 @@ const cloudfront = new CloudFrontClient({
 });
 
 export const cloudfrontHandler = {
-  generateCloudfrontSignedUrl: function (fileName) {
-    const signedUrl = getSignedUrl({
-      keyPairId: cloudfrontKeyPairId,
-      privateKey: cloudfrontPrivateKey,
-      url: `${cloudfrontUrl}/${fileName}`,
-      dateLessThan: new Date(Date.now() + 1000 /*sec*/ * 60 * 30),
-    });
-    return signedUrl;
+  generateCloudfrontSignedUrl: async function (fileName) {
+    try {
+      const signedUrl = getSignedUrl({
+        keyPairId: cloudfrontKeyPairId,
+        privateKey: cloudfrontPrivateKey,
+        url: `${cloudfrontUrl}/${fileName}`,
+        dateLessThan: new Date(Date.now() + 1000 /*sec*/ * 60 * 30),
+      });
+      return signedUrl;
+    } catch (error) {
+      console.log(error);
+    }
   },
   createCloudfrontInvalid: async function (fileName) {
     const cfCommand = new CreateInvalidationCommand({

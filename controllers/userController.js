@@ -112,7 +112,6 @@ export const userController = {
       );
       console.log("cfResponse for delete avatar:", cfResponse);
     }
-
     const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
       req.body,
@@ -134,7 +133,7 @@ export const userController = {
     const user = await User.findById(req.user, projection);
     if (user.avatarFileName) {
       try {
-        const avatarUrl = await s3Handler.getObjectSignedUrl(
+        const avatarUrl = await cloudfrontHandler.generateCloudfrontSignedUrl(
           user.avatarFileName
         );
         console.log("getme", { user, avatarUrl });
