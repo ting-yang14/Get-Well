@@ -1,0 +1,719 @@
+openapi: 3.0.3
+info:
+  title: 漸健康復 Get Well API
+  description: |-
+    漸健康復 Get Well API 文件
+  version: 1.0.1
+servers:
+  - url: https://ting-yang14.com/
+tags:
+  - name: 會員
+  - name: 紀錄
+  - name: S3
+paths:
+  /api/user/register:
+    post:
+      tags:
+        - 會員
+      summary: 會員註冊
+      description: User register with username, email and password
+      requestBody:
+        description: 會員註冊資料
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userRegisterInput"
+        required: true
+      responses:
+        "201":
+          description: 註冊成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/success"
+        "400":
+          description: 註冊失敗，註冊內容格式不符或其他原因
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /api/user/login:
+    post:
+      tags:
+        - 會員
+      summary: 會員登入
+      description: User login with email and password
+      requestBody:
+        description: 會員登入資料
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userLoginInput"
+        required: true
+      responses:
+        "200":
+          description: 登入成功，使用 JWT 加密資訊並存放到 Header 的  Authorization 中，有效期 1 天
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userLoginSuccess"
+        "400":
+          description: 登入失敗，帳號或密碼錯誤或其他原因
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /api/user/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - 會員
+      summary: 取得當前登入的會員資料
+      description: Get current logged-in user information and avatar
+      responses:
+        "200":
+          description: 登入的會員資料
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getUserSuccess"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /api/user/{userId}:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - 會員
+      summary: 更新會員資料
+      description: Update user information and avatar
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 新的會員資料和大頭貼檔名
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userUpdateInput"
+        required: true
+      responses:
+        "200":
+          description: 更新資料成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/success"
+        "400":
+          description: 查無使用者
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /api/record:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - 紀錄
+      summary: 紀錄搜尋
+      description: Get records by time or keyword and page
+      parameters:
+        - name: time
+          in: query
+          description: 搜尋時間，為月份或特定日期
+          required: false
+          explode: true
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: 搜尋的關鍵字
+          required: false
+          explode: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: 要取的分頁，每頁兩筆資料
+          required: false
+          explode: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 紀錄資料
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getRecordsSuccess"
+        "400":
+          description: 關鍵字錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - 紀錄
+      summary: 新增紀錄
+      description: Create new record
+      requestBody:
+        description: User upload rehabilitation records
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createRecordInput"
+        required: true
+      responses:
+        "201":
+          description: 建立成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/success"
+        "400":
+          description: 建立失敗，輸入錯誤或其他原因
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /api/record/{recordId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - 紀錄
+      summary: 根據紀錄編號取得紀錄資訊
+      description: Get record by recordId
+      parameters:
+        - name: recordId
+          in: path
+          description: recordId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 根據紀錄編號取得紀錄資訊，null 表示沒有資料
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getRecordSuccess"
+        "400":
+          description: 編號錯誤或其他原因
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - 紀錄
+      summary: 根據紀錄編號更新紀錄資訊
+      description: Update record by recordId
+      parameters:
+        - name: recordId
+          in: path
+          description: recordId
+          required: true
+          explode: true
+          schema:
+            type: string
+      requestBody:
+        description: User update record information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/recordUpdateInput"
+        required: true
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/success"
+        "400":
+          description: 編號錯誤或其他原因
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: 伺服器錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - 紀錄
+      summary: 根據紀錄編號刪除紀錄
+      description: Delete record by recordId
+      parameters:
+        - name: recordId
+          in: path
+          description: recordId
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 刪除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/success"
+        "400":
+          description: 編號錯誤或其他原因
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /api/s3:
+    get:
+      tags:
+        - S3
+      summary: 取得上傳物件網址
+      description: Get S3 put object presigned url
+      responses:
+        "200":
+          description: 成功取得網址
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/gets3UrlSuccess"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+  schemas:
+    userRegisterInput:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 8
+          example: testUser
+        email:
+          type: string
+          format: email
+          example: testUser@gmail.com
+        password:
+          type: string
+          format: password
+          example: testUser1!
+      required:
+        - username
+        - email
+        - password
+    userLoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          example: testUser@gmail.com
+        password:
+          type: string
+          format: password
+          example: testUser1!
+      required:
+        - email
+        - password
+    userLoginSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 63fdc76d174b8bdb1b5d18e9
+            username:
+              type: string
+              example: testUser
+            email:
+              type: string
+              format: email
+              example: testUser@gmail.com
+            token:
+              type: string
+              example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZmRjNzZkMTc0YjhiZGIxYjVkMThlOCIsImlhdCI6MTY3NzkzNzUxMCwiZXhwIjoxNjc4MDIzOTEwfQ.Qoapln3bHss3cMlINcev6kzZ8yoNy-pX_pKV3jjkcmE
+    user:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 63fdc76d174b8bdb1b5d18e9
+        username:
+          type: string
+          example: testUser@gmail.com
+        email:
+          type: string
+          example: testUser@gmail.com
+        avatarFileName:
+          type: string
+          example: a641a93a87d527097c7bf3bca97b4433
+        gender:
+          type: string
+          example: 男
+        height:
+          type: number
+          format: float
+          example: 180.0
+        weight:
+          type: number
+          format: float
+          example: 100.0
+    getUserSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/user"
+            avatarUrl:
+              type: string
+              format: uri
+    userUpdateInput:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 8
+          example: testUser
+        gender:
+          type: string
+          example: 男
+        height:
+          type: number
+          format: float
+          example: 180.0
+        weight:
+          type: number
+          format: float
+          example: 100.0
+        avatarFileName:
+          type: string
+          example: a641a93a87d527097c7bf3bca97b4433
+    record:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 63fdc76d174b8bdb1b5d18e9
+        user:
+          type: string
+          example: 63fdc76d174b8bdb1b5d18fd
+        exerciseName:
+          type: string
+          example: 手指爬牆
+        exerciseCounts:
+          type: integer
+          format: int32
+          example: 10
+        videoFileName:
+          type: string
+          example: 7ef228b72ad68fc897ad08a8ed5a879c
+        exerciseRecord:
+          type: object
+          properties:
+            startTime:
+              type: string
+              example: "2022-03-04 10:00:00"
+            endTime:
+              type: string
+              example: "2022-03-04 10:01:00"
+            data:
+              type: array
+              items:
+                type: object
+                properties:
+                  acc_X:
+                    type: number
+                    format: float
+                    example: 0.589
+                  acc_Y:
+                    type: number
+                    format: float
+                    example: -0.0502
+                  acc_Z:
+                    type: number
+                    format: float
+                    example: -0.0161
+                  ori_alpha:
+                    type: number
+                    format: float
+                    example: 313.1679
+                  ori_beta:
+                    type: number
+                    format: float
+                    example: 77.3201
+                  ori_gamma:
+                    type: number
+                    format: float
+                    example: 67.0311
+                  time:
+                    type: string
+                    example: 2023-03-04T12:05:28.657+00:00
+        createdAt:
+          type: string
+          example: 2023-03-04T12:06:57.034+00:00
+        updatedAt:
+          type: string
+          example: 2023-03-04T12:06:57.034+00:00
+        __v:
+          type: integer
+          format: int32
+          example: 0
+    getRecordsSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/record"
+            recordUrl:
+              type: string
+              format: uri
+    createRecordInput:
+      type: object
+      properties:
+        user:
+          type: string
+          example: 63fdc76d174b8bdb1b5d18fd
+        exerciseName:
+          type: string
+          example: 手指爬牆
+        exerciseCounts:
+          type: integer
+          format: int32
+          example: 10
+        videoFileName:
+          type: string
+          example: 7ef228b72ad68fc897ad08a8ed5a879c
+        exerciseRecord:
+          type: object
+          properties:
+            startTime:
+              type: string
+              example: "2022-03-04 10:00:00"
+            endTime:
+              type: string
+              example: "2022-03-04 10:01:00"
+            data:
+              type: array
+              items:
+                type: object
+                properties:
+                  acc_X:
+                    type: number
+                    format: float
+                    example: 0.589
+                  acc_Y:
+                    type: number
+                    format: float
+                    example: -0.0502
+                  acc_Z:
+                    type: number
+                    format: float
+                    example: -0.0161
+                  ori_alpha:
+                    type: number
+                    format: float
+                    example: 313.1679
+                  ori_beta:
+                    type: number
+                    format: float
+                    example: 77.3201
+                  ori_gamma:
+                    type: number
+                    format: float
+                    example: 67.0311
+                  time:
+                    type: string
+                    example: 2023-03-04T12:05:28.657+00:00
+                required:
+                  - acc_X
+                  - acc_Y
+                  - acc_Z
+                  - ori_alpha
+                  - ori_beta
+                  - ori_gamma
+                  - time
+          required:
+            - startTime
+            - data
+            - endTime
+      required:
+        - user
+        - exerciseName
+        - exerciseCounts
+        - exerciseRecord
+        - videoFileName
+    getRecordSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            records:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 63fdc76d174b8bdb1b5d18e9
+                  exerciseName:
+                    type: string
+                    example: 手指爬牆
+                  exerciseCounts:
+                    type: integer
+                    format: int32
+                    example: 10
+                  exerciseRecord:
+                    type: object
+                    properties:
+                      startTime:
+                        type: string
+                        example: "2022-03-04 10:00:00"
+                      endTime:
+                        type: string
+                        example: "2022-03-04 10:01:00"
+                      data:
+                        type: array
+                        items: {}
+                        example: []
+                  createdAt:
+                    type: string
+                    example: 2023-03-04T12:06:57.034+00:00
+            nextPage:
+              type: integer
+              example: 0
+    recordUpdateInput:
+      type: object
+      properties:
+        exerciseName:
+          type: string
+          example: 手指爬牆
+        exerciseCounts:
+          type: integer
+          format: int64
+          example: 10
+      required:
+        - exerciseName
+        - exerciseCounts
+    gets3UrlSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              description: s3 put object signed url
+            fileName:
+              type: string
+              description: random generated fileName
+    success:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+    error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 錯誤訊息
