@@ -20,7 +20,7 @@ export const s3Controller = {
       if (!url || !fileName) {
         throw new Error("無法連結S3");
       } else {
-        res.status(200).json({ url, fileName });
+        res.status(200).json({ success: true, data: { url, fileName } });
       }
     } catch (error) {
       console.log(error);

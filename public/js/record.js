@@ -18,10 +18,6 @@ let user;
 let record;
 let countDownNum = 3;
 
-editRecordBtn.addEventListener("click", editToggle);
-saveRecordBtn.addEventListener("click", saveRecord);
-deleteRecordBtn.addEventListener("click", deleteRecord);
-
 function editToggle() {
   if (saveRecordBtn.classList.contains("btn-warning")) {
     saveRecordBtn.classList.remove("text-danger");
@@ -56,7 +52,6 @@ async function saveRecord() {
           headers: { Authorization: localStorage.token },
         }
       );
-      console.log(patchResponse);
       if (patchResponse.data.success) {
         saveRecordBtn.classList.replace("btn-primary", "btn-success");
         saveRecordBtn.innerHTML = `&nbsp;&nbsp;儲存成功`;
@@ -90,7 +85,6 @@ async function deleteRecord() {
     const deleteResponse = await axios.delete(`/api${currentPathname}`, {
       headers: { Authorization: localStorage.token },
     });
-    console.log(deleteResponse);
     const deleteResponseAlert = document.getElementById("deleteResponseAlert");
     if (deleteResponse.data.success) {
       deleteResponseAlert.innerHTML = raiseAlert(
@@ -118,7 +112,6 @@ async function getRecord() {
     const response = await axios.get(`/api${currentPathname}`, {
       headers: { Authorization: localStorage.token },
     });
-    console.log(response.data);
     if (response.data.success) {
       return response.data.data;
     }
@@ -426,5 +419,19 @@ async function init() {
     window.location.href = "/";
   }
 }
+
+editRecordBtn.addEventListener("click", editToggle);
+saveRecordBtn.addEventListener("click", saveRecord);
+deleteRecordBtn.addEventListener("click", deleteRecord);
+exerciseCounts.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    saveRecord();
+  }
+});
+exerciseName.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    saveRecord();
+  }
+});
 
 init();

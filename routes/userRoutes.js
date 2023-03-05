@@ -12,7 +12,7 @@ userRouter.post(
 );
 userRouter.post(
   "/login",
-  // joiMiddleware(userSchemas.login, "body"),
+  joiMiddleware(userSchemas.login, "body"),
   userController.loginUser
 );
 userRouter.patch(

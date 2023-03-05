@@ -3,7 +3,6 @@ import { Record } from "../model/recordModel.js";
 import { User } from "../model/userModel.js";
 import { cloudfrontHandler } from "../public/js/cloudfront.js";
 import { s3Handler } from "../public/js/s3.js";
-
 // import { generateFileName } from "../public/js/utils.js";
 
 export const recordController = {
@@ -15,7 +14,7 @@ export const recordController = {
     const user = await User.findById(req.user);
     // Check for user
     if (!user) {
-      res.status(401);
+      res.status(400);
       throw new Error("查無此使用者");
     }
     // Make sure the logged in user matches the record user
@@ -25,7 +24,7 @@ export const recordController = {
     }
     // check for query
     if (!req.query.time && !req.query.keyword && !req.query.page) {
-      res.status(401);
+      res.status(400);
       throw new Error("請使用關鍵字搜尋");
     }
     if (req.query.time) {
@@ -54,7 +53,9 @@ export const recordController = {
             createdAt: 1,
           }
         ).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, data: records });
+        res
+          .status(200)
+          .json({ success: true, data: { records: records, nextPage: null } });
       } else if (timeUnit.length === 2) {
         // record for a month
         const year = parseInt(timeUnit[0]);
@@ -69,9 +70,18 @@ export const recordController = {
               $lt: endOfMonth,
             },
           },
-          { createdAt: 1 }
+          {
+            _id: 1,
+            exerciseName: 1,
+            exerciseCounts: 1,
+            "exerciseRecord.startTime": 1,
+            "exerciseRecord.endTime": 1,
+            createdAt: 1,
+          }
         );
-        res.status(200).json({ success: true, data: records });
+        res
+          .status(200)
+          .json({ success: true, data: { records: records, nextPage: null } });
       } else {
         res.status(400);
         throw new Error("時間格式不符合");
@@ -129,35 +139,21 @@ export const recordController = {
     });
 
     if (record) {
-      res.status(201).json({ success: true, data: record });
+      res.status(201).json({ success: true });
     } else {
       throw new Error("紀錄儲存失敗");
-    }
-  }),
-  // @desc   get S3 signed put objectUrl
-  // @route  GET /api/record/s3Url
-  // @access Private
-  getPutObjectSignedUrl: asyncHandler(async (req, res) => {
-    const { url, fileName } = await s3Handler.putObjectSignedUrl();
-    if (!url || !fileName) {
-      throw new Error("無法連結S3");
-    } else {
-      res.status(200).json({ url, fileName });
     }
   }),
   // @desc   Get record
   // @route  GET /api/record/:recordId
   // @access Private
   getRecord: asyncHandler(async (req, res) => {
-    console.log(req.user);
     const user = await User.findById(req.user);
-
     // Check for user
     if (!user) {
-      res.status(401);
+      res.status(400);
       throw new Error("查無此使用者");
     }
-
     // Make sure the logged in user matches the record user
     if (req.user !== user._id.toString()) {
       res.status(401);
@@ -168,7 +164,6 @@ export const recordController = {
       res.status(400);
       throw new Error("查無此紀錄");
     }
-    // const recordUrl = await s3Handler.getObjectSignedUrl(record.videoFileName);
     const recordUrl = await cloudfrontHandler.generateCloudfrontSignedUrl(
       record.videoFileName
     );
@@ -186,12 +181,10 @@ export const recordController = {
     const user = await User.findById(req.user);
     // Check for user
     if (!user) {
-      res.status(401);
+      res.status(400);
       throw new Error("查無此使用者");
     }
     // Make sure the logged in user matches the record user
-    console.log("record user", record.user);
-    console.log("user _id", user._id.toString());
     if (record.user.toString() !== user._id.toString()) {
       res.status(401);
       throw new Error("User not authorized");
@@ -201,12 +194,8 @@ export const recordController = {
       req.body,
       { new: true }
     );
-
     if (updatedRecord) {
-      console.log(`record ${req.params.recordId} :modify record`);
-      res
-        .status(200)
-        .json({ success: true, data: { recordId: req.params.recordId } });
+      res.status(200).json({ success: true });
     }
   }),
   // @desc   Delete record
@@ -231,17 +220,10 @@ export const recordController = {
       throw new Error("使用者未授權");
     }
     try {
-      const s3Response = await s3Handler.deleteFile(record.videoFileName);
-      console.log(s3Response);
-      const cfResponse = await cloudfrontHandler.createCloudfrontInvalid(
-        record.videoFileName
-      );
-      console.log(cfResponse);
-      const dbResponse = await record.remove();
-      console.log(dbResponse);
-      res
-        .status(200)
-        .json({ success: true, data: { recordId: req.params.recordId } });
+      await s3Handler.deleteFile(record.videoFileName);
+      await cloudfrontHandler.createCloudfrontInvalid(record.videoFileName);
+      await record.remove();
+      res.status(200).json({ success: true });
     } catch (error) {
       console.log(error);
       res.status(400);

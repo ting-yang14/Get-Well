@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { s3Handler } from "../public/js/s3.js";
 import { cloudfrontHandler } from "../public/js/cloudfront.js";
-import { userSchemas } from "../config/joi.js";
+
 dotenv.config();
 
 function generateToken(id) {
@@ -39,15 +39,9 @@ export const userController = {
       email,
       password: hashedPassword,
     });
-    console.log(user);
     if (user) {
       res.status(201).json({
         success: true,
-        data: {
-          _id: user.id,
-          username: user.username,
-          email: user.email,
-        },
       });
     } else {
       res.status(400);
@@ -66,15 +60,13 @@ export const userController = {
     }
     // check for user email
     const user = await User.findOne({ email });
-    console.log(user);
     if (user === null) {
       res.status(400);
       throw new Error("查無使用者，請註冊");
     }
     const isValid = await bcrypt.compare(password, user.password);
-    // console.log(isValid);
     if (user && isValid) {
-      res.json({
+      res.status(200).json({
         success: true,
         data: {
           _id: user.id,
@@ -88,14 +80,14 @@ export const userController = {
       throw new Error("密碼錯誤");
     }
   }),
-  // @desc   Update record
-  // @route  PUT /api/record/:userId
+  // @desc   Update user
+  // @route  PATCH /api/user/:userId
   // @access Private
   updateUser: asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.userId);
     // Check for user
     if (!user) {
-      res.status(401);
+      res.status(400);
       throw new Error("查無此使用者");
     }
     // Make sure the logged in user matches the record user
@@ -105,30 +97,18 @@ export const userController = {
     }
     // 若有舊的大頭貼，要刪除
     if (req.body.avatarFileName && user.avatarFileName) {
-      const s3Response = await s3Handler.deleteFile(user.avatarFileName);
-      console.log("s3Response for delete avatar:", s3Response);
-      const cfResponse = await cloudfrontHandler.createCloudfrontInvalid(
-        user.avatarFileName
-      );
-      console.log("cfResponse for delete avatar:", cfResponse);
+      await s3Handler.deleteFile(user.avatarFileName);
+      await cloudfrontHandler.createCloudfrontInvalid(user.avatarFileName);
     }
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.userId,
-      req.body,
-      {
-        new: true,
-      }
-    );
-    console.log(`User ${req.user} :modify user`);
-    res
-      .status(200)
-      .json({ success: true, data: { recordId: req.params.userId } });
+    await User.findByIdAndUpdate(req.params.userId, req.body, {
+      new: true,
+    });
+    res.status(200).json({ success: true });
   }),
   // @desc   Get user info
   // @route  GET /api/user/me
   // @access Private
   getMe: asyncHandler(async (req, res) => {
-    // const { _id, username, email } = await User.findById(req.user.id);
     const projection = { password: 0, createdAt: 0, updatedAt: 0, __v: 0 };
     const user = await User.findById(req.user, projection);
     if (user.avatarFileName) {
@@ -136,23 +116,17 @@ export const userController = {
         const avatarUrl = await cloudfrontHandler.generateCloudfrontSignedUrl(
           user.avatarFileName
         );
-        console.log("getme", { user, avatarUrl });
         res.status(200).json({ success: true, data: { user, avatarUrl } });
       } catch (error) {
         console.log(error);
-        console.log("getme", { user: user, avatarUrl: null });
         res
           .status(200)
           .json({ success: true, data: { user: user, avatarUrl: null } });
       }
     } else {
-      console.log("getme", { user: user, avatarUrl: null });
       res
         .status(200)
         .json({ success: true, data: { user: user, avatarUrl: null } });
     }
-    // console.log("getme", user);
-    // res.status(200).json({ id: _id, username, email });
-    // res.status(200).json({ success: true, data: user });
   }),
 };

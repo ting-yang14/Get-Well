@@ -1,6 +1,5 @@
 import express from "express";
 import { recordController } from "../controllers/recordController.js";
-// import { protect } from "../middleware/authMiddleware.js";
 import passport from "passport";
 import { recordSchemas } from "../config/joi.js";
 import { joiMiddleware } from "../middleware/joiMiddleware.js";
@@ -10,7 +9,6 @@ import { joiMiddleware } from "../middleware/joiMiddleware.js";
 export const recordRouter = express.Router();
 recordRouter
   .route("/")
-  // .get(protect, recordController.getRecords)
   .get(
     passport.authenticate("jwt", { session: false }),
     recordController.getRecords

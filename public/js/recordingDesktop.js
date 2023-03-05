@@ -43,7 +43,6 @@ export const desktopController = {
       socket.emit("device-access", user._id, { access, msg });
       startVideoBtn.disabled = false;
       accessCameraBtn.remove();
-      console.log("getUserMedia() got stream:", stream);
       window.stream = stream;
       preview.srcObject = stream;
       downloadVideoBtn.href = stream;
@@ -62,19 +61,17 @@ export const desktopController = {
     recordedBlobs = [];
     try {
       mediaRecorder = new MediaRecorder(window.stream);
-      console.log("Created MediaRecorder", mediaRecorder);
       stopVideoBtn.disabled = false;
-      mediaRecorder.onstop = (event) => {
-        console.log("Recorder stopped: ", event);
-        console.log("Recorded Blobs: ", recordedBlobs);
-      };
+      // mediaRecorder.onstop = (event) => {
+      //   console.log("Recorder stopped: ", event);
+      //   console.log("Recorded Blobs: ", recordedBlobs);
+      // };
       mediaRecorder.ondataavailable = handleDataAvailable;
       mediaRecorder.start();
       // socket
       socket.emit("record", "start", device, user._id);
       startVideoTime.textContent = `開始時間：${getCurrentTime()}`;
       stopVideoBtn.innerHTML = `&nbsp;&nbsp;停止紀錄`;
-      console.log("MediaRecorder started", mediaRecorder);
     } catch (err) {
       console.error("Exception while creating MediaRecorder:", err);
       msgDesktop.innerHTML = raiseAlert(false, "請重新開啟頁面並啟動視訊鏡頭");
@@ -121,13 +118,11 @@ export const desktopController = {
   postRecordFrontend: async function (localRecord) {
     resetExerciseValidation();
     const blob = new Blob(recordedBlobs, { type: "video/webm" });
-    // const file = new File([blob], "filename.mp4", {
-    //   type: blob.type,
-    //   lastModified: new Date().getTime(),
-    // });
-    // console.log(file);
     if (blob.size === 0) {
       msgDesktop.innerHTML = raiseAlert(false, "尚未紀錄影像");
+    }
+    if (localRecord.data.length === 0) {
+      msgDesktop.innerHTML = raiseAlert(false, "尚未紀錄動作資料");
     }
     if (exerciseInputValidation()) {
       const requestBody = {
@@ -139,17 +134,13 @@ export const desktopController = {
       localSocket.emit("post-start", localUser._id);
       try {
         const response = await axios.get("/api/s3");
-        const s3response = await axios.put(response.data.url, blob, {
+        await axios.put(response.data.data.url, blob, {
           headers: { "Content-Type": blob.type },
         });
-        // const s3response = await axios.put(response.data.url, file, {
-        //   headers: { "Content-Type": file.type },
-        // });
-        requestBody.videoFileName = response.data.fileName;
+        requestBody.videoFileName = response.data.data.fileName;
         const postResponse = await axios.post("/api/record", requestBody, {
           headers: { Authorization: localStorage.token },
         });
-        console.log(postResponse);
         if (postResponse.data.success) {
           exerciseCounts.value = null;
           exerciseName.value = null;
@@ -244,7 +235,6 @@ function insertRow(table, rowData, index) {
 }
 
 function handleDataAvailable(event) {
-  console.log("handleDataAvailable", event);
   if (event.data && event.data.size > 0) {
     recordedBlobs.push(event.data);
   }

@@ -22,15 +22,17 @@ const startSensorBtn = document.getElementById("startSensorBtn");
 const stopSensorBtn = document.getElementById("stopSensorBtn");
 // spinner
 const spinner = document.getElementById("spinner");
+// exercise input
+const exerciseName = document.getElementById("exerciseName");
+const exerciseCounts = document.getElementById("exerciseCounts");
 // socket
 const socket = io("/recording");
 // socket on event
-socket.on("connect", () => {
-  console.log(socket.id);
-});
+// socket.on("connect", () => {
+//   console.log(socket.id);
+// });
 
 socket.on("join-result", (result) => {
-  console.log("join-result: ", result.msg);
   // 依據 device 顯示 result.msg
   if (device === "Desktop") {
     msgDesktop.innerHTML = raiseAlert(result.join, result.msg);
@@ -40,7 +42,6 @@ socket.on("join-result", (result) => {
 });
 
 socket.on("access-result", (result) => {
-  console.log("access-result", result.msg);
   // 依據 device 顯示 result.msg
   if (device === "Desktop") {
     msgDesktop.innerHTML = raiseAlert(result.access, result.msg);
@@ -50,7 +51,6 @@ socket.on("access-result", (result) => {
 });
 
 socket.on("start-result", (startDevice, result) => {
-  console.log(`由${startDevice} 開始紀錄 ${result.both}: ${result.msg}`);
   if (startDevice === "Desktop") {
     if (result.both) {
       // 雙方收到 開始紀錄
@@ -99,7 +99,6 @@ socket.on("start-result", (startDevice, result) => {
 });
 
 socket.on("stop-result", (stopDevice, result) => {
-  console.log(`由${stopDevice} 停止紀錄 ${result.both}: ${result.msg}`);
   if (stopDevice === "Desktop") {
     if (result.both) {
       // 雙方收到 停止紀錄
@@ -169,7 +168,6 @@ socket.on("receive-start", () => {
 
 // Both receive post record to db result
 socket.on("receive-result", (result) => {
-  console.log("post-result", result.msg);
   spinner.classList.add("d-none");
   // 依據 device 顯示 result.msg
   if (device === "Desktop") {
@@ -183,6 +181,7 @@ function postRecord() {
   // desktopController.sendRecordMulter(localRecord, user._id);
   desktopController.postRecordFrontend(localRecord);
 }
+
 function displayView(device) {
   if (device === "Desktop") {
     const desktopSec = document.getElementById("desktopSec");
@@ -256,5 +255,16 @@ async function init() {
     window.location.href = "/";
   }
 }
+
+exerciseCounts.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    postRecord();
+  }
+});
+exerciseName.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    postRecord();
+  }
+});
 
 init();

@@ -24,11 +24,12 @@ export function getCurrentTime() {
     "12",
   ];
   const now = new Date();
-  const day = `${now.getFullYear()}-${
-    monthList[now.getMonth()]
-  }-${now.getDate()}`;
+  const year = now.getFullYear();
+  const month = monthList[now.getMonth()];
+  const date = now.getDate() < 10 ? `0${now.getDate()}` : now.getDate();
+  const today = `${year}-${month}-${date}`;
   const time = now.toTimeString().slice(0, 8);
-  return `${day} ${time}`;
+  return `${today} ${time}`;
 }
 
 export function raiseAlert(result, message) {

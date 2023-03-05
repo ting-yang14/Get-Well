@@ -11,7 +11,21 @@ const defaultGender = document.getElementById("defaultGender");
 const genderSelector = document.getElementById("genderSelector");
 const height = document.getElementById("height");
 const weight = document.getElementById("weight");
-
+username.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    updateUser();
+  }
+});
+height.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    updateUser();
+  }
+});
+weight.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    updateUser();
+  }
+});
 // button
 const avatarInput = document.getElementById("avatarInput");
 const editUserBtn = document.getElementById("editUserBtn");
@@ -19,7 +33,6 @@ const updateUserBtn = document.getElementById("updateUserBtn");
 avatarInput.addEventListener("change", previewAvatar);
 editUserBtn.addEventListener("click", showInputColumn);
 updateUserBtn.addEventListener("click", updateUser);
-
 // avatar preview
 function previewAvatar() {
   const uploadedFile = avatarInput.files[0];
@@ -124,12 +137,10 @@ async function updateUser() {
         const uploadedFile = avatarInput.files[0];
         // 獲得 putObjectSignedUrl
         const response = await axios.get("/api/s3");
-        console.log(response.data);
-        // put file to S3
-        const s3response = await axios.put(response.data.url, uploadedFile);
-        console.log(s3response);
-        // add fileName to requestBody
-        requestBody.avatarFileName = response.data.fileName;
+        if (response.data.success) {
+          await axios.put(response.data.data.url, uploadedFile);
+          requestBody.avatarFileName = response.data.data.fileName;
+        }
       }
       // patch user data
       const patchResponse = await axios.patch(
@@ -139,7 +150,6 @@ async function updateUser() {
           headers: { Authorization: localStorage.token },
         }
       );
-      console.log(patchResponse);
       if (patchResponse.data.success) {
         updateUserBtn.classList.add("text-success");
         updateUserBtn.innerHTML = `&nbsp;&nbsp;儲存成功`;
@@ -416,10 +426,12 @@ async function getHasRecordDate() {
       }
     );
     if (response.data.success) {
-      const data = response.data.data;
+      const records = response.data.data.records;
       const hasRecordDate = [];
-      data.forEach((record) =>
-        hasRecordDate.push(parseInt(record.createdAt.slice(8, 10)))
+      records.forEach((record) =>
+        hasRecordDate.push(
+          parseInt(record.exerciseRecord.startTime.slice(8, 10))
+        )
       );
       const uniqueHasRecordDate = [...new Set(hasRecordDate)];
       return uniqueHasRecordDate;
@@ -438,7 +450,7 @@ async function getDateRecord() {
       }
     );
     if (response.data.success) {
-      const records = response.data.data;
+      const records = response.data.data.records;
       recordBoardViewControl.showDateRecord(records);
     }
   } catch (error) {

@@ -23,5 +23,7 @@ export const navView = {
     const recordingLink = document.getElementById("recordingLink");
     userLink.classList.remove("d-none");
     recordingLink.classList.remove("d-none");
+    const navbarBrand = document.querySelector(".navbar-brand");
+    navbarBrand.href = "/user";
   },
 };

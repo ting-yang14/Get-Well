@@ -1,5 +1,5 @@
 import { navView } from "./navView.js";
-import { fetchUser } from "./base.js";
+import { fetchUser, raiseAlert } from "./base.js";
 import {
   resetRegisterValidation,
   resetLoginValidation,
@@ -25,21 +25,6 @@ const registerPassword = document.getElementById("registerPassword");
 
 let user;
 
-init();
-
-loginBtn.addEventListener("click", login);
-registerBtn.addEventListener("click", register);
-toggleLoginBtn.addEventListener("click", () => {
-  resetInputValue();
-  resetResponseMsg(loginMsg);
-  resetLoginValidation();
-});
-toggleRegisterBtn.addEventListener("click", () => {
-  resetInputValue();
-  resetResponseMsg(registerMsg);
-  resetRegisterValidation();
-});
-
 async function init() {
   if (localStorage.token) {
     const headers = { Authorization: localStorage.token };
@@ -56,26 +41,27 @@ async function init() {
 }
 
 async function login() {
-  // if (loginInputValidation()) {
-  const requestBody = {
-    email: loginEmail.value,
-    password: loginPassword.value,
-  };
-  try {
-    const response = await axios.post("/api/user/login", requestBody);
-    console.log(response.data);
-    displayResponseMsg(loginMsg, "成功登入", "text-success");
-    loginForm.reset();
-    localStorage.setItem("token", response.data.data.token);
-    window.location.href = "/user";
-  } catch (error) {
-    console.error(error);
-    console.log(error.response.data.message);
-    displayResponseMsg(loginMsg, "登入失敗", "text-danger");
+  if (loginInputValidation()) {
+    const requestBody = {
+      email: loginEmail.value,
+      password: loginPassword.value,
+    };
+    try {
+      const response = await axios.post("/api/user/login", requestBody);
+      if (response.data.success) {
+        loginMsg.innerHTML = raiseAlert(true, "登入成功");
+        loginForm.reset();
+        localStorage.setItem("token", response.data.data.token);
+        window.location.href = "/user";
+      }
+    } catch (error) {
+      console.error(error);
+      console.log(error.response.data.message);
+      loginMsg.innerHTML = raiseAlert(false, error.response.data.message);
+    }
+  } else {
+    return;
   }
-  // } else {
-  //   return;
-  // }
 }
 
 async function register() {
@@ -87,34 +73,29 @@ async function register() {
     };
     try {
       const response = await axios.post("/api/user/register", requestBody);
-      console.log(response.data);
-      displayResponseMsg(registerMsg, "成功註冊", "text-success");
-      registerForm.reset();
-      toggleLoginBtn.classList.remove("btn-secondary");
-      toggleLoginBtn.classList.add("btn-success");
-      loginEmail.value = requestBody.email;
-      resetRegisterValidation();
-      resetResponseMsg(loginMsg);
+      if (response.data.success) {
+        registerMsg.innerHTML = raiseAlert(true, "註冊成功");
+        registerForm.reset();
+        toggleLoginBtn.classList.remove("btn-secondary");
+        toggleLoginBtn.classList.add("btn-success");
+        loginEmail.value = requestBody.email;
+        resetRegisterValidation();
+        resetResponseMsg(loginMsg);
+      }
     } catch (error) {
       console.error(error);
       console.log(error.response.data.message);
-      displayResponseMsg(registerMsg, "登入失敗", "text-danger");
+      registerMsg.innerHTML = raiseAlert(false, error.response.data.message);
     }
   } else {
     return;
   }
 }
 
-function displayResponseMsg(item, msg, className) {
-  resetResponseMsg(item);
-  item.textContent = msg;
-  item.classList.add(className);
+function resetResponseMsg(item) {
+  item.innerHTML = null;
 }
 
-function resetResponseMsg(item) {
-  item.textContent = null;
-  item.classList.remove("text-danger", "text-success");
-}
 function resetInputValue() {
   registerUsername.value = null;
   registerEmail.value = null;
@@ -122,3 +103,44 @@ function resetInputValue() {
   loginEmail.value = null;
   loginPassword.value = null;
 }
+
+loginBtn.addEventListener("click", login);
+registerBtn.addEventListener("click", register);
+toggleLoginBtn.addEventListener("click", () => {
+  resetInputValue();
+  resetResponseMsg(loginMsg);
+  resetLoginValidation();
+});
+toggleRegisterBtn.addEventListener("click", () => {
+  resetInputValue();
+  resetResponseMsg(registerMsg);
+  resetRegisterValidation();
+});
+// click Enter to Submit
+loginEmail.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    login();
+  }
+});
+loginPassword.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    login();
+  }
+});
+registerUsername.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    register();
+  }
+});
+registerEmail.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    register();
+  }
+});
+registerPassword.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    register();
+  }
+});
+
+init();

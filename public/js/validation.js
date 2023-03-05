@@ -1,68 +1,4 @@
-// record and recording page
-const exerciseNameValidation = document.getElementById(
-  "exerciseNameValidation"
-);
-const exerciseCountsValidation = document.getElementById(
-  "exerciseCountsValidation"
-);
-const inputClassName = ["is-valid", "is-invalid"];
-const tooltipClassName = ["valid-tooltip", "invalid-tooltip"];
-
-export function resetExerciseValidation() {
-  // reset
-  exerciseNameValidation.classList = [];
-  exerciseCountsValidation.classList = [];
-  exerciseNameValidation.textContent = "";
-  exerciseCountsValidation.textContent = "";
-  inputClassName.forEach((className) => {
-    if (exerciseName.classList.contains(className)) {
-      exerciseName.classList.remove(className);
-    }
-    if (exerciseCounts.classList.contains(className)) {
-      exerciseCounts.classList.remove(className);
-    }
-  });
-}
-
-export function exerciseInputValidation() {
-  let isExerciseNameValid;
-  let isExerciseCountsValid;
-  resetExerciseValidation();
-  //validate
-  const exerciseNameValue = exerciseName.value;
-  const exerciseCountsValue = Number(exerciseCounts.value);
-  if (exerciseNameValue.trim().length !== 0) {
-    exerciseName.classList.add(inputClassName[0]);
-    exerciseNameValidation.classList.add(tooltipClassName[0]);
-    exerciseNameValidation.textContent = "格式正確";
-    isExerciseNameValid = true;
-  } else {
-    exerciseName.classList.add(inputClassName[1]);
-    exerciseNameValidation.classList.add(tooltipClassName[1]);
-    exerciseNameValidation.textContent = "請填入動作名稱";
-    isExerciseNameValid = false;
-  }
-
-  if (Number.isInteger(exerciseCountsValue) && exerciseCountsValue > 0) {
-    exerciseCounts.classList.add(inputClassName[0]);
-    exerciseCountsValidation.classList.add(tooltipClassName[0]);
-    exerciseCountsValidation.textContent = "格式正確";
-    isExerciseCountsValid = true;
-  } else {
-    exerciseCounts.classList.add(inputClassName[1]);
-    exerciseCountsValidation.classList.add(tooltipClassName[1]);
-    exerciseCountsValidation.textContent = "請填入正整數";
-    isExerciseCountsValid = false;
-  }
-
-  if (isExerciseNameValid && isExerciseCountsValid) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// register and login
+// index page
 const registerUsernameValidation = document.getElementById(
   "registerUsernameValidation"
 );
@@ -82,7 +18,6 @@ const passwordRegex =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
 export function resetRegisterValidation() {
-  // reset
   registerUsernameValidation.classList = [];
   registerEmailValidation.classList = [];
   registerPasswordValidation.classList = [];
@@ -103,7 +38,6 @@ export function resetRegisterValidation() {
 }
 
 export function resetLoginValidation() {
-  // reset
   loginEmailValidation.classList = [];
   loginPasswordValidation.classList = [];
   loginEmailValidation.textContent = "";
@@ -120,13 +54,13 @@ export function resetLoginValidation() {
 
 export function registerInputValidation() {
   resetRegisterValidation();
-  //validate
   const registerUsernameValue = registerUsername.value;
   const registerEmailValue = registerEmail.value;
   const registerPasswordValue = registerPassword.value;
   const isRegisterUsernameValid = usernameRegex.test(registerUsernameValue);
   const isRegisterEmailValid = emailRegex.test(registerEmailValue);
   const isRegisterPasswordValid = passwordRegex.test(registerPasswordValue);
+
   if (isRegisterUsernameValid) {
     registerUsername.classList.add(inputClassName[0]);
     registerUsernameValidation.classList.add(tooltipClassName[0]);
@@ -172,10 +106,8 @@ export function registerInputValidation() {
 
 export function loginInputValidation() {
   resetLoginValidation();
-  //validate
   const loginEmailValue = loginEmail.value;
   const loginPasswordValue = loginPassword.value;
-
   const isLoginEmailValid = emailRegex.test(loginEmailValue);
   const isLoginPasswordValid = passwordRegex.test(loginPasswordValue);
 
@@ -206,7 +138,8 @@ export function loginInputValidation() {
     return false;
   }
 }
-// user
+
+// user page
 const updateUsernameValidation = document.getElementById(
   "updateUsernameValidation"
 );
@@ -218,7 +151,6 @@ const updateWeightValidation = document.getElementById(
 );
 
 export function resetUpdateValidation() {
-  // reset
   updateUsernameValidation.classList = [];
   updateHeightValidation.classList = [];
   updateWeightValidation.classList = [];
@@ -239,14 +171,13 @@ export function resetUpdateValidation() {
 }
 export function updateInputValidation() {
   resetUpdateValidation();
-  //validate
   const usernameValue = username.value;
   const heightValue = parseFloat(height.value);
   const weightValue = parseFloat(weight.value);
-
   const isUsernameValid = usernameRegex.test(usernameValue);
   let isHeightValid;
   let isWeightValid;
+
   if (isUsernameValid) {
     username.classList.add(inputClassName[0]);
     updateUsernameValidation.classList.add(tooltipClassName[0]);
@@ -282,6 +213,69 @@ export function updateInputValidation() {
   }
 
   if (isUsernameValid && isHeightValid && isWeightValid) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// record, recording page
+const exerciseNameValidation = document.getElementById(
+  "exerciseNameValidation"
+);
+const exerciseCountsValidation = document.getElementById(
+  "exerciseCountsValidation"
+);
+const inputClassName = ["is-valid", "is-invalid"];
+const tooltipClassName = ["valid-tooltip", "invalid-tooltip"];
+
+export function resetExerciseValidation() {
+  exerciseNameValidation.classList = [];
+  exerciseCountsValidation.classList = [];
+  exerciseNameValidation.textContent = "";
+  exerciseCountsValidation.textContent = "";
+  inputClassName.forEach((className) => {
+    if (exerciseName.classList.contains(className)) {
+      exerciseName.classList.remove(className);
+    }
+    if (exerciseCounts.classList.contains(className)) {
+      exerciseCounts.classList.remove(className);
+    }
+  });
+}
+
+export function exerciseInputValidation() {
+  let isExerciseNameValid;
+  let isExerciseCountsValid;
+  resetExerciseValidation();
+  const exerciseNameValue = exerciseName.value;
+  const exerciseCountsValue = Number(exerciseCounts.value);
+
+  if (exerciseNameValue.trim().length !== 0) {
+    exerciseName.classList.add(inputClassName[0]);
+    exerciseNameValidation.classList.add(tooltipClassName[0]);
+    exerciseNameValidation.textContent = "格式正確";
+    isExerciseNameValid = true;
+  } else {
+    exerciseName.classList.add(inputClassName[1]);
+    exerciseNameValidation.classList.add(tooltipClassName[1]);
+    exerciseNameValidation.textContent = "請填入動作名稱";
+    isExerciseNameValid = false;
+  }
+
+  if (Number.isInteger(exerciseCountsValue) && exerciseCountsValue > 0) {
+    exerciseCounts.classList.add(inputClassName[0]);
+    exerciseCountsValidation.classList.add(tooltipClassName[0]);
+    exerciseCountsValidation.textContent = "格式正確";
+    isExerciseCountsValid = true;
+  } else {
+    exerciseCounts.classList.add(inputClassName[1]);
+    exerciseCountsValidation.classList.add(tooltipClassName[1]);
+    exerciseCountsValidation.textContent = "請填入正整數";
+    isExerciseCountsValid = false;
+  }
+
+  if (isExerciseNameValid && isExerciseCountsValid) {
     return true;
   } else {
     return false;
