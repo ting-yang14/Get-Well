@@ -6,39 +6,59 @@ import {
   registerInputValidation,
   loginInputValidation,
 } from "./validation.js";
+
 const registerForm = document.getElementById("registerForm");
 const loginForm = document.getElementById("loginForm");
-
-const registerBtn = document.getElementById("registerBtn");
-const loginBtn = document.getElementById("loginBtn");
-const toggleLoginBtn = document.getElementById("toggleLoginBtn");
-const toggleRegisterBtn = document.getElementById("toggleRegisterBtn");
-
 const registerMsg = document.getElementById("registerMsg");
 const loginMsg = document.getElementById("loginMsg");
-
+// input
 const loginEmail = document.getElementById("loginEmail");
 const loginPassword = document.getElementById("loginPassword");
 const registerUsername = document.getElementById("registerUsername");
 const registerEmail = document.getElementById("registerEmail");
 const registerPassword = document.getElementById("registerPassword");
-
-let user;
-
-async function init() {
-  if (localStorage.token) {
-    const headers = { Authorization: localStorage.token };
-    try {
-      const userData = await fetchUser(headers);
-      user = userData.user;
-      navView.login(userData.avatarUrl);
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    return;
+loginEmail.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    login();
   }
-}
+});
+loginPassword.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    login();
+  }
+});
+registerUsername.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    register();
+  }
+});
+registerEmail.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    register();
+  }
+});
+registerPassword.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    register();
+  }
+});
+// button
+const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+const toggleLoginBtn = document.getElementById("toggleLoginBtn");
+const toggleRegisterBtn = document.getElementById("toggleRegisterBtn");
+loginBtn.addEventListener("click", login);
+registerBtn.addEventListener("click", register);
+toggleLoginBtn.addEventListener("click", () => {
+  resetInputValue();
+  resetResponseMsg(loginMsg);
+  resetLoginValidation();
+});
+toggleRegisterBtn.addEventListener("click", () => {
+  resetInputValue();
+  resetResponseMsg(registerMsg);
+  resetRegisterValidation();
+});
 
 async function login() {
   if (loginInputValidation()) {
@@ -87,8 +107,6 @@ async function register() {
       console.log(error.response.data.message);
       registerMsg.innerHTML = raiseAlert(false, error.response.data.message);
     }
-  } else {
-    return;
   }
 }
 
@@ -104,43 +122,15 @@ function resetInputValue() {
   loginPassword.value = null;
 }
 
-loginBtn.addEventListener("click", login);
-registerBtn.addEventListener("click", register);
-toggleLoginBtn.addEventListener("click", () => {
-  resetInputValue();
-  resetResponseMsg(loginMsg);
-  resetLoginValidation();
-});
-toggleRegisterBtn.addEventListener("click", () => {
-  resetInputValue();
-  resetResponseMsg(registerMsg);
-  resetRegisterValidation();
-});
-// click Enter to Submit
-loginEmail.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    login();
+async function init() {
+  if (localStorage.token) {
+    try {
+      const userData = await fetchUser();
+      navView.login(userData.avatarUrl);
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
-loginPassword.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    login();
-  }
-});
-registerUsername.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    register();
-  }
-});
-registerEmail.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    register();
-  }
-});
-registerPassword.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    register();
-  }
-});
+}
 
 init();

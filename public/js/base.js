@@ -1,6 +1,8 @@
-export async function fetchUser(headers) {
+export async function fetchUser() {
   try {
-    const response = await axios.get("/api/user/me", { headers: headers });
+    const response = await axios.get("/api/user/me", {
+      headers: { Authorization: localStorage.token },
+    });
     const userData = response.data.data;
     return userData;
   } catch (error) {

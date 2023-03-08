@@ -33,6 +33,7 @@ app.use("/css", express.static(path.join(__dirname, "public", "css")));
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ limit: " 1mb ", extended: true }));
+
 app.use("/api/s3", s3Router);
 app.use("/api/user", userRouter);
 app.use("/api/record", recordRouter);
@@ -45,15 +46,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/recording", (req, res) => {
-  res.render("recording", { title: "紀錄復健" });
+  res.render("recording", { title: "開始復健" });
 });
 
 app.get("/record/:recordId", (req, res) => {
-  res.render("record", { title: "我的紀錄" });
+  res.render("record", { title: "復健紀錄" });
 });
 
 app.get("/user", (req, res) => {
-  res.render("user", { title: "會員資料" });
+  res.render("user", { title: "我的紀錄" });
 });
 
 app.use(errorHandler);
@@ -72,31 +73,26 @@ const io = new Server(httpsServer);
 // const io = new Server(httpServer);
 // ---
 const recordingIo = io.of("/recording");
-
 let rooms = {};
 
 recordingIo.on("connection", (socket) => {
   console.log(socket.id, "connected");
-
+  // emitted by either device
   socket.on("user-join", (joinDevice, userId) => {
     console.log(`${userId} 的 ${joinDevice} 已連接`);
     const result = socketHandler.join(joinDevice, userId, rooms);
     if (result.join) {
-      // user join the room
       socket.join(userId);
       if (userId in rooms) {
-        // rooms = {"userId1":[],...} 或
-        // rooms = {"userId1":[{"socketId1":["Desktop"]}],...}
         rooms[userId].push({ [socket.id]: [joinDevice] });
       } else {
-        // rooms = {...}
         rooms[userId] = [{ [socket.id]: [joinDevice] }];
       }
       // to device(s) in room userId
       recordingIo.in(userId).emit("join-result", result);
       console.log(userId, "連線裝置：", rooms[userId]);
     } else {
-      // user is rejected, back to sender
+      // to emitted device
       socket.emit("join-result", result);
     }
   });
@@ -105,33 +101,26 @@ recordingIo.on("connection", (socket) => {
     console.log(`user:${userId} ${result.msg}`);
     if (result.access) {
       socketHandler.access(userId, socket.id, rooms);
-      // to device(s) in room userId
       recordingIo.in(userId).emit("access-result", result);
     } else {
-      // access is denied, back to sender
       socket.emit("access-result", result);
     }
   });
 
   socket.on("record", (state, triggerDevice, userId) => {
     console.log(`由 ${userId} 的 ${triggerDevice} ${state} 紀錄`);
-    // const result = checkStop(stopDevice, userId, rooms);
     const result = socketHandler.record(state, triggerDevice, userId, rooms);
-    if (result.both) {
-      // room 中 2 裝置都回應
-      recordingIo.in(userId).emit(`${state}-result`, triggerDevice, result);
-    } else {
-      if (state === "start") {
-        // 對 startDevice (sender) 給 失敗訊息
-        socket.emit(`${state}-result`, triggerDevice, result);
-      } else {
-        // 對 stopDevice (sender)外的另一裝置 給 失敗訊息
-        socket.to(userId).emit(`${state}-result`, triggerDevice, result);
-      }
-    }
+    recordingIo.in(userId).emit(`${state}-result`, triggerDevice, result);
   });
-  // mobile to desktop
+
+  socket.on("disconnect", () => {
+    console.log(socket.id, "disconnected");
+    socketHandler.removeDisconnectedDeviceSocketId(socket.id, rooms);
+    console.log(socket.rooms);
+  });
+  // emitted by mobile
   socket.on("send-record", (record, userId) => {
+    // to another device
     socket.to(userId).emit("receive-record", record);
   });
 
@@ -142,19 +131,13 @@ recordingIo.on("connection", (socket) => {
   socket.on("send-ori", (ori, userId) => {
     socket.to(userId).emit("receive-ori", ori);
   });
-  // desktop to mobile on postRecordBtn click
+  // emitted by desktop
   socket.on("post-start", (userId) => {
     socket.to(userId).emit("receive-start");
   });
-  // desktop to both
+
   socket.on("post-result", (result, userId) => {
     recordingIo.in(userId).emit("receive-result", result);
-  });
-
-  socket.on("disconnect", () => {
-    console.log(socket.id, "disconnected");
-    socketHandler.removeDisconnectedDeviceSocketId(socket.id, rooms);
-    console.log(socket.rooms);
   });
 });
 
@@ -169,7 +152,3 @@ httpsServer.listen(port, () => {
 //   console.log(`Server is running at localhost: ${port}`);
 // });
 // ---
-
-// app.listen(port, function () {
-//   console.log(`Server is running at localhost: ${port}`);
-// });

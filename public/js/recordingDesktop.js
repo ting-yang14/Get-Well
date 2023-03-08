@@ -8,7 +8,7 @@ const preview = document.getElementById("preview");
 const recorded = document.getElementById("recorded");
 const exerciseName = document.getElementById("exerciseName");
 const exerciseCounts = document.getElementById("exerciseCounts");
-// table content
+// desktop table for real-time sensor data
 const desktopAccX = document.getElementById("desktopAccX");
 const desktopAccY = document.getElementById("desktopAccY");
 const desktopAccZ = document.getElementById("desktopAccZ");
@@ -37,7 +37,6 @@ export const desktopController = {
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      // socket
       access = true;
       msg = "視訊鏡頭畫面存取成功";
       socket.emit("device-access", user._id, { access, msg });
@@ -48,7 +47,6 @@ export const desktopController = {
       downloadVideoBtn.href = stream;
     } catch (err) {
       console.log("navigator.getUserMedia error:", err);
-      // socket
       access = false;
       msg = "請開啟視訊鏡頭存取權限並重新整理頁面";
       socket.emit("device-access", user._id, { access, msg });
@@ -62,13 +60,8 @@ export const desktopController = {
     try {
       mediaRecorder = new MediaRecorder(window.stream);
       stopVideoBtn.disabled = false;
-      // mediaRecorder.onstop = (event) => {
-      //   console.log("Recorder stopped: ", event);
-      //   console.log("Recorded Blobs: ", recordedBlobs);
-      // };
       mediaRecorder.ondataavailable = handleDataAvailable;
       mediaRecorder.start();
-      // socket
       socket.emit("record", "start", device, user._id);
       startVideoTime.textContent = `開始時間：${getCurrentTime()}`;
       stopVideoBtn.innerHTML = `&nbsp;&nbsp;停止紀錄`;
@@ -80,7 +73,6 @@ export const desktopController = {
   stopVideo: function (device, socket, user) {
     const stopVideoTime = document.getElementById("stopVideoTime");
     mediaRecorder.stop();
-    // socket
     socket.emit("record", "stop", device, user._id);
     startVideoBtn.innerHTML = `&nbsp;&nbsp;開始紀錄`;
     stopVideoBtn.innerHTML = `&nbsp;&nbsp;已停止紀錄`;
@@ -179,33 +171,6 @@ export const desktopController = {
       desktopOriGamma.textContent,
     ] = ori;
   },
-  // sendRecordMulter: async function (localRecord, userId) {
-  //   const exerciseName = document.getElementById("exerciseName");
-  //   const exerciseCounts = document.getElementById("exerciseCounts");
-  //   const blob = new Blob(recordedBlobs, { type: "video/webm" });
-  //   const file = new File([blob], "filename.webm", {
-  //     type: blob.type,
-  //     lastModified: new Date().getTime(),
-  //   });
-  //   const formData = new FormData();
-  //   formData.append("exerciseCounts", exerciseCounts.value);
-  //   formData.append("exerciseName", exerciseName.value);
-  //   formData.append("uploadVideo", file);
-  //   formData.append("record", JSON.stringify(localRecord));
-  //   formData.append("userId", userId);
-  //   try {
-  //     const headers = {
-  //       Authorization: localStorage.token,
-  //       "content-type": "multipart/form-data",
-  //     };
-  //     const response = await axios.post("/api/record", formData, {
-  //       headers: headers,
-  //     });
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
 };
 
 function appendRecord(table, record) {

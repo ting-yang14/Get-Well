@@ -1,8 +1,8 @@
 import express from "express";
+import passport from "passport";
 import { userController } from "../controllers/userController.js";
 import { userSchemas } from "../config/joi.js";
 import { joiMiddleware } from "../middleware/joiMiddleware.js";
-import passport from "passport";
 
 export const userRouter = express.Router();
 userRouter.post(

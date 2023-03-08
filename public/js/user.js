@@ -33,14 +33,16 @@ const updateUserBtn = document.getElementById("updateUserBtn");
 avatarInput.addEventListener("change", previewAvatar);
 editUserBtn.addEventListener("click", showInputColumn);
 updateUserBtn.addEventListener("click", updateUser);
-// avatar preview
+
 function previewAvatar() {
   const uploadedFile = avatarInput.files[0];
   const reader = new FileReader();
+  const navImg = document.getElementById("navImg");
   reader.addEventListener(
     "load",
     function () {
       avatar.src = reader.result;
+      navImg.src = reader.result;
     },
     false
   );
@@ -75,7 +77,6 @@ function setDefaultUserInfo(userData) {
 }
 
 function showInputColumn() {
-  // 顯示儲存按鈕
   ["text-success", "text-danger"].forEach((className) => {
     if (updateUserBtn.classList.contains(className)) {
       updateUserBtn.classList.remove(className);
@@ -85,11 +86,9 @@ function showInputColumn() {
   updateUserBtn.classList.toggle("d-none");
   defaultGender.classList.toggle("d-none");
   genderSelector.classList.toggle("d-none");
-  // 恢復readonly 身高體重
   editToggle(username);
   editToggle(height);
   editToggle(weight);
-  // 重複點擊，顯示已更新內容
   setUserChange();
   resetUpdateValidation();
 }
@@ -106,7 +105,6 @@ function editToggle(element) {
 }
 
 function setUserChange() {
-  // 顯示選取的性別，隱藏選項
   const genderSelected = document.querySelector(
     'input[name="genderRadios"]:checked'
   ).value;
@@ -114,12 +112,10 @@ function setUserChange() {
   if (defaultGender.classList.contains("text-secondary")) {
     defaultGender.classList.add("text-light");
   }
-  // 更新大頭貼名字
   avatarUsername.textContent = username.value;
 }
 
 async function updateUser() {
-  // 顯示紀錄
   setUserChange();
   if (updateInputValidation()) {
     const genderSelected = document.querySelector(
@@ -132,17 +128,14 @@ async function updateUser() {
       weight: parseFloat(weight.value),
     };
     try {
-      // 若有更新大頭貼，先上傳得到檔名
       if (avatarInput.files[0]) {
         const uploadedFile = avatarInput.files[0];
-        // 獲得 putObjectSignedUrl
         const response = await axios.get("/api/s3");
         if (response.data.success) {
           await axios.put(response.data.data.url, uploadedFile);
           requestBody.avatarFileName = response.data.data.fileName;
         }
       }
-      // patch user data
       const patchResponse = await axios.patch(
         `/api/user/${user._id}`,
         requestBody,
@@ -171,7 +164,7 @@ async function updateUser() {
 // --- calendar ---
 let date = new Date();
 let currentYear = date.getFullYear();
-let currentMonth = date.getMonth(); // 0 = Jan
+let currentMonth = date.getMonth();
 let nextPage;
 let keyword;
 const calendarTbody = document.getElementById("calendarTbody");
@@ -191,22 +184,27 @@ const monthList = [
   "11",
   "12",
 ];
-// btn
+const searchInput = document.querySelector("input[type='search']");
+searchInput.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    getSearchResult();
+  }
+});
+// button
 const prevMonthBtn = document.getElementById("prev");
 const nextMonthBtn = document.getElementById("next");
 const searchBtn = document.getElementById("searchBtn");
 const loadMoreBtn = document.getElementById("loadMoreBtn");
+prevMonthBtn.addEventListener("click", updateCalendar);
+nextMonthBtn.addEventListener("click", updateCalendar);
+searchBtn.addEventListener("click", getSearchResult);
+loadMoreBtn.addEventListener("click", loadMoreRecord);
 // recordBoard
 const recordBoard = document.getElementById("recordBoard");
 const recordResult = document.getElementById("recordResult");
 const resultIcon = document.getElementById("resultIcon");
 const resultText = document.getElementById("resultText");
 const resultLink = document.getElementById("resultLink");
-prevMonthBtn.addEventListener("click", updateCalendar);
-nextMonthBtn.addEventListener("click", updateCalendar);
-searchBtn.addEventListener("click", getSearchResult);
-loadMoreBtn.addEventListener("click", loadMoreRecord);
-
 const recordBoardViewControl = {
   showDateRecord: function (recordList) {
     this.clearBoard();
@@ -318,13 +316,9 @@ async function generateCalendar() {
 }
 
 async function generateCalendarView() {
-  // 更新目前的年、月
   year.textContent = currentYear;
   month.textContent = monthList[currentMonth];
-  // 當月有紀錄的日期
   const hasRecordDate = await getHasRecordDate();
-  // 當月：第一天星期幾、最後一天日期、最後一天星期幾
-  // 上個月：最後一天日期
   const firstDayOfCurrentMonth = new Date(
     currentYear,
     currentMonth,
@@ -341,10 +335,9 @@ async function generateCalendarView() {
     lastDateOfCurrentMonth
   ).getDay();
   const lastDateOfLastMonth = new Date(currentYear, currentMonth, 0).getDate();
-  // 空日曆、以星期日為基準 currentDay = 0 判斷加入 <tr>
   let calendarTbodyInnerHTML = "";
   let currentDay = 0;
-  // 上個月的日期
+  // last month date
   for (let i = firstDayOfCurrentMonth; i > 0; i--) {
     if (currentDay === 0) {
       calendarTbodyInnerHTML += `<tr>`;
@@ -354,12 +347,11 @@ async function generateCalendarView() {
     }</td>`;
     currentDay += 1;
   }
-  // 當月日期
+  // current month date
   for (let i = 1; i <= lastDateOfCurrentMonth; i++) {
     if (currentDay === 0) {
       calendarTbodyInnerHTML += `<tr>`;
     }
-    // 判斷今日
     let isToday =
       i === date.getDate() &&
       currentMonth === new Date().getMonth() &&
@@ -367,7 +359,8 @@ async function generateCalendarView() {
         ? "text-primary fw-bolder"
         : "";
     if (hasRecordDate.includes(i)) {
-      calendarTbodyInnerHTML += `<td class="${isToday} hasRecord" data-date=${i}><span class="recordDot"></span><div class="my-3">${i}</div></td>`;
+      const date = i < 10 ? `0${i}` : i;
+      calendarTbodyInnerHTML += `<td class="${isToday} hasRecord" data-date=${date}><span class="recordDot"></span><div class="my-3">${i}</div></td>`;
     } else {
       calendarTbodyInnerHTML += `<td class="${isToday}"><div class="my-3">${i}</div></td>`;
     }
@@ -377,7 +370,7 @@ async function generateCalendarView() {
       currentDay = 0;
     }
   }
-  // 下個月的日期
+  // next month date
   for (let i = lastDayOfCurrentMonth; i < 6; i++) {
     calendarTbodyInnerHTML += `<td class="text-muted table-secondary">${
       i - lastDayOfCurrentMonth + 1
@@ -420,7 +413,7 @@ function updateCalendar() {
 async function getHasRecordDate() {
   try {
     const response = await axios.get(
-      `/api/record?time=${currentYear}-${currentMonth}`,
+      `/api/record?time=${currentYear}-${monthList[currentMonth]}`,
       {
         headers: { Authorization: localStorage.token },
       }
@@ -444,7 +437,7 @@ async function getHasRecordDate() {
 async function getDateRecord() {
   try {
     const response = await axios.get(
-      `/api/record?time=${currentYear}-${currentMonth}-${this.dataset.date}`,
+      `/api/record?time=${currentYear}-${monthList[currentMonth]}-${this.dataset.date}`,
       {
         headers: { Authorization: localStorage.token },
       }
@@ -461,7 +454,7 @@ async function getDateRecord() {
 
 async function getSearchResult() {
   try {
-    keyword = document.querySelector(`input[type="search"]`).value;
+    keyword = searchInput.value;
     const response = await axios.get(`/api/record?keyword=${keyword}&page=0`, {
       headers: { Authorization: localStorage.token },
     });
@@ -504,9 +497,8 @@ async function loadMoreRecord() {
 let user;
 async function init() {
   if (localStorage.token) {
-    const headers = { Authorization: localStorage.token };
     try {
-      const userData = await fetchUser(headers);
+      const userData = await fetchUser();
       user = userData.user;
       navView.login(userData.avatarUrl);
       setDefaultUserInfo(userData);

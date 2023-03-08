@@ -6,12 +6,10 @@ export const navView = {
     logLink.classList.add("fa-right-from-bracket");
     logLink.dataset.bsTarget = null;
     logLink.dataset.bsToggle = null;
-    // set logout button
     logLink.addEventListener("click", () => {
       localStorage.removeItem("token");
       window.location.href = "/";
     });
-    // toggler icon
     const unLoginBtn = document.getElementById("unLoginBtn");
     const navImg = document.getElementById("navImg");
     unLoginBtn.classList.add("d-none");

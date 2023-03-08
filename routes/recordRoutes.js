@@ -1,11 +1,9 @@
 import express from "express";
-import { recordController } from "../controllers/recordController.js";
 import passport from "passport";
+import { recordController } from "../controllers/recordController.js";
 import { recordSchemas } from "../config/joi.js";
 import { joiMiddleware } from "../middleware/joiMiddleware.js";
-// import multer from "multer";
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
+
 export const recordRouter = express.Router();
 recordRouter
   .route("/")
@@ -18,11 +16,6 @@ recordRouter
     joiMiddleware(recordSchemas.postRecord, "body"),
     recordController.createRecordFrontend
   );
-// .post(
-//   passport.authenticate("jwt", { session: false }),
-//   upload.single("uploadVideo"),
-//   recordController.createRecordMulter
-// );
 
 recordRouter
   .route("/:recordId")

@@ -4,7 +4,9 @@ import {
   CreateInvalidationCommand,
 } from "@aws-sdk/client-cloudfront";
 import dotenv from "dotenv";
+
 dotenv.config();
+
 const cloudfrontKeyPairId = process.env.CLOUDFRONT_KEY_PAIR_ID;
 // -- for docker build --
 // const cloudfrontPrivateKey = process.env.CLOUDFRONT_PRIVATE_KEY.split(
@@ -34,7 +36,7 @@ export const cloudfrontHandler = {
         keyPairId: cloudfrontKeyPairId,
         privateKey: cloudfrontPrivateKey,
         url: `${cloudfrontUrl}/${fileName}`,
-        dateLessThan: new Date(Date.now() + 1000 /*sec*/ * 60 * 30),
+        dateLessThan: new Date(Date.now() + 1000 * 60 * 30),
       });
       return signedUrl;
     } catch (error) {

@@ -1,9 +1,9 @@
 export const joiMiddleware = (schema, property) => {
   return (req, res, next) => {
     const options = {
-      abortEarly: false, // include all errors
-      allowUnknown: true, // ignore unknown props
-      stripUnknown: true, // remove unknown props
+      abortEarly: false,
+      allowUnknown: true,
+      stripUnknown: true,
     };
     const { value, error } = schema.validate(req[property], options);
     const valid = error == null;

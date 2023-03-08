@@ -2,9 +2,8 @@ import { navView } from "./navView.js";
 import { fetchUser, raiseAlert } from "./base.js";
 import { desktopController } from "./recordingDesktop.js";
 import { mobileController } from "./recordingMobile.js";
-// --- initial ---
+
 let device;
-let user;
 let localRecord;
 // message
 const msgDesktop = document.getElementById("msgDesktop");
@@ -25,15 +24,20 @@ const spinner = document.getElementById("spinner");
 // exercise input
 const exerciseName = document.getElementById("exerciseName");
 const exerciseCounts = document.getElementById("exerciseCounts");
+exerciseCounts.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    postRecord();
+  }
+});
+exerciseName.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    postRecord();
+  }
+});
 // socket
 const socket = io("/recording");
-// socket on event
-// socket.on("connect", () => {
-//   console.log(socket.id);
-// });
-
+// both device received
 socket.on("join-result", (result) => {
-  // 依據 device 顯示 result.msg
   if (device === "Desktop") {
     msgDesktop.innerHTML = raiseAlert(result.join, result.msg);
   } else {
@@ -42,7 +46,6 @@ socket.on("join-result", (result) => {
 });
 
 socket.on("access-result", (result) => {
-  // 依據 device 顯示 result.msg
   if (device === "Desktop") {
     msgDesktop.innerHTML = raiseAlert(result.access, result.msg);
   } else {
@@ -50,135 +53,97 @@ socket.on("access-result", (result) => {
   }
 });
 
-socket.on("start-result", (startDevice, result) => {
-  if (startDevice === "Desktop") {
+socket.on("start-result", (triggerDevice, result) => {
+  if (triggerDevice === "Desktop") {
     if (result.both) {
-      // 雙方收到 開始紀錄
       if (device === "Desktop") {
-        // start: Desktop, receive: Desktop
-        // 同裝置，僅顯示訊息
         msgDesktop.innerHTML = raiseAlert(result.both, result.msg);
       } else {
-        // start: Desktop, receive: Mobile
-        // 若 Mobile 還沒開始，則按下開始 (同時會再發 emit 一個 "record-start")
+        //
         if (startSensorBtn.disabled === false) {
           startSensorBtn.click();
         }
-        // 若 Mobile 已開始，僅更新訊息
         msgMobile.innerHTML = raiseAlert(result.both, result.msg);
       }
     } else {
-      // 單方收到 拒絕開始
-      // start: Desktop, stop: Desktop
-      // 按下停止 (同時會再發 emit 一個 "record-stop")
       stopVideoBtn.click();
       msgDesktop.innerHTML = raiseAlert(result.both, result.msg);
     }
   } else {
     if (result.both) {
       if (device === "Desktop") {
-        // start: Mobile, receive: Desktop
-        // 若 Desktop 還沒開始，則按下開始 (同時會再發 emit 一個 "record-start")
         if (startVideoBtn.disabled === false) {
           startVideoBtn.click();
         }
-        // 若 Desktop 已開始，僅更新訊息
         msgDesktop.innerHTML = raiseAlert(result.both, result.msg);
       } else {
-        // start: Mobile, receive: Mobile
-        // 同裝置，僅顯示訊息
         msgMobile.innerHTML = raiseAlert(result.both, result.msg);
       }
     } else {
-      // 單方收到 拒絕開始
-      // start: Mobile, stop: Mobile
       stopSensorBtn.click();
       msgMobile.innerHTML = raiseAlert(result.both, result.msg);
     }
   }
 });
 
-socket.on("stop-result", (stopDevice, result) => {
-  if (stopDevice === "Desktop") {
+socket.on("stop-result", (triggerDevice, result) => {
+  if (triggerDevice === "Desktop") {
     if (result.both) {
-      // 雙方收到 停止紀錄
       if (device === "Desktop") {
-        // stop: Desktop, receive: Desktop
-        // 同裝置，僅顯示訊息
         msgDesktop.innerHTML = raiseAlert(result.both, result.msg);
       } else {
-        // stop: Desktop, receive: Mobile
-        // 如果還沒開始就按 (同時會再發 emit 一個 "record-stop")
         if (stopSensorBtn.disabled === false) {
           stopSensorBtn.click();
         }
-        // 已開始，僅更新訊息
         msgMobile.innerHTML = raiseAlert(result.both, result.msg);
       }
     } else {
-      // 單方收到 停止
-      // stop: Desktop, stop: Desktop
-      // 更新停止訊息
       msgMobile.innerHTML = raiseAlert(result.both, result.msg);
     }
   } else {
     if (result.both) {
       if (device === "Desktop") {
-        // stop: Mobile, receive: Desktop
-        // 如果還沒開始就按 (同時會再發 emit 一個 "record-stop")
         if (stopVideoBtn.disabled === false) {
           stopVideoBtn.click();
         }
-        // 已開始，僅更新訊息
         msgDesktop.innerHTML = raiseAlert(result.both, result.msg);
       } else {
-        // stop: Mobile, receive: Mobile
-        // 同裝置，僅顯示訊息
         msgMobile.innerHTML = raiseAlert(result.both, result.msg);
       }
     } else {
-      // 單方收到 停止
-      // stop: Mobile, stop: Mobile
-      // 更新停止訊息
       msgDesktop.innerHTML = raiseAlert(result.both, result.msg);
     }
   }
 });
 
-// desktop receive record from mobile
-socket.on("receive-record", (record) => {
-  desktopController.showSensorData(record);
-  localRecord = record;
-});
-
-// desktop receive acceleration data from mobile
-socket.on("receive-acc", (acc) => {
-  desktopController.showAccData(acc);
-});
-
-// desktop receive orientation data from mobile
-socket.on("receive-ori", (ori) => {
-  desktopController.showOriData(ori);
-});
-
-// mobile receive desktop click send record button
-socket.on("receive-start", () => {
-  spinner.classList.remove("d-none");
-});
-
-// Both receive post record to db result
 socket.on("receive-result", (result) => {
   spinner.classList.add("d-none");
-  // 依據 device 顯示 result.msg
   if (device === "Desktop") {
     msgDesktop.innerHTML = raiseAlert(result.post, result.msg);
   } else {
     msgMobile.innerHTML = raiseAlert(result.post, result.msg);
   }
 });
+// desktop received
+socket.on("receive-record", (record) => {
+  desktopController.showSensorData(record);
+  localRecord = record;
+});
+
+socket.on("receive-acc", (acc) => {
+  desktopController.showAccData(acc);
+});
+
+socket.on("receive-ori", (ori) => {
+  desktopController.showOriData(ori);
+});
+
+// mobile received
+socket.on("receive-start", () => {
+  spinner.classList.remove("d-none");
+});
 
 function postRecord() {
-  // desktopController.sendRecordMulter(localRecord, user._id);
   desktopController.postRecordFrontend(localRecord);
 }
 
@@ -205,15 +170,12 @@ function checkDevice() {
 
 async function init() {
   if (localStorage.token) {
-    const headers = { Authorization: localStorage.token };
     try {
       device = checkDevice();
       displayView(device);
-      const userData = await fetchUser(headers);
-      user = userData.user;
-      // setup nav button
+      const userData = await fetchUser();
+      const user = userData.user;
       navView.login(userData.avatarUrl);
-      // join socket room with userId
       socket.emit("user-join", device, user._id);
       // desktop button event
       accessCameraBtn.addEventListener(
@@ -255,16 +217,5 @@ async function init() {
     window.location.href = "/";
   }
 }
-
-exerciseCounts.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    postRecord();
-  }
-});
-exerciseName.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    postRecord();
-  }
-});
 
 init();

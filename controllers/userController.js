@@ -1,9 +1,9 @@
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
-import { User } from "../model/userModel.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { s3Handler } from "../public/js/s3.js";
+import { User } from "../model/userModel.js";
+import { s3Controller } from "./s3Controller.js";
 import { cloudfrontHandler } from "../public/js/cloudfront.js";
 
 dotenv.config();
@@ -18,22 +18,17 @@ export const userController = {
   // @access Public
   registerUser: asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
-    // const requestBody = userSchemas.register.validate(req.body);
-
     if (!username || !email || !password) {
       res.status(400);
       throw new Error("請填入所有欄位");
     }
-    //check user exist
     const userExists = await User.findOne({ email });
     if (userExists) {
       res.status(400);
       throw new Error("此信箱已註冊");
     }
-    // hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    //create User
     const user = await User.create({
       username,
       email,
@@ -58,7 +53,6 @@ export const userController = {
       res.status(400);
       throw new Error("請填入所有欄位");
     }
-    // check for user email
     const user = await User.findOne({ email });
     if (user === null) {
       res.status(400);
@@ -85,19 +79,17 @@ export const userController = {
   // @access Private
   updateUser: asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.userId);
-    // Check for user
     if (!user) {
       res.status(400);
       throw new Error("查無此使用者");
     }
-    // Make sure the logged in user matches the record user
     if (req.user !== user._id.toString()) {
       res.status(401);
       throw new Error("User not authorized");
     }
-    // 若有舊的大頭貼，要刪除
+    // delete previous avatar if update new avatar
     if (req.body.avatarFileName && user.avatarFileName) {
-      await s3Handler.deleteFile(user.avatarFileName);
+      await s3Controller.deleteFile(user.avatarFileName);
       await cloudfrontHandler.createCloudfrontInvalid(user.avatarFileName);
     }
     await User.findByIdAndUpdate(req.params.userId, req.body, {

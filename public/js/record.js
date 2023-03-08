@@ -4,19 +4,32 @@ import {
   exerciseInputValidation,
   resetExerciseValidation,
 } from "./validation.js";
+
+let countDownNum = 3;
+const currentPathname = window.location.pathname;
 const recordVideo = document.getElementById("recordVideo");
 const startVideoTime = document.getElementById("startVideoTime");
 const stopVideoTime = document.getElementById("stopVideoTime");
+// input
 const exerciseName = document.getElementById("exerciseName");
 const exerciseCounts = document.getElementById("exerciseCounts");
-const currentPathname = window.location.pathname;
+exerciseCounts.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    saveRecord();
+  }
+});
+exerciseName.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    saveRecord();
+  }
+});
+// button
 const editRecordBtn = document.getElementById("editRecordBtn");
 const saveRecordBtn = document.getElementById("saveRecordBtn");
 const deleteRecordBtn = document.getElementById("deleteRecordBtn");
-
-let user;
-let record;
-let countDownNum = 3;
+editRecordBtn.addEventListener("click", editToggle);
+saveRecordBtn.addEventListener("click", saveRecord);
+deleteRecordBtn.addEventListener("click", deleteRecord);
 
 function editToggle() {
   if (saveRecordBtn.classList.contains("btn-warning")) {
@@ -391,24 +404,19 @@ function setVariableMinMax(individualVariableArray) {
 
 async function init() {
   if (localStorage.token) {
-    const headers = { Authorization: localStorage.token };
     try {
-      const userData = await fetchUser(headers);
-      user = userData.user;
+      const userData = await fetchUser();
       navView.login(userData.avatarUrl);
-      record = await getRecord();
-      // default setup
+      const record = await getRecord();
       const exerciseRecord = record.record.exerciseRecord;
       recordVideo.src = record.recordUrl;
       startVideoTime.textContent = `開始時間：${exerciseRecord.startTime}`;
       stopVideoTime.textContent = `結束時間：${exerciseRecord.endTime}`;
       exerciseName.value = record.record.exerciseName;
       exerciseCounts.value = record.record.exerciseCounts;
-      // get each variable array
       const individualVariableArray =
         generateIndividualVariableArray(exerciseRecord);
       setVariableMinMax(individualVariableArray);
-      // chart
       generateAccChart(individualVariableArray);
       generateOriChart(individualVariableArray);
     } catch (error) {
@@ -419,19 +427,5 @@ async function init() {
     window.location.href = "/";
   }
 }
-
-editRecordBtn.addEventListener("click", editToggle);
-saveRecordBtn.addEventListener("click", saveRecord);
-deleteRecordBtn.addEventListener("click", deleteRecord);
-exerciseCounts.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    saveRecord();
-  }
-});
-exerciseName.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    saveRecord();
-  }
-});
 
 init();

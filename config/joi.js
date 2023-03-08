@@ -1,8 +1,10 @@
 import Joi from "joi";
+
 const usernameRegex = /^[\u4E00-\u9FFFa-zA-Z0-9]{1,8}$/;
 const emailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,})$/;
 const passwordRegex =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
 export const userSchemas = {
   login: Joi.object().keys({
     email: Joi.string().regex(emailRegex).required(),
