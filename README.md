@@ -8,7 +8,7 @@ test account: testUser@gmail.com <br/>
 test password: testUser1!
 <br/>
 <br/>
-<img src = "./image/demo.gif" width="500"/>
+<img src = "./image/readme_demo.gif" width="500"/>
 <br/>
 
 ## Main Feature
@@ -70,7 +70,7 @@ test password: testUser1!
 
 ## API Document
 
-🔗&nbsp;&nbsp;Document link: https://app.swaggerhub.com/apis/SHEEP870104/Get_Well_API/1.0.1
+🔗&nbsp;&nbsp;Document link: https://app.swaggerhub.com/apis-docs/ting-yang14/Get-Well/1.0.1
 
 ## Real World Testing
 
